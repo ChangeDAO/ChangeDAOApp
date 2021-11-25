@@ -1,0 +1,19 @@
+.q-layout {
+  background: $dark;
+
+  .q-header {
+    background: $dark-header;
+  }
+
+  .q-footer {
+    background: $dark-footer;
+
+    a:not(.q-btn) {
+      text-decoration: none;
+      color: inherit;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
