@@ -24,9 +24,14 @@
       </q-toolbar>
     </q-header>
 
-    <q-footer class="q-px-xl q-pt-lg q-pb-md">
-      <div class="row">
-        <div class="column q-mb-md q-mr-md">
+    <q-footer
+      :class="{
+        'q-px-xl q-pt-lg q-pb-md': $q.screen.gt.xs,
+        'q-px-md q-pt-md q-pb-sm': !$q.screen.gt.xs
+      }"
+    >
+      <div class="row q-col-gutter-md">
+        <div class="column col-sm-4 q-mb-md">
           <img
             class="block q-mb-md"
             alt="ChangeDAO logo"
@@ -36,7 +41,7 @@
           <q-btn :to="{ name: 'about' }" :label="$t('About us')" outline />
         </div>
 
-        <div class="col-grow text-right">
+        <div class="col-sm-8 row text-right items-start justify-end">
           <q-btn
             class="q-mb-md"
             color="primary"
