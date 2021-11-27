@@ -12,18 +12,23 @@
         </q-toolbar-title>
 
         <div class="q-gutter-md">
-          <q-btn color="primary" label="Get Email Updates" />
+          <q-btn
+            color="primary"
+            :label="$q.screen.gt.xs ? 'Get Email Updates' : ''"
+            :icon="$q.screen.gt.xs ? undefined : 'mdi-email'"
+            :dense="!$q.screen.gt.xs"
+          />
           <q-btn icon="mdi-discord" size="sm" padding="sm" outline dense />
           <q-btn icon="mdi-twitter" size="sm" padding="sm" outline dense />
         </div>
       </q-toolbar>
     </q-header>
 
-    <q-footer class="q-px-xl q-pb-lg q-gutter-lg">
-      <div class="row q-gutter-md q-ma-none">
-        <div class="column q-gutter-md">
+    <q-footer class="q-px-xl q-pt-lg q-pb-md">
+      <div class="row">
+        <div class="column q-mb-md q-mr-md">
           <img
-            class="block"
+            class="block q-mb-md"
             alt="ChangeDAO logo"
             src="~assets/ChangeDAO-white-horizontal-logo-asset-only.svg"
             style="width: 200px; max-width: 100%"
@@ -31,9 +36,10 @@
           <q-btn :to="{ name: 'about' }" label="About us" outline />
         </div>
 
-        <div class="q-gutter-md col-grow text-right">
-          <q-btn color="primary" label="Get Email Updates" />
+        <div class="col-grow text-right">
+          <q-btn class="q-mb-md" color="primary" label="Get Email Updates" />
           <q-btn
+            class="q-ml-md q-mb-md"
             icon="mdi-discord"
             label="Discord"
             size="sm"
@@ -41,6 +47,7 @@
             outline
           />
           <q-btn
+            class="q-ml-md q-mb-md"
             icon="mdi-twitter"
             label="Twitter"
             size="sm"
@@ -50,16 +57,20 @@
         </div>
       </div>
 
-      <q-separator />
+      <q-separator class="q-mb-lg q-mt-sm" />
 
       <div class="text-caption row items-center justify-end">
-        <div class="col-grow">
+        <div class="col-grow q-mb-sm">
           © Copyright 2021 Mount Change LLC. All rights reserved.
         </div>
 
-        <div class="row q-gutter-xl">
-          <router-link :to="{ name: 'privacy' }">Privacy</router-link>
-          <router-link :to="{ name: 'terms' }">Terms</router-link>
+        <div class="row">
+          <router-link class="q-mb-sm q-ml-md" :to="{ name: 'privacy' }"
+            >Privacy</router-link
+          >
+          <router-link class="q-mb-sm q-ml-md" :to="{ name: 'terms' }"
+            >Terms</router-link
+          >
         </div>
       </div>
     </q-footer>
