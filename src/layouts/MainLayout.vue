@@ -74,10 +74,10 @@
         </div>
 
         <div class="row">
-          <router-link class="q-mb-sm q-ml-md" :to="{ name: 'privacy' }">
+          <router-link class="q-mb-sm q-ml-xl" :to="{ name: 'privacy' }">
             {{ $t("Privacy") }}
           </router-link>
-          <router-link class="q-mb-sm q-ml-md" :to="{ name: 'terms' }">
+          <router-link class="q-mb-sm q-ml-xl" :to="{ name: 'terms' }">
             {{ $t("Terms") }}
           </router-link>
         </div>
