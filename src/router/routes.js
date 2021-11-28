@@ -3,7 +3,16 @@ const routes = [
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      { name: "home", path: "", component: () => import("pages/Index.vue") },
+      {
+        name: "home",
+        path: "",
+        redirect: { name: "mint", params: { id: "sample" } }
+      },
+      {
+        name: "mint",
+        path: "project/:id/mint",
+        component: () => import("pages/ProjectMint.vue")
+      },
       {
         name: "user",
         path: "user/:id",

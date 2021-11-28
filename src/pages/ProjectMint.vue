@@ -223,7 +223,9 @@ function scrollToElement(el) {
 }
 
 export default defineComponent({
-  name: "PageIndex",
+  name: "PageProjectMint",
+
+  props: ["id"],
 
   components: {
     ProjectSplit,
