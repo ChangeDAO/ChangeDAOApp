@@ -101,7 +101,7 @@
           </div>
 
           <q-btn
-            v-if="$q.screen.width > 567"
+            v-if="doubleColumn"
             class="q-mt-sm"
             :label="$t('Connect Wallet')"
             color="primary"
@@ -200,9 +200,9 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { scroll } from "quasar";
+import { useQuasar, scroll } from "quasar";
 const { getScrollTarget, setVerticalScrollPosition } = scroll;
 
 function scrollToElement(el) {
@@ -219,6 +219,9 @@ export default defineComponent({
 
   setup() {
     const { t } = useI18n({ useScope: "global" });
+    const $q = useQuasar();
+
+    const doubleColumn = computed(() => $q.screen.width > 584);
 
     const user = {
       id: "sampleuser",
@@ -275,6 +278,7 @@ export default defineComponent({
     ];
 
     return {
+      doubleColumn,
       user,
       project,
       updates,
