@@ -5,6 +5,16 @@ const routes = [
     children: [
       { name: "home", path: "", component: () => import("pages/Index.vue") },
       {
+        name: "user",
+        path: "user/:id",
+        component: () => import("pages/User.vue")
+      },
+      {
+        name: "collection",
+        path: "collection/:id",
+        component: () => import("pages/Collection.vue")
+      },
+      {
         name: "about",
         path: "about",
         component: () => import("pages/About.vue")
@@ -18,6 +28,11 @@ const routes = [
         name: "terms",
         path: "terms",
         component: () => import("pages/Terms.vue")
+      },
+      {
+        name: "help",
+        path: "help",
+        component: () => import("pages/Help.vue")
       }
     ]
   },

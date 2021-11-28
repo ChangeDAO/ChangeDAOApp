@@ -1,12 +1,31 @@
-// This is just an example,
-// so you can safely delete all default props below
-
 export default {
-  "About us": "About us",
+  "About Us": "About Us",
+  "Artwork Description": "Artwork Description",
+  Collection: "Collection",
+  "Connect Wallet": "Connect Wallet",
   Copyright: "© Copyright 2021 Mount Change LLC. All rights reserved.",
   Discord: "Discord",
+  "From ChangeDAO": "From ChangeDAO",
+  "From Collaborators": "From Collaborators",
+  "From Creator": "From Creator",
+  "From Sponsors": "From Sponsors",
+  "Fundraising Goal": "Fundraising Goal",
   "Get Email Updates": "Get Email Updates",
+  Help: "Help",
+  "Making Change By": "Making Change By",
+  "Need help?": "Need help?",
+  of: "of",
+  "Part of": "Part of",
+  "Price per Token": "Price per Token",
   Privacy: "Privacy",
+  "Project Split": "Project Split",
+  "Project Updates": "Project Updates",
+  "Ready to support?": "Ready to support this project?",
+  "Secondary Split": "Secondary Split",
   Terms: "Terms",
-  Twitter: "Twitter"
+  "Total Minted": "Total Minted",
+  Twitter: "Twitter",
+  User: "User",
+  "via [PaymentMethods]": "via DAI / USDC / ETH",
+  "View n Updates": "View 1 Update | View {count} Updates"
 };

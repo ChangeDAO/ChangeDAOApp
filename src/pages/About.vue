@@ -1,5 +1,7 @@
 <template>
-  <q-page class="flex flex-center"> </q-page>
+  <q-page padding>
+    <div class="text-h6">{{ $t("About Us") }}</div>
+  </q-page>
 </template>
 
 <script>

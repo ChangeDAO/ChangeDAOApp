@@ -1,3 +1,5 @@
+$header-height: 71px;
+
 .q-layout {
   background: $dark;
 
@@ -9,11 +11,44 @@
     background: $dark-footer;
 
     a:not(.q-btn) {
-      text-decoration: none;
       color: inherit;
-      &:hover {
-        text-decoration: underline;
-      }
     }
   }
+}
+
+.page-col {
+  min-width: 300px !important;
+}
+
+.sticky {
+  position: sticky;
+
+  &.header-top {
+    top: $header-height + 16px;
+  }
+
+  .top {
+    top: 0;
+  }
+  .bottom {
+    bottom: 0;
+  }
+}
+
+.border-primary {
+  border-color: $primary;
+}
+
+a:not(.q-btn) {
+  text-decoration: none;
+  color: $primary;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.square:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
 }

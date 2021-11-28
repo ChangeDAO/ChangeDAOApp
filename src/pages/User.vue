@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="text-h6">{{ $t("Terms") }}</div>
+    <div class="text-h6">{{ $t("User") }}</div>
   </q-page>
 </template>
 
@@ -8,6 +8,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "PageTerms"
+  name: "PageUser",
+  props: ["id"]
 });
 </script>

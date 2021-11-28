@@ -52,7 +52,7 @@
             src="~assets/ChangeDAO-white-horizontal-logo-asset-only.svg"
             style="width: 200px; max-width: 100%"
           />
-          <q-btn :to="{ name: 'about' }" :label="$t('About us')" outline />
+          <q-btn :to="{ name: 'about' }" :label="$t('About Us')" outline />
         </div>
 
         <div class="col-sm-8 row text-right items-start justify-end">
