@@ -22,6 +22,8 @@ export default {
   "Project Updates": "Project Updates",
   "Ready to support?": "Ready to support this project?",
   "Secondary Split": "Secondary Split",
+  "Secondary Split Caption":
+    "10% of all secondary sales will be split as follows:",
   Terms: "Terms",
   "Total Minted": "Total Minted",
   Twitter: "Twitter",

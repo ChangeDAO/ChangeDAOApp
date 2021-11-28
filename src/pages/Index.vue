@@ -16,9 +16,13 @@
 
           <br />
 
-          <!-- User -->
-          <router-link :to="{ name: 'user', params: { id: user.id } }">
-            <q-avatar size="xs" color="grey-5" class="q-mr-sm" />{{ user.name }}
+          <!-- Creator -->
+          <router-link
+            :to="{ name: 'user', params: { id: project.creator.id } }"
+          >
+            <q-avatar size="xs" color="grey-5" class="q-mr-sm" />{{
+              project.creator.name
+            }}
           </router-link>
         </p>
 
@@ -134,6 +138,7 @@
         <div class="text-subtitle2 text-secondary">
           {{ $t("Project Split") }}
         </div>
+        <ProjectSplit :project="project" />
       </div>
 
       <!-- Secondary Split -->
@@ -141,6 +146,8 @@
         <div class="text-subtitle2 text-secondary">
           {{ $t("Secondary Split") }}
         </div>
+        <p>{{ $t("Secondary Split Caption") }}</p>
+        <SecondarySplit :project="project" />
       </div>
     </div>
 
@@ -205,6 +212,9 @@ import { useI18n } from "vue-i18n";
 import { useQuasar, scroll } from "quasar";
 const { getScrollTarget, setVerticalScrollPosition } = scroll;
 
+import ProjectSplit from "../components/ProjectSplit";
+import SecondarySplit from "../components/SecondarySplit";
+
 function scrollToElement(el) {
   const target = getScrollTarget(el);
   const offset = el.offsetTop;
@@ -215,7 +225,10 @@ function scrollToElement(el) {
 export default defineComponent({
   name: "PageIndex",
 
-  components: {},
+  components: {
+    ProjectSplit,
+    SecondarySplit
+  },
 
   setup() {
     const { t } = useI18n({ useScope: "global" });
@@ -223,13 +236,16 @@ export default defineComponent({
 
     const doubleColumn = computed(() => $q.screen.width > 584);
 
-    const user = {
-      id: "sampleuser",
-      name: "Usernamehere"
-    };
-
     const project = {
       name: "Mint Title Would Go Here",
+      creator: {
+        id: "sampleuser",
+        name: "Usernamehere"
+      },
+      collaborators: [
+        { id: "collaborator1", name: "Collaborator1usernamehere" },
+        { id: "collaborator2", name: "Collaborator2usernamehere" }
+      ],
       collection: {
         id: "samplecollection",
         name: "Collection Name Here"
@@ -246,7 +262,21 @@ export default defineComponent({
       minted: 808,
       mintable: 1e3,
       goalUSD: 1e5,
-      tokenPriceUSD: 250
+      tokenPriceUSD: 250,
+      primarySplit: {
+        creator: 55,
+        collaborator1: 30,
+        collaborator2: 8,
+        changeDaoCommunityTreasury: 1,
+        changeDaoOperationsTreasury: 1
+      },
+      secondarySplit: {
+        creator: 55,
+        collaborator1: 30,
+        collaborator2: 8,
+        changeDaoCommunityTreasury: 1,
+        changeDaoOperationsTreasury: 1
+      }
     };
 
     const updates = [];
@@ -279,7 +309,6 @@ export default defineComponent({
 
     return {
       doubleColumn,
-      user,
       project,
       updates,
       updatesFilter,
