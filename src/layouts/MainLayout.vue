@@ -18,8 +18,22 @@
             :icon="$q.screen.gt.xs ? undefined : 'mdi-email'"
             :dense="!$q.screen.gt.xs"
           />
-          <q-btn icon="mdi-discord" size="sm" padding="sm" outline dense />
-          <q-btn icon="mdi-twitter" size="sm" padding="sm" outline dense />
+          <q-btn
+            @click="discord"
+            icon="mdi-discord"
+            size="sm"
+            padding="sm"
+            outline
+            dense
+          />
+          <q-btn
+            @click="twitter"
+            icon="mdi-twitter"
+            size="sm"
+            padding="sm"
+            outline
+            dense
+          />
         </div>
       </q-toolbar>
     </q-header>
@@ -49,6 +63,7 @@
           />
           <q-btn
             class="q-ml-md q-mb-md"
+            @click="discord"
             icon="mdi-discord"
             :label="$t('Discord')"
             size="sm"
@@ -57,6 +72,7 @@
           />
           <q-btn
             class="q-ml-md q-mb-md"
+            @click="twitter"
             icon="mdi-twitter"
             :label="$t('Twitter')"
             size="sm"
@@ -92,7 +108,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import { useQuasar } from "quasar";
+import { useQuasar, openURL } from "quasar";
 
 export default defineComponent({
   name: "MainLayout",
@@ -101,7 +117,17 @@ export default defineComponent({
     const $q = useQuasar();
     $q.dark.set(true);
 
-    return {};
+    const discord = () => {
+      openURL("https://discord.gg/88KeENZnyQ");
+    };
+    const twitter = () => {
+      openURL("https://twitter.com/ChangeDAO");
+    };
+
+    return {
+      discord,
+      twitter
+    };
   }
 });
 </script>
