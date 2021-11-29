@@ -267,14 +267,14 @@ export default defineComponent({
       tokenPriceUSD: 250,
       primarySplit: {
         creator: 55,
-        collaborator1: 30,
+        collaborator1: 35,
         collaborator2: 8,
         changeDaoCommunityTreasury: 1,
         changeDaoOperationsTreasury: 1
       },
       secondarySplit: {
         creator: 55,
-        collaborator1: 30,
+        collaborator1: 35,
         collaborator2: 8,
         changeDaoCommunityTreasury: 1,
         changeDaoOperationsTreasury: 1
