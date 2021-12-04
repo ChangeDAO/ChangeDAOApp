@@ -50,9 +50,14 @@
             class="block q-mb-md"
             alt="ChangeDAO logo"
             src="~assets/ChangeDAO-white-horizontal-logo-asset-only.svg"
-            style="width: 200px; max-width: 100%"
+            style="width: 200px"
           />
-          <q-btn :to="{ name: 'about' }" :label="$t('About Us')" outline />
+          <q-btn
+            :to="{ name: 'about' }"
+            :label="$t('About Us')"
+            style="width: 200px"
+            outline
+          />
         </div>
 
         <div class="col-sm-8 row text-right items-start justify-end">
