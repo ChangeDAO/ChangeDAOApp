@@ -19,46 +19,48 @@
         'q-px-md q-pt-md q-pb-sm': !$q.screen.gt.xs
       }"
     >
-      <div class="row q-col-gutter-md">
+      <div class="row q-col-gutter-md justify-center">
         <div class="column col-sm-4 q-mb-md">
           <img
             class="block q-mb-md"
             alt="ChangeDAO logo"
             src="~assets/ChangeDAO-white-horizontal-logo-asset-only.svg"
-            style="width: 200px"
+            style="width: 200px; max-width: 100%"
           />
           <q-btn
             :to="{ name: 'about' }"
             :label="$t('About Us')"
-            style="width: 200px"
+            style="width: 200px; max-width: 100%"
             outline
           />
         </div>
 
-        <div class="col-sm-8 row text-right items-start justify-end">
-          <q-btn
-            class="q-mb-md"
-            color="primary"
-            :label="$t('Get Email Updates')"
-          />
-          <q-btn
-            class="q-ml-md q-mb-md"
-            @click="discord"
-            icon="mdi-discord"
-            :label="$t('Discord')"
-            size="sm"
-            padding="sm"
-            outline
-          />
-          <q-btn
-            class="q-ml-md q-mb-md"
-            @click="twitter"
-            icon="mdi-twitter"
-            :label="$t('Twitter')"
-            size="sm"
-            padding="sm"
-            outline
-          />
+        <div
+          class="col-sm-8 row items-start q-gutter-md q-mb-md"
+          :class="{
+            'justify-end text-right': $q.screen.gt.xs,
+            'justify-center': !$q.screen.gt.xs
+          }"
+        >
+          <q-btn color="primary" :label="$t('Get Email Updates')" />
+          <div class="text-center q-gutter-md q-ma-none">
+            <q-btn
+              @click="discord"
+              icon="mdi-discord"
+              :label="$t('Discord')"
+              size="sm"
+              padding="sm"
+              outline
+            />
+            <q-btn
+              @click="twitter"
+              icon="mdi-twitter"
+              :label="$t('Twitter')"
+              size="sm"
+              padding="sm"
+              outline
+            />
+          </div>
         </div>
       </div>
 
