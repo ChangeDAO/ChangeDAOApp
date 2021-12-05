@@ -1,6 +1,22 @@
 <template>
   <q-page padding>
-    <div class="row q-col-gutter-xl">
+    <div class="row q-col-gutter-xl reverse">
+      <!-- Project Image -->
+
+      <div class="page-col col q-col-6">
+        <div class="sticky header-top">
+          <!-- Connect Wallet -->
+          <q-btn
+            class="full-width"
+            :label="$t('Connect Wallet')"
+            color="primary"
+          />
+
+          <!-- Image -->
+          <div class="square bg-grey-5 q-mt-md" />
+        </div>
+      </div>
+
       <div class="page-col col q-col-6">
         <!-- Project Name -->
         <p class="text-h6">{{ project.name }}</p>
@@ -94,27 +110,10 @@
 
           <!-- Connect Wallet -->
           <q-btn
-            v-if="doubleColumn"
             class="q-mt-sm"
             :label="$t('Connect Wallet')"
             color="primary"
           />
-        </div>
-      </div>
-
-      <!-- Project Image -->
-
-      <div class="page-col col q-col-6">
-        <div class="sticky header-top">
-          <!-- Connect Wallet -->
-          <q-btn
-            class="full-width"
-            :label="$t('Connect Wallet')"
-            color="primary"
-          />
-
-          <!-- Image -->
-          <div class="square bg-grey-5 q-mt-md" />
         </div>
       </div>
     </div>
