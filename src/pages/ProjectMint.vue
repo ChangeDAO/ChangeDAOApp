@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page v-if="project" class="page-project-mint" padding>
     <div class="row q-col-gutter-xl reverse">
       <!-- Project Image -->
 
@@ -13,7 +13,7 @@
           />
 
           <!-- Image -->
-          <div class="square bg-grey-5 q-mt-md" />
+          <div class="square q-mt-md" :style="{ backgroundImage }" />
         </div>
       </div>
 
@@ -144,6 +144,22 @@
   </q-page>
 </template>
 
+<style lang="scss">
+.page-project-mint {
+  .square {
+    background-color: $grey-9;
+    background-image: url(~assets/chest.png);
+    background-size: contain;
+
+    &:after {
+      content: "";
+      display: block;
+      padding-bottom: 100%;
+    }
+  }
+}
+</style>
+
 <script>
 import { defineComponent, ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
@@ -170,6 +186,7 @@ export default defineComponent({
 
     const project = {
       name: "Mint Title Would Go Here",
+      img: "",
       creator: {
         id: "sampleuser",
         name: "Usernamehere"
@@ -211,9 +228,14 @@ export default defineComponent({
       }
     };
 
+    const backgroundImage = computed(() =>
+      project.value && project.value.img ? `url(${project.value.img})` : null
+    );
+
     return {
       doubleColumn,
-      project
+      project,
+      backgroundImage
     };
   }
 });
