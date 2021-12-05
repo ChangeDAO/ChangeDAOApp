@@ -1,16 +1,13 @@
 <template>
-  <Chart class="SecondarySplit" :options="options" />
+  <Chart chart-class="SecondarySplit" :options="options" />
 </template>
 
 <style lang="scss">
 .SecondarySplit {
-  text {
-    fill: $grey-1;
-  }
-
   g.c3-chart-arcs {
-    transform-origin: 100% 70%;
+    transform-origin: 100% 100%;
     transform: scale(0.5);
+    filter: drop-shadow(0 0 60px $grey-7);
   }
 }
 </style>
@@ -44,7 +41,7 @@ export default {
     };
 
     for (let id in names) {
-      names[id] = `${props.project.secondarySplit[id]}% - ${names[id]}`;
+      names[id] = `${props.project.secondarySplit[id]}% – ${names[id]}`;
     }
 
     const options = {
@@ -66,6 +63,9 @@ export default {
         }
       },
       tooltip: {
+        show: false
+      },
+      legend: {
         show: false
       }
     };

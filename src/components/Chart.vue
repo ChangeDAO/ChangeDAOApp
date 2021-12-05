@@ -1,5 +1,18 @@
 <template>
-  <div ref="root" class="chart" />
+  <div ref="root" class="chart" :class="chartClass" />
+  <template v-if="options.data.names && !options.legend.show">
+    <q-chip
+      v-for="(name, id) in options.data.names"
+      :key="id"
+      @mouseover="chart.focus(id)"
+      @mouseout="chart.revert()"
+      clickable
+      flat
+    >
+      <q-avatar size="sm" :style="{ background: options.data.colors[id] }" />
+      <span class="ellipsis">{{ name }}</span>
+    </q-chip>
+  </template>
 </template>
 
 <script>
@@ -13,6 +26,9 @@ export default defineComponent({
     options: {
       required: true,
       type: Object
+    },
+    chartClass: {
+      type: String
     }
   },
 

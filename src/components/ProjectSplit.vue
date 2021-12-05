@@ -1,14 +1,6 @@
 <template>
-  <Chart class="ProjectSplit" :options="options" />
+  <Chart chart-class="ProjectSplit" :options="options" />
 </template>
-
-<style lang="scss">
-.ProjectSplit {
-  text {
-    fill: $grey-1;
-  }
-}
-</style>
 
 <script>
 import Chart from "./Chart";
@@ -39,12 +31,12 @@ export default {
     };
 
     for (let id in names) {
-      names[id] = `${props.project.primarySplit[id]}% - ${names[id]}`;
+      names[id] = `${props.project.primarySplit[id]}% – ${names[id]}`;
     }
 
     const options = {
       donut: {
-        width: 55,
+        width: 65,
         label: {
           show: false
         }
@@ -62,6 +54,9 @@ export default {
         }
       },
       tooltip: {
+        show: false
+      },
+      legend: {
         show: false
       }
     };
