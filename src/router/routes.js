@@ -37,11 +37,6 @@ const routes = [
         name: "terms",
         path: "terms",
         component: () => import("pages/Terms.vue")
-      },
-      {
-        name: "help",
-        path: "help",
-        component: () => import("pages/Help.vue")
       }
     ]
   },

@@ -17,6 +17,8 @@ export default {
   of: "of",
   "Part of": "Part of",
   "Price per Token": "Price per Token",
+  "Primary Split Caption":
+    "100% of all primary sales will be split as follows:",
   Privacy: "Privacy",
   "Project Split": "Project Split",
   "Project Updates": "Project Updates",

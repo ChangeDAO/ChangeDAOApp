@@ -33,18 +33,11 @@
             :key="area.id"
             :label="area.name"
             class="border-primary text-subtitle1"
-            clickable
+            :clickable="false"
+            :ripple="false"
             outline
           />
         </p>
-
-        <!-- View Updates -->
-        <q-btn
-          @click="viewUpdates"
-          class="full-width"
-          :label="$tc('View n Updates', updates.length)"
-          outline
-        />
 
         <q-separator class="q-my-lg" />
 
@@ -95,15 +88,11 @@
 
         <!-- Mint -->
         <div class="text-subtitle1">
-          <div class="row">
-            <div class="col-grow">
-              {{ $t("Ready to support?") }}
-            </div>
-            <router-link :to="{ name: 'help' }">
-              {{ $t("Need help?") }}
-            </router-link>
+          <div class="col-grow">
+            {{ $t("Ready to support?") }}
           </div>
 
+          <!-- Connect Wallet -->
           <q-btn
             v-if="doubleColumn"
             class="q-mt-sm"
@@ -117,12 +106,14 @@
 
       <div class="page-col col q-col-6">
         <div class="sticky header-top">
+          <!-- Connect Wallet -->
           <q-btn
             class="full-width"
             :label="$t('Connect Wallet')"
             color="primary"
           />
 
+          <!-- Image -->
           <div class="square bg-grey-5 q-mt-md" />
         </div>
       </div>
@@ -138,6 +129,7 @@
         <div class="text-subtitle2 text-secondary">
           {{ $t("Project Split") }}
         </div>
+        <p>{{ $t("Primary Split Caption") }}</p>
         <ProjectSplit :project="project" />
       </div>
 
@@ -150,77 +142,16 @@
         <SecondarySplit :project="project" />
       </div>
     </div>
-
-    <q-separator class="q-my-lg" />
-
-    <!-- Project Updates -->
-
-    <div class="row q-col-gutter-xl">
-      <div class="page-col col q-col-6">
-        <p id="ProjectUpdates" class="text-h6 text-secondary q-pt-md">
-          {{ $t("Project Updates") }}
-        </p>
-
-        <!-- Filter -->
-        <p>
-          <q-option-group
-            v-model="updatesFilter"
-            :options="updatesFilterOptions"
-            type="checkbox"
-          />
-        </p>
-      </div>
-
-      <!-- Updates -->
-      <div class="page-col col q-col-6">
-        <q-list separator>
-          <q-item
-            v-for="(post, i) in updates.slice(0, 5)"
-            :key="i"
-            class="q-px-none q-py-lg"
-          >
-            <q-item-section>
-              <q-item-label class="row justify-between q-mb-sm">
-                <!-- User -->
-                <router-link
-                  :to="{ name: 'user', params: { id: post.user.id } }"
-                >
-                  <q-avatar size="xs" color="grey-5" class="q-mr-sm" />{{
-                    post.user.name
-                  }}
-                </router-link>
-                <!-- Time -->
-                <span class="text-caption text-secondary">
-                  {{ $d(post.timestamp, "short") }}
-                </span>
-              </q-item-label>
-              <!-- Message -->
-              <q-item-label>
-                {{ post.message }}
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </div>
-    </div>
   </q-page>
 </template>
 
 <script>
 import { defineComponent, ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { useQuasar, scroll } from "quasar";
-const { getScrollTarget, setVerticalScrollPosition } = scroll;
+import { useQuasar } from "quasar";
 
 import ProjectSplit from "../components/ProjectSplit";
 import SecondarySplit from "../components/SecondarySplit";
-
-function scrollToElement(el) {
-  const target = getScrollTarget(el);
-  const offset = el.offsetTop;
-  const duration = 400;
-  setVerticalScrollPosition(target, offset, duration);
-}
 
 export default defineComponent({
   name: "PageProjectMint",
@@ -281,41 +212,9 @@ export default defineComponent({
       }
     };
 
-    const updates = [];
-    for (let i = 0; i < 212; i++) {
-      updates[i] = {
-        user: { id: "sampleuser", name: "Usernamehere" },
-        timestamp: new Date(),
-        message:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-      };
-    }
-
-    const viewUpdates = () => {
-      scrollToElement(window.ProjectUpdates);
-    };
-
-    const updatesFilter = ref([
-      "creator",
-      "collaborators",
-      "sponsors",
-      "changedao"
-    ]);
-
-    const updatesFilterOptions = [
-      { value: "creator", label: t("From Creator") },
-      { value: "collaborators", label: t("From Collaborators") },
-      { value: "sponsors", label: t("From Sponsors") },
-      { value: "changedao", label: t("From ChangeDAO") }
-    ];
-
     return {
       doubleColumn,
-      project,
-      updates,
-      updatesFilter,
-      updatesFilterOptions,
-      viewUpdates
+      project
     };
   }
 });

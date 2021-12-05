@@ -10,31 +10,6 @@
             style="width: 200px; max-width: 100%"
           />
         </q-toolbar-title>
-
-        <div class="q-gutter-md">
-          <q-btn
-            color="primary"
-            :label="$q.screen.gt.xs ? $t('Get Email Updates') : ''"
-            :icon="$q.screen.gt.xs ? undefined : 'mdi-email'"
-            :dense="!$q.screen.gt.xs"
-          />
-          <q-btn
-            @click="discord"
-            icon="mdi-discord"
-            size="sm"
-            padding="sm"
-            outline
-            dense
-          />
-          <q-btn
-            @click="twitter"
-            icon="mdi-twitter"
-            size="sm"
-            padding="sm"
-            outline
-            dense
-          />
-        </div>
       </q-toolbar>
     </q-header>
 
