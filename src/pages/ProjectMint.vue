@@ -7,13 +7,24 @@
         <div class="sticky header-top">
           <!-- Connect Wallet -->
           <q-btn
-            class="full-width"
+            v-if="!account"
+            @click="connectWallet"
+            class="full-width q-mb-md"
             :label="$t('Connect Wallet')"
             color="primary"
           />
 
           <!-- Image -->
-          <div class="square q-mt-md" :style="{ backgroundImage }" />
+          <div class="square" :style="{ backgroundImage }" />
+
+          <!-- Mint NFT -->
+          <q-btn
+            v-if="account"
+            class="full-width q-mt-md"
+            :label="$t('Mint NFT')"
+            color="primary"
+          />
+          {{ account }}
         </div>
       </div>
 
@@ -104,13 +115,15 @@
 
         <!-- Mint -->
         <div class="text-subtitle1">
-          <div class="col-grow">
+          <div class="col-grow q-mb-sm">
             {{ $t("Ready to support?") }}
           </div>
 
           <!-- Connect Wallet -->
+          <q-btn v-if="account" :label="$t('Mint NFT')" color="primary" />
           <q-btn
-            class="q-mt-sm"
+            v-else
+            @click="connectWallet"
             :label="$t('Connect Wallet')"
             color="primary"
           />
@@ -161,8 +174,9 @@
 </style>
 
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
+import { useStore } from "vuex";
 import { useQuasar } from "quasar";
 
 import ProjectSplit from "../components/ProjectSplit";
@@ -178,64 +192,52 @@ export default defineComponent({
     SecondarySplit
   },
 
-  setup() {
+  setup(props, context) {
     const { t } = useI18n({ useScope: "global" });
+    const store = useStore();
     const $q = useQuasar();
 
     const doubleColumn = computed(() => $q.screen.width > 584);
+    const project = computed(() => store.state.projects[props.id]);
+    const backgroundImage = computed(() => {
+      return project.value && project.value.img
+        ? `url(${project.value.img})`
+        : null;
+    });
 
-    const project = {
-      name: "Mint Title Would Go Here",
-      img: "",
-      creator: {
-        id: "sampleuser",
-        name: "Usernamehere"
-      },
-      collaborators: [
-        { id: "collaborator1", name: "Collaborator1usernamehere" },
-        { id: "collaborator2", name: "Collaborator2usernamehere" }
-      ],
-      collection: {
-        id: "samplecollection",
-        name: "Collection Name Here"
-      },
-      impacts: [
-        { id: "area1", name: "Area of Impact 1" },
-        { id: "area2", name: "Area of Impact 2" },
-        { id: "area3", name: "Area of Impact 3" }
-      ],
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      how:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      minted: 808,
-      mintable: 1e3,
-      goalUSD: 1e5,
-      tokenPriceUSD: 250,
-      primarySplit: {
-        creator: 55,
-        collaborator1: 35,
-        collaborator2: 8,
-        changeDaoCommunityTreasury: 1,
-        changeDaoOperationsTreasury: 1
-      },
-      secondarySplit: {
-        creator: 55,
-        collaborator1: 35,
-        collaborator2: 8,
-        changeDaoCommunityTreasury: 1,
-        changeDaoOperationsTreasury: 1
+    // Fetch the project
+    store.dispatch("getProject", props.id).catch(message => {
+      $q.notify({
+        message,
+        type: "negative",
+        icon: "mdi-alert-circle",
+        position: "top"
+      });
+    });
+
+    // Web3
+    const ethereum = window.ethereum;
+    const account = ref(ethereum.selectedAddress || "");
+
+    const connectWallet = async () => {
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts"
+      });
+      if (accounts && accounts.length) {
+        account.value = accounts[0];
       }
     };
 
-    const backgroundImage = computed(() =>
-      project.value && project.value.img ? `url(${project.value.img})` : null
-    );
+    ethereum.on("accountsChanged", accounts => {
+      account.value = accounts[0] || "";
+    });
 
     return {
       doubleColumn,
       project,
-      backgroundImage
+      backgroundImage,
+      connectWallet,
+      account
     };
   }
 });

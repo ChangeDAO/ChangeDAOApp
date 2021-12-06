@@ -13,6 +13,7 @@ export default {
   "Get Email Updates": "Get Email Updates",
   Help: "Help",
   "Making Change By": "Making Change By",
+  "Mint NFT": "Mint NFT",
   "Need help?": "Need help?",
   of: "of",
   "Part of": "Part of",
@@ -21,7 +22,6 @@ export default {
     "100% of all primary sales will be split as follows:",
   Privacy: "Privacy",
   "Project Split": "Project Split",
-  "Project Updates": "Project Updates",
   "Ready to support?": "Ready to support this project?",
   "Secondary Split": "Secondary Split",
   "Secondary Split Caption":
@@ -31,5 +31,8 @@ export default {
   Twitter: "Twitter",
   User: "User",
   "via [PaymentMethods]": "via DAI / USDC / ETH",
-  "View n Updates": "View 1 Update | View {count} Updates"
+
+  error: {
+    loadingProject: "There was a problem getting the project information"
+  }
 };

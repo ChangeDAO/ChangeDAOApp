@@ -46,9 +46,3 @@ a:not(.q-btn) {
     text-decoration: underline;
   }
 }
-
-.square:after {
-  content: "";
-  display: block;
-  padding-bottom: 100%;
-}

@@ -11,16 +11,19 @@ const routes = [
       {
         name: "mint",
         path: "project/:id/mint",
+        props: true,
         component: () => import("pages/ProjectMint.vue")
       },
       {
         name: "user",
         path: "user/:id",
+        props: true,
         component: () => import("pages/User.vue")
       },
       {
         name: "collection",
         path: "collection/:id",
+        props: true,
         component: () => import("pages/Collection.vue")
       },
       {

@@ -3,9 +3,11 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
+
 import Chart from "./Chart";
 
-export default {
+export default defineComponent({
   name: "ProjectSplit",
 
   components: { Chart },
@@ -65,5 +67,5 @@ export default {
       options
     };
   }
-};
+});
 </script>

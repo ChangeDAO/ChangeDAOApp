@@ -34,14 +34,17 @@ const datetimeFormats = {
   }
 };
 
-export default boot(({ app }) => {
-  const i18n = createI18n({
-    locale: "en-US",
-    messages,
-    numberFormats,
-    datetimeFormats
-  });
+const i18n = createI18n({
+  locale: navigator.language,
+  fallbackLocale: "en-US",
+  messages,
+  numberFormats,
+  datetimeFormats
+});
 
+export default boot(({ app }) => {
   // Set i18n instance on app
   app.use(i18n);
 });
+
+export { i18n };

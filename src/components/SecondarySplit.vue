@@ -13,9 +13,11 @@
 </style>
 
 <script>
+import { defineComponent } from "vue";
+
 import Chart from "./Chart";
 
-export default {
+export default defineComponent({
   name: "SecondarySplit",
 
   components: { Chart },
@@ -74,5 +76,5 @@ export default {
       options
     };
   }
-};
+});
 </script>
