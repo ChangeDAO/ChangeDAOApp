@@ -14,17 +14,16 @@
             color="primary"
           />
 
-          <!-- Image -->
-          <div class="square" :style="{ backgroundImage }" />
-
           <!-- Mint NFT -->
           <q-btn
             v-if="account"
-            class="full-width q-mt-md"
+            class="full-width q-mb-md"
             :label="$t('Mint NFT')"
             color="primary"
           />
-          {{ account }}
+
+          <!-- Image -->
+          <div class="square" :style="{ backgroundImage }" />
         </div>
       </div>
 

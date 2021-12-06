@@ -2,16 +2,6 @@
   <Chart chart-class="SecondarySplit" :options="options" />
 </template>
 
-<style lang="scss">
-.SecondarySplit {
-  g.c3-chart-arcs {
-    transform-origin: 100% 100%;
-    transform: scale(0.5);
-    filter: drop-shadow(0 0 60px $grey-7);
-  }
-}
-</style>
-
 <script>
 import { defineComponent } from "vue";
 
@@ -47,13 +37,14 @@ export default defineComponent({
     }
 
     const options = {
-      pie: {
+      donut: {
+        width: 65,
         label: {
           show: false
         }
       },
       data: {
-        type: "pie",
+        type: "donut",
         json: props.project.secondarySplit,
         names,
         colors: {

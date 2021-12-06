@@ -2,6 +2,16 @@
   <Chart chart-class="ProjectSplit" :options="options" />
 </template>
 
+<style lang="scss">
+.ProjectSplit {
+  g.c3-chart-arcs {
+    transform-origin: 100% 100%;
+    transform: scale(0.5);
+    filter: drop-shadow(0 0 60px $grey-7);
+  }
+}
+</style>
+
 <script>
 import { defineComponent } from "vue";
 
@@ -37,14 +47,13 @@ export default defineComponent({
     }
 
     const options = {
-      donut: {
-        width: 65,
+      pie: {
         label: {
           show: false
         }
       },
       data: {
-        type: "donut",
+        type: "pie",
         json: props.project.primarySplit,
         names,
         colors: {
