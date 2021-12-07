@@ -2,8 +2,17 @@
   <Chart chart-class="SecondarySplit" :options="options" />
 </template>
 
+<style lang="scss">
+.SecondarySplit {
+  text {
+    fill: $grey-1;
+  }
+}
+</style>
+
 <script>
 import { defineComponent } from "vue";
+import { useI18n } from "vue-i18n";
 
 import Chart from "./Chart";
 
@@ -20,6 +29,7 @@ export default defineComponent({
   },
 
   setup(props, context) {
+    const { t } = useI18n({ useScope: "global" });
     const names = {
       creator: props.project.creator.name,
       collaborator1: props.project.collaborators.find(
@@ -38,10 +48,11 @@ export default defineComponent({
 
     const options = {
       donut: {
-        width: 65,
+        width: 40,
         label: {
           show: false
-        }
+        },
+        title: t("Secondary Sales")
       },
       data: {
         type: "donut",

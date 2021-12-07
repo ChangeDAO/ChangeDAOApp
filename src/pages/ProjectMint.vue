@@ -55,7 +55,7 @@
         <!-- Areas of Impact -->
         <p>
           <q-chip
-            v-for="area in project.impacts"
+            v-for="area in project.areasOfChange"
             :key="area.id"
             :label="area.name"
             class="border-primary text-subtitle1"
@@ -174,7 +174,6 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
-import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
 
@@ -192,7 +191,6 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const { t } = useI18n({ useScope: "global" });
     const store = useStore();
     const $q = useQuasar();
 

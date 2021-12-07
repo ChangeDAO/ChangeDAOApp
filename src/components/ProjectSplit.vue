@@ -2,16 +2,6 @@
   <Chart chart-class="ProjectSplit" :options="options" />
 </template>
 
-<style lang="scss">
-.ProjectSplit {
-  g.c3-chart-arcs {
-    transform-origin: 100% 100%;
-    transform: scale(0.5);
-    filter: drop-shadow(0 0 60px $grey-7);
-  }
-}
-</style>
-
 <script>
 import { defineComponent } from "vue";
 

@@ -23,6 +23,7 @@ export default {
   Privacy: "Privacy",
   "Project Split": "Project Split",
   "Ready to support?": "Ready to support this project?",
+  "Secondary Sales": "Secondary Sales",
   "Secondary Split": "Secondary Split",
   "Secondary Split Caption":
     "10% of all secondary sales will be split as follows:",
