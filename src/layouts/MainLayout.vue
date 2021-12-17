@@ -10,6 +10,7 @@
             style="width: 200px; max-width: 100%"
           />
         </q-toolbar-title>
+        <UserMenu />
       </q-toolbar>
     </q-header>
 
@@ -92,8 +93,12 @@
 import { defineComponent, ref } from "vue";
 import { useQuasar, openURL } from "quasar";
 
+import UserMenu from "../components/UserMenu";
+
 export default defineComponent({
   name: "MainLayout",
+
+  components: { UserMenu },
 
   setup() {
     const $q = useQuasar();

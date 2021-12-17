@@ -157,23 +157,18 @@ module.exports = configure(function(ctx) {
             type: "image/png"
           },
           {
-            src: "icons/icon-192x192.png",
-            sizes: "192x192",
+            src: "icons/icon-96x96.png",
+            sizes: "96x96",
             type: "image/png"
           },
           {
-            src: "icons/icon-256x256.png",
-            sizes: "256x256",
+            src: "icons/icon-32x32.png",
+            sizes: "32x32",
             type: "image/png"
           },
           {
-            src: "icons/icon-384x384.png",
-            sizes: "384x384",
-            type: "image/png"
-          },
-          {
-            src: "icons/icon-512x512.png",
-            sizes: "512x512",
+            src: "icons/icon-16x16.png",
+            sizes: "16x16",
             type: "image/png"
           }
         ]

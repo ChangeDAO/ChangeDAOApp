@@ -7,7 +7,7 @@
         <div class="sticky header-top">
           <!-- Connect Wallet -->
           <q-btn
-            v-if="!account"
+            v-if="!user"
             @click="connectWallet"
             class="full-width q-mb-md"
             :label="$t('Connect Wallet')"
@@ -16,7 +16,7 @@
 
           <!-- Mint NFT -->
           <q-btn
-            v-if="account"
+            v-if="user"
             class="full-width q-mb-md"
             :label="$t('Mint NFT')"
             color="primary"
@@ -119,7 +119,7 @@
           </div>
 
           <!-- Connect Wallet -->
-          <q-btn v-if="account" :label="$t('Mint NFT')" color="primary" />
+          <q-btn v-if="user" :label="$t('Mint NFT')" color="primary" />
           <q-btn
             v-else
             @click="connectWallet"
@@ -213,28 +213,18 @@ export default defineComponent({
     });
 
     // Web3
-    const ethereum = window.ethereum;
-    const account = ref(ethereum.selectedAddress || "");
+    const user = computed(() => store.state.web3.user);
 
-    const connectWallet = async () => {
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts"
-      });
-      if (accounts && accounts.length) {
-        account.value = accounts[0];
-      }
+    const connectWallet = () => {
+      store.dispatch("logIn");
     };
-
-    ethereum.on("accountsChanged", accounts => {
-      account.value = accounts[0] || "";
-    });
 
     return {
       doubleColumn,
       project,
       backgroundImage,
       connectWallet,
-      account
+      user
     };
   }
 });
