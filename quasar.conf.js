@@ -21,7 +21,7 @@ module.exports = configure(function(ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
-    boot: ["i18n"],
+    boot: ["i18n", "moralis"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.scss"],
@@ -42,6 +42,7 @@ module.exports = configure(function(ctx) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
+      env: require("dotenv").config().parsed,
       vueRouterMode: "history", // available values: 'hash', 'history'
 
       // transpile: false,
@@ -147,8 +148,8 @@ module.exports = configure(function(ctx) {
         description: `Desktop/Mobile Web App`,
         display: "standalone",
         orientation: "portrait",
-        background_color: "#ffffff",
-        theme_color: "#027be3",
+        background_color: "#1D1D1D",
+        theme_color: "#8001FB",
         icons: [
           {
             src: "icons/icon-128x128.png",

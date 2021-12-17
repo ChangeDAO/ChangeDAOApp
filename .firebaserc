@@ -1,0 +1,20 @@
+{
+  "projects": {
+    "default": "changedao"
+  },
+  "targets": {
+    "changedao": {
+      "hosting": {
+        "dev": [
+          "changedao1"
+        ],
+        "staging": [
+          "changedao-staging"
+        ],
+        "live": [
+          "changedao-live"
+        ]
+      }
+    }
+  }
+}

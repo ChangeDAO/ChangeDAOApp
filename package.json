@@ -7,27 +7,38 @@
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
-    "dev": "quasar dev -m spa"
+    "icons": "icongenie g -i logo.png --quality 12 --theme-color 1D1D1D --skip-trim",
+    "dev": "quasar dev -m spa",
+    "build": "quasar build -m pwa",
+    "deploy": "firebase deploy --only hosting",
+    "deploy:dev": "firebase deploy --only hosting:changedao1",
+    "deploy:staging": "firebase deploy --only hosting:changedao-staging",
+    "deploy:live": "firebase deploy --only hosting:changedao"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
+    "@quasar/extras": "^1.12.2",
     "c3": "^0.7.20",
     "core-js": "^3.6.5",
+    "firebase": "^9.6.1",
+    "firebase-tools": "^9.23.3",
     "lodash": "^4.17.21",
-    "quasar": "^2.0.0",
+    "quasar": "^2.3.4",
     "vue-i18n": "^9.0.0",
     "vuex": "^4.0.1",
     "web3": "^1.6.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
-    "@quasar/app": "^3.0.0",
+    "@quasar/app": "^3.2.5",
     "@quasar/cli": "^1.2.2",
+    "@quasar/icongenie": "^2.4.2",
+    "dotenv": "^10.0.0",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^7.0.0",
     "eslint-webpack-plugin": "^2.4.0",
-    "node-polyfill-webpack-plugin": "^1.1.4"
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "workbox-webpack-plugin": "^6.0.0"
   },
   "browserslist": [
     "last 10 Chrome versions",
