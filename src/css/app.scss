@@ -1,4 +1,13 @@
+@import "./fonts/librefranklin";
 $header-height: 71px;
+
+body {
+  font-family: "Libre Franklin";
+}
+
+.q-btn__content {
+  font-weight: bold;
+}
 
 .q-layout {
   background: $dark;
