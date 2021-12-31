@@ -69,12 +69,12 @@
 
         <!-- Qualitative Details -->
 
-        <div class="text-subtitle2 text-secondary">
+        <div class="text-subtitle2 text-accent">
           {{ $t("Artwork Description") }}
         </div>
         <p>{{ project.description }}</p>
 
-        <div class="text-subtitle2 text-secondary">
+        <div class="text-subtitle2 text-accent">
           {{ $t("Making Change By") }}
         </div>
         <p>{{ project.how }}</p>
@@ -86,7 +86,7 @@
         <div class="row">
           <!-- Minted -->
           <div class="col-6">
-            <div class="text-subtitle2 text-secondary">
+            <div class="text-subtitle2 text-accent">
               {{ $t("Total Minted") }}
             </div>
             <p>{{ project.minted }} {{ $t("of") }} {{ project.mintable }}</p>
@@ -94,7 +94,7 @@
 
           <!-- Goal -->
           <div class="col-6">
-            <div class="text-subtitle2 text-secondary">
+            <div class="text-subtitle2 text-accent">
               {{ $t("Fundraising Goal") }}
             </div>
             <p>{{ $n(project.goalUSD, "compactUSD") }} USD</p>
@@ -102,7 +102,7 @@
         </div>
 
         <!-- Price -->
-        <div class="text-subtitle2 text-secondary">
+        <div class="text-subtitle2 text-accent">
           {{ $t("Price per Token") }}
         </div>
         <p>
@@ -137,7 +137,7 @@
     <div class="row q-col-gutter-xl">
       <!-- Project Split -->
       <div class="page-col col q-col-6">
-        <div class="text-subtitle2 text-secondary">
+        <div class="text-subtitle2 text-accent">
           {{ $t("Project Split") }}
         </div>
         <p>{{ $t("Primary Split Caption") }}</p>
@@ -146,7 +146,7 @@
 
       <!-- Secondary Split -->
       <div class="page-col col q-col-6">
-        <div class="text-subtitle2 text-secondary">
+        <div class="text-subtitle2 text-accent">
           {{ $t("Secondary Split") }}
         </div>
         <p>{{ $t("Secondary Split Caption") }}</p>
