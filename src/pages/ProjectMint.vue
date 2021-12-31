@@ -9,7 +9,7 @@
           <q-btn
             v-if="!user"
             @click="connectWallet"
-            class="full-width q-mb-md"
+            class="full-width q-mb-lg"
             :label="$t('Connect Wallet')"
             color="primary"
           />
@@ -17,7 +17,7 @@
           <!-- Mint NFT -->
           <q-btn
             v-if="user"
-            class="full-width q-mb-md"
+            class="full-width q-mb-lg"
             :label="$t('Mint NFT')"
             color="primary"
           />
@@ -29,7 +29,7 @@
 
       <div class="page-col col q-col-6">
         <!-- Project Name -->
-        <p class="text-h6">{{ project.name }}</p>
+        <p class="text-h3">{{ project.name }}</p>
 
         <p>
           <!-- Collection -->
@@ -44,24 +44,25 @@
 
           <!-- Creator -->
           <router-link
+            class="text-h4"
             :to="{ name: 'user', params: { id: project.creator.id } }"
           >
-            <q-avatar size="xs" color="grey-5" class="q-mr-sm" />{{
+            <q-avatar size="sm" color="grey-5" class="q-my-sm q-mr-sm" />{{
               project.creator.name
             }}
           </router-link>
         </p>
 
         <!-- Areas of Impact -->
-        <p>
+        <p class="q-gutter-md">
           <q-chip
             v-for="area in project.areasOfChange"
             :key="area.id"
             :label="area.name"
-            class="border-primary text-subtitle1"
+            class="text-subtitle1"
             :clickable="false"
             :ripple="false"
-            outline
+            color="primary"
           />
         </p>
 
@@ -69,14 +70,15 @@
 
         <!-- Qualitative Details -->
 
-        <div class="text-subtitle2 text-accent">
+        <p class="text-subtitle">
           {{ $t("Artwork Description") }}
-        </div>
+        </p>
         <p>{{ project.description }}</p>
+        <br />
 
-        <div class="text-subtitle2 text-accent">
+        <p class="text-subtitle">
           {{ $t("Making Change By") }}
-        </div>
+        </p>
         <p>{{ project.how }}</p>
 
         <q-separator class="q-my-lg" />
@@ -85,36 +87,38 @@
 
         <div class="row">
           <!-- Minted -->
-          <div class="col-6">
-            <div class="text-subtitle2 text-accent">
+          <div class="col-6 q-mb-lg">
+            <p class="text-subtitle">
               {{ $t("Total Minted") }}
-            </div>
+            </p>
             <p>{{ project.minted }} {{ $t("of") }} {{ project.mintable }}</p>
           </div>
 
           <!-- Goal -->
-          <div class="col-6">
-            <div class="text-subtitle2 text-accent">
+          <div class="col-6 q-mb-lg">
+            <p class="text-subtitle">
               {{ $t("Fundraising Goal") }}
-            </div>
+            </p>
             <p>{{ $n(project.goalUSD, "compactUSD") }} USD</p>
           </div>
         </div>
 
         <!-- Price -->
-        <div class="text-subtitle2 text-accent">
-          {{ $t("Price per Token") }}
+        <div class="q-mb-lg">
+          <p class="text-subtitle">
+            {{ $t("Price per Token") }}
+          </p>
+          <p>
+            {{ $n(project.tokenPriceUSD, "compactUSD") }} USD
+            {{ $t("via [PaymentMethods]") }}
+          </p>
         </div>
-        <p>
-          {{ $n(project.tokenPriceUSD, "compactUSD") }} USD
-          {{ $t("via [PaymentMethods]") }}
-        </p>
 
-        <q-separator class="q-my-lg" />
+        <q-separator class="q-mb-lg" />
 
         <!-- Mint -->
-        <div class="text-subtitle1">
-          <div class="col-grow q-mb-sm">
+        <div class="text-h4">
+          <div class="col-grow q-mb-lg">
             {{ $t("Ready to support?") }}
           </div>
 
@@ -137,18 +141,18 @@
     <div class="row q-col-gutter-xl">
       <!-- Project Split -->
       <div class="page-col col q-col-6">
-        <div class="text-subtitle2 text-accent">
+        <p class="text-subtitle">
           {{ $t("Project Split") }}
-        </div>
+        </p>
         <p>{{ $t("Primary Split Caption") }}</p>
         <ProjectSplit :project="project" />
       </div>
 
       <!-- Secondary Split -->
       <div class="page-col col q-col-6">
-        <div class="text-subtitle2 text-accent">
+        <p class="text-subtitle">
           {{ $t("Secondary Split") }}
-        </div>
+        </p>
         <p>{{ $t("Secondary Split Caption") }}</p>
         <SecondarySplit :project="project" />
       </div>
