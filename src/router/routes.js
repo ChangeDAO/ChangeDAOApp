@@ -15,6 +15,12 @@ const routes = [
         component: () => import("pages/ProjectMint.vue")
       },
       {
+        name: "checkout",
+        path: "project/:id/checkout",
+        props: true,
+        component: () => import("pages/Checkout.vue")
+      },
+      {
         name: "user",
         path: "user/:id",
         props: true,

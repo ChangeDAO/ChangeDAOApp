@@ -17,8 +17,9 @@
           <!-- Mint NFT -->
           <q-btn
             v-if="user"
-            class="full-width q-mb-lg"
+            :to="{name: 'checkout'}"
             :label="$t('Mint NFT')"
+            class="full-width q-mb-lg"
             color="primary"
           />
 
@@ -123,7 +124,12 @@
           </div>
 
           <!-- Connect Wallet -->
-          <q-btn v-if="user" :label="$t('Mint NFT')" color="primary" />
+          <q-btn
+            v-if="user"
+            :to="{name: 'checkout'}"
+            :label="$t('Mint NFT')"
+            color="primary"
+          />
           <q-btn
             v-else
             @click="connectWallet"

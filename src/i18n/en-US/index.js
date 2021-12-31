@@ -1,9 +1,11 @@
 export default {
   "About Us": "About Us",
   "Artwork Description": "Artwork Description",
+  Checkout: "Checkout",
   Collection: "Collection",
   "Connect Wallet": "Connect Wallet",
   Copyright: "© Copyright 2021 Mount Change LLC. All rights reserved.",
+  "Cost per Mint": "Cost per Mint",
   Discord: "Discord",
   "From ChangeDAO": "From ChangeDAO",
   "From Collaborators": "From Collaborators",
@@ -18,6 +20,7 @@ export default {
   "Making Change By": "Making Change By",
   "Mint NFT": "Mint NFT",
   "Need help?": "Need help?",
+  "Number of Mints": "Number of Mints",
   of: "of",
   "Part of": "Part of",
   "Price per Token": "Price per Token",
@@ -30,6 +33,7 @@ export default {
   "Secondary Split": "Secondary Split",
   "Secondary Split Caption":
     "10% of all secondary sales will be split as follows:",
+  Subtotal: "Subtotal",
   Terms: "Terms",
   "Total Minted": "Total Minted",
   Twitter: "Twitter",
