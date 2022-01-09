@@ -16,7 +16,7 @@
     "deploy:live": "firebase deploy --only hosting:changedao"
   },
   "dependencies": {
-    "@quasar/extras": "^1.12.2",
+    "@quasar/extras": "^1.12.3",
     "@walletconnect/web3-provider": "^1.7.0",
     "c3": "^0.7.20",
     "core-js": "^3.6.5",
@@ -25,14 +25,14 @@
     "jazzicon": "^1.5.0",
     "lodash": "^4.17.21",
     "moralis": "^0.0.171",
-    "quasar": "^2.3.4",
+    "quasar": "^2.4.4",
     "vue-i18n": "^9.0.0",
     "vuex": "^4.0.1",
     "web3": "^1.6.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
-    "@quasar/app": "^3.2.5",
+    "@quasar/app": "^3.2.6",
     "@quasar/cli": "^1.2.2",
     "@quasar/icongenie": "^2.4.2",
     "dotenv": "^10.0.0",
