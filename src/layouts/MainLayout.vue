@@ -29,7 +29,7 @@
             style="width: 200px; max-width: 100%"
           />
           <q-btn
-            :to="{ name: 'about' }"
+            href="https://docs.changedao.org/about-us/master"
             :label="$t('About Us')"
             style="width: 200px; max-width: 100%"
             outline
