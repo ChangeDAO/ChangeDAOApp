@@ -35,23 +35,33 @@
         <p>
           <!-- Collection -->
           {{ $t("Part of") }}
-          <router-link
-            :to="{ name: 'collection', params: { id: project.collection.id } }"
-          >
+          <span class="text-accent">
             {{ project.collection.name }}
-          </router-link>
+          </span>
+          <!-- <router-link
+            :to="{ name: 'collection', params: { id: project.collection.id } }"
+            >
+            {{ project.collection.name }}
+          </router-link> -->
 
           <br />
 
           <!-- Creator -->
-          <router-link
+          <span
+            class="text-h4 text-accent"
+          >
+            <q-avatar size="sm" color="grey-5" class="q-my-sm q-mr-sm" />{{
+              project.creator.name
+            }}
+          </span>
+          <!-- <router-link
             class="text-h4"
             :to="{ name: 'user', params: { id: project.creator.id } }"
           >
             <q-avatar size="sm" color="grey-5" class="q-my-sm q-mr-sm" />{{
               project.creator.name
             }}
-          </router-link>
+          </router-link> -->
         </p>
 
         <!-- Areas of Impact -->

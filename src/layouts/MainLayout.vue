@@ -72,14 +72,14 @@
           {{ $t("Copyright") }}
         </div>
 
-        <div class="row">
+        <!-- <div class="row">
           <router-link class="q-mb-sm q-ml-xl" :to="{ name: 'privacy' }">
             {{ $t("Privacy") }}
           </router-link>
           <router-link class="q-mb-sm q-ml-xl" :to="{ name: 'terms' }">
             {{ $t("Terms") }}
           </router-link>
-        </div>
+        </div> -->
       </div>
     </q-footer>
 
