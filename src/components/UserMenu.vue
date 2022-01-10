@@ -7,7 +7,7 @@
         <!-- Address -->
         <q-item @click="logOut" disabled>
           <q-item-section avatar>
-            <q-icon name="mdi-wallet" />
+            <q-icon name="wallet" />
           </q-item-section>
           <q-item-section>
             <q-item-label>{{ address }}</q-item-label>
@@ -17,7 +17,7 @@
         <!-- Log Out -->
         <q-item @click="logOut" clickable v-ripple>
           <q-item-section avatar>
-            <q-icon name="mdi-lock" />
+            <q-icon name="lock" />
           </q-item-section>
           <q-item-section>
             <q-item-label>{{ $t("Log Out") }}</q-item-label>
@@ -30,7 +30,7 @@
   <q-btn
     v-else
     @click="logIn"
-    icon="mdi-lock-open"
+    icon="lockOpen"
     :label="$t('Log In')"
     color="primary"
   />

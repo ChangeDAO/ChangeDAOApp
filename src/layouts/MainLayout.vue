@@ -47,7 +47,7 @@
           <div class="text-center q-gutter-md q-ma-none">
             <q-btn
               @click="discord"
-              icon="mdi-discord"
+              icon="discord"
               :label="$t('Discord')"
               size="sm"
               padding="sm"
@@ -55,7 +55,7 @@
             />
             <q-btn
               @click="twitter"
-              icon="mdi-twitter"
+              icon="twitter"
               :label="$t('Twitter')"
               size="sm"
               padding="sm"
