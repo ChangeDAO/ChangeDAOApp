@@ -24,7 +24,7 @@
     "firebase-tools": "^9.23.3",
     "jazzicon": "^1.5.0",
     "lodash": "^4.17.21",
-    "moralis": "^0.0.171",
+    "moralis": "^0.0.183",
     "quasar": "^2.4.4",
     "vue-i18n": "^9.0.0",
     "vue-smooth-reflow": "^0.1.12",
