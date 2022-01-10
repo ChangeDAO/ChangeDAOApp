@@ -35,9 +35,9 @@ export default {
             name: "Collection Name Here"
           },
           areasOfChange: [
-            { id: "area1", name: "Area of Change 1" },
-            { id: "area2", name: "Area of Change 2" },
-            { id: "area3", name: "Area of Change 3" }
+            "energy-environment",
+            "financial-inclusion",
+            "identity-vulnerable"
           ],
           description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",

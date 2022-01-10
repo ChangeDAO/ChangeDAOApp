@@ -68,3 +68,7 @@ a:not(.q-btn) {
     text-decoration: underline;
   }
 }
+
+.q-dialog__backdrop {
+  backdrop-filter: blur(5px);
+}

@@ -10,15 +10,9 @@ const routes = [
       },
       {
         name: "mint",
-        path: "project/:id/mint",
+        path: "project/:id/mint/:dialog?",
         props: true,
         component: () => import("pages/ProjectMint.vue")
-      },
-      {
-        name: "checkout",
-        path: "project/:id/checkout",
-        props: true,
-        component: () => import("pages/Checkout.vue")
       },
       {
         name: "user",

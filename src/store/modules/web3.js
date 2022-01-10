@@ -43,6 +43,10 @@ export default {
     async logOut({ commit }) {
       await Moralis.User.logOut();
       commit("setUser", null);
+    },
+
+    getTokenBalance(context, symbol) {
+      return Moralis.Web3.getERC20({ symbol });
     }
   }
 };

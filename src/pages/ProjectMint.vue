@@ -17,7 +17,7 @@
           <!-- Mint NFT -->
           <q-btn
             v-if="user"
-            :to="{name: 'checkout'}"
+            @click="dialogCheckout = true"
             :label="$t('Mint NFT')"
             class="full-width q-mb-lg"
             color="primary"
@@ -64,12 +64,12 @@
           </router-link> -->
         </p>
 
-        <!-- Areas of Impact -->
+        <!-- Areas of Change -->
         <p class="q-gutter-md">
           <q-chip
             v-for="area in project.areasOfChange"
-            :key="area.id"
-            :label="area.name"
+            :key="area"
+            :label="$t('areasOfChange.' + area)"
             class="text-subtitle1"
             :clickable="false"
             :ripple="false"
@@ -136,7 +136,7 @@
           <!-- Connect Wallet -->
           <q-btn
             v-if="user"
-            :to="{name: 'checkout'}"
+            @click="dialogCheckout = true"
             :label="$t('Mint NFT')"
             color="primary"
           />
@@ -173,6 +173,13 @@
         <SecondarySplit :project="project" />
       </div>
     </div>
+
+    <Checkout
+      :id="id"
+      v-if="user"
+      v-model="dialogCheckout"
+      go-back
+    />
   </q-page>
 </template>
 
@@ -195,8 +202,10 @@
 <script>
 import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
 import { useStore } from "vuex";
+import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from "quasar";
 
+import Checkout from "./Checkout";
 import ProjectSplit from "../components/ProjectSplit";
 import SecondarySplit from "../components/SecondarySplit";
 
@@ -206,12 +215,15 @@ export default defineComponent({
   props: ["id"],
 
   components: {
+    Checkout,
     ProjectSplit,
     SecondarySplit
   },
 
   setup(props, context) {
     const store = useStore();
+    const router = useRouter();
+    const route = useRoute();
     const $q = useQuasar();
 
     const doubleColumn = computed(() => $q.screen.width > 584);
@@ -227,7 +239,7 @@ export default defineComponent({
       $q.notify({
         message,
         type: "negative",
-        icon: "mdi-alert-circle",
+        icon: "alert",
         position: "top"
       });
     });
@@ -239,7 +251,20 @@ export default defineComponent({
       store.dispatch("logIn");
     };
 
+    // Dialogs
+    const dialogCheckout = computed({
+      get: () => route.params.dialog === "checkout",
+      set: (value) => {
+        if (value && route.params.dialog !== "checkout") {
+          router.push({params: {dialog: "checkout"}});
+        } else if (!value && route.params.dialog === "checkout") {
+          router.back();
+        }
+      }
+    });
+
     return {
+      dialogCheckout,
       doubleColumn,
       project,
       backgroundImage,

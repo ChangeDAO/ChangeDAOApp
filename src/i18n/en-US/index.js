@@ -1,11 +1,13 @@
 export default {
   "About Us": "About Us",
+  "Add a Tip": "Add a Tip",
   "Artwork Description": "Artwork Description",
   Checkout: "Checkout",
   Collection: "Collection",
   "Connect Wallet": "Connect Wallet",
   Copyright: "© Copyright 2021 Mount Change LLC. All rights reserved.",
   "Cost per Mint": "Cost per Mint",
+  Custom: "Custom",
   Discord: "Discord",
   "From ChangeDAO": "From ChangeDAO",
   "From Collaborators": "From Collaborators",
@@ -20,25 +22,39 @@ export default {
   "Making Change By": "Making Change By",
   "Mint NFT": "Mint NFT",
   "Need help?": "Need help?",
+  "No Tip": "No Tip",
   "Number of Mints": "Number of Mints",
   of: "of",
   "Part of": "Part of",
+  "Please and thankyou": "Your gift powers the mission and vision of ChangeDAO. If you support the work we're doing, please consider adding a tip.",
   "Price per Token": "Price per Token",
   "Primary Split Caption":
     "100% of all primary sales will be split as follows:",
   Privacy: "Privacy",
   "Project Split": "Project Split",
+  Purchase: "Purchase",
   "Ready to support?": "Ready to support this project?",
   "Secondary Sales": "Secondary Sales",
   "Secondary Split": "Secondary Split",
   "Secondary Split Caption":
     "10% of all secondary sales will be split as follows:",
+  "Select Currency": "Select Currency",
   Subtotal: "Subtotal",
   Terms: "Terms",
+  "This will open wallet": "This will open your wallet for authorization.",
+  Tip: "Tip",
+  Total: "Total",
   "Total Minted": "Total Minted",
   Twitter: "Twitter",
   User: "User",
   "via [PaymentMethods]": "via DAI / USDC / ETH",
+  "Your wallet has no X": "Your wallet does not contain any {X}",
+
+  areasOfChange: {
+    "energy-environment": "Energy & Environment",
+    "financial-inclusion": "Financial Inclusion",
+    "identity-vulnerable": "Identity & Vulnerable Population"
+  },
 
   error: {
     loadingProject: "There was a problem getting the project information"
