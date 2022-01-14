@@ -175,10 +175,9 @@
     </div>
 
     <Checkout
-      :id="id"
+      :project="project"
       v-if="user"
       v-model="dialogCheckout"
-      go-back
     />
   </q-page>
 </template>

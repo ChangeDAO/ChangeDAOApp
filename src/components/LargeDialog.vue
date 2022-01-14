@@ -23,6 +23,30 @@
   </q-dialog>
 </template>
 
+<style lang="scss">
+.large-dialog {
+  .q-layout-container {
+    transition: height $generic-hover-transition;
+  }
+  .q-layout-container,
+  .q-footer {
+    color: $dark;
+    background-color: #fff;
+    body.body--dark & {
+      color: #fff;
+      background-color: $dark;
+    }
+  }
+  .q-dialog__inner--maximized .q-header {
+    &,
+    body.body--dark & {
+      color: #fff;
+      background-color: $primary;
+    }
+  }
+}
+</style>
+
 <script>
 const HEIGHT = 700;
 
@@ -57,7 +81,7 @@ export default {
       if (this.maximized) {
         classes.push("maximized");
       }
-      return classes;
+      return classes.join(" ");
     },
   },
   methods: {
@@ -69,11 +93,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-.large-dialog {
-  .q-layout-container {
-    transition: height $generic-hover-transition;
-  }
-}
-</style>

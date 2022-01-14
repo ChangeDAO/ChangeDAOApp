@@ -23,6 +23,7 @@ export default {
   "Mint NFT": "Mint NFT",
   "Need help?": "Need help?",
   "No Tip": "No Tip",
+  "Not enough X": "Your wallet does not contain enough {X}",
   "Number of Mints": "Number of Mints",
   of: "of",
   "Part of": "Part of",
@@ -48,7 +49,6 @@ export default {
   Twitter: "Twitter",
   User: "User",
   "via [PaymentMethods]": "via DAI / USDC / ETH",
-  "Your wallet has no X": "Your wallet does not contain any {X}",
 
   areasOfChange: {
     "energy-environment": "Energy & Environment",

@@ -8,7 +8,6 @@
       <!-- Page Title -->
 
       <div class="row q-col-gutter-xl">
-
         <!-- Info column -->
         <div class="info-column page-col col q-col-3">
           <div class="sticky header-top">
@@ -54,7 +53,9 @@
         <div class="form-column page-col col q-col-9 q-gutter-lg">
           <!-- Cost per Mint -->
           <div class="row">
-            <span class="text-subtitle col-grow">{{ $t("Cost per Mint") }}</span>
+            <span class="text-subtitle col-grow">{{
+              $t("Cost per Mint")
+            }}</span>
             <span>{{ $n(cost, "USD") }} USD</span>
           </div>
 
@@ -118,8 +119,11 @@
               color="primary"
               inline
             />
-            <div v-if="emptyCurrencies.length" class="text-caption text-italic">
-              {{ $t("Your wallet has no X", { X: emptyCurrencies.join(", ") }) }}
+            <div
+              v-if="disabledCurrencies.length"
+              class="text-caption text-italic"
+            >
+              {{ $t("Not enough X", { X: disabledCurrencies.join(", ") }) }}
             </div>
           </div>
 
@@ -171,7 +175,7 @@ import SmoothReflow from "../components/SmoothReflow.vue";
 export default defineComponent({
   name: "DialogCheckout",
 
-  props: ["id"],
+  props: ["project"],
 
   components: { DialogHeader, LargeDialog, SmoothReflow },
 
@@ -181,26 +185,16 @@ export default defineComponent({
     const $q = useQuasar();
 
     const doubleColumn = computed(() => $q.screen.width > 584);
-    const project = computed(() => store.state.projects[props.id]);
+    const project = computed(() => props.project);
     const backgroundImage = computed(() => {
       return project.value && project.value.img
         ? `url(${project.value.img})`
         : null;
     });
 
-    // Fetch the project
-    store.dispatch("getProject", props.id).catch(message => {
-      $q.notify({
-        message,
-        type: "negative",
-        icon: "alert",
-        position: "top"
-      });
-    });
-
     // Form
-    const cost = computed(
-      () => project.value && project.value ? project.value.tokenPriceUSD : null
+    const cost = computed(() =>
+      project.value && project.value ? project.value.tokenPriceUSD : null
     );
     const quantities = [1, 2, 3];
     const quantity = ref(1);
@@ -210,55 +204,55 @@ export default defineComponent({
       { value: 10, label: "10%" },
       { value: 20, label: "20%" },
       { value: 30, label: "30%" },
-      { value: "custom", label: t("Custom") },
+      { value: "custom", label: t("Custom") }
     ];
     const tip = ref(0);
     const customTip = ref(5);
     const tipMultiplier = computed(() => {
       if (tip.value === "custom") {
-        return customTip.value / 100
+        return customTip.value / 100;
       }
-      return tip.value / 100
+      return tip.value / 100;
     });
     const tipTotal = computed(() => subtotal.value * tipMultiplier.value);
     const total = computed(() => subtotal.value * (1 + tipMultiplier.value));
-    const emptyCurrencies = ref([]);
     const currencies = computed(() => {
-      return [ "ETH", "USDC", "DAI" ].map((value) => ({
+      return ["ETH", "USDC", "DAI"].map(value => ({
         value,
         label: value,
-        disable: emptyCurrencies.value.includes(value)
+        disable: disabledCurrencies.value.includes(value)
       }));
-    })
+    });
     const currency = ref("ETH");
+    const disabledCurrencies = computed(() => {
+      const output = [];
+      if (balanceETH.value <= 0) {
+        output.push("ETH");
+      }
+      if (balanceUSDC.value <= 0) {
+        output.push("USDC");
+      }
+      if (balanceDAI.value <= 0) {
+        output.push("DAI");
+      }
+      return output;
+    });
 
     // Web3
     const user = computed(() => store.state.web3.user);
     const balanceETH = ref(0);
     const balanceUSDC = ref(0);
     const balanceDAI = ref(0);
-    // store.dispatch("getTokenBalance", "ETH").then((token) =>{
+    // store.dispatch("getTokenBalance", ["ETH", "USDC", "DAI"]).then((token) =>{
+    //   debugger;
     //   balanceETH.value = token.balance;
     //   if (!balanceETH.value) {
-    //     emptyCurrencies.value.push("ETH");
-    //   }
-    // });
-    // store.dispatch("getTokenBalance", "USDC").then((token) =>{
-    //   balanceUSDC.value = token.balance;
-    //   if (!balanceUSDC.value) {
-    //     emptyCurrencies.value.push("USDC");
-    //   }
-    // });
-    // store.dispatch("getTokenBalance", "DAI").then((token) =>{
-    //   balanceDAI.value = token.balance;
-    //   if (!balanceDAI.value) {
-    //     emptyCurrencies.value.push("DAI");
+    //     disabledCurrencies.value.push("ETH");
     //   }
     // });
 
     return {
       doubleColumn,
-      project,
       backgroundImage,
       user,
       cost,
@@ -272,7 +266,7 @@ export default defineComponent({
       total,
       currencies,
       currency,
-      emptyCurrencies
+      disabledCurrencies
     };
   }
 });
