@@ -69,6 +69,12 @@ a:not(.q-btn) {
   }
 }
 
+.dialog-header {
+  height: $header-height;
+  padding-top: 12px;
+  padding-bottom: 11px;
+}
+
 .q-dialog__backdrop {
   backdrop-filter: blur(5px);
 }
