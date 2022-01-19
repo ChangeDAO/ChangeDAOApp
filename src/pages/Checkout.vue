@@ -240,16 +240,10 @@ export default defineComponent({
 
     // Web3
     const user = computed(() => store.state.web3.user);
-    const balanceETH = ref(0);
-    const balanceUSDC = ref(0);
-    const balanceDAI = ref(0);
-    // store.dispatch("getTokenBalance", ["ETH", "USDC", "DAI"]).then((token) =>{
-    //   debugger;
-    //   balanceETH.value = token.balance;
-    //   if (!balanceETH.value) {
-    //     disabledCurrencies.value.push("ETH");
-    //   }
-    // });
+    const balances = computed(() => store.state.web3.userBalances);
+    const balanceETH = computed(() => balances.value.ETH);
+    const balanceUSDC = computed(() => balances.value.USDC);
+    const balanceDAI = computed(() => balances.value.DAI);
 
     return {
       doubleColumn,

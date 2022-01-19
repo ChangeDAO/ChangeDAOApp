@@ -91,7 +91,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import { useQuasar, openURL } from "quasar";
+import { openURL } from "quasar";
 
 import UserMenu from "../components/UserMenu";
 
@@ -101,9 +101,6 @@ export default defineComponent({
   components: { UserMenu },
 
   setup() {
-    const $q = useQuasar();
-    $q.dark.set(true);
-
     const discord = () => {
       openURL("https://discord.gg/88KeENZnyQ");
     };

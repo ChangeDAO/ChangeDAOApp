@@ -3,6 +3,8 @@ import { i18n } from "../../boot/i18n";
 const { t } = i18n.global;
 
 export default {
+  namespaced: false,
+
   state: {},
 
   mutations: {

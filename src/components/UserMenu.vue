@@ -1,16 +1,18 @@
 <template>
   <q-btn v-if="user" color="primary" class="q-pl-sm" no-caps rounded>
     <q-avatar v-html="avatar" size="sm" class="overflow-hidden q-mr-md" />
-    {{ username }}
+    {{ ens || address }}
     <q-menu>
-      <q-list>
-        <!-- Address -->
-        <q-item @click="logOut" disabled>
+      <q-list class="text-no-wrap">
+        <!-- balances -->
+        <q-item v-for="token in balances" :key="token.symbol" disabled>
           <q-item-section avatar>
             <q-icon name="wallet" />
           </q-item-section>
-          <q-item-section>
-            <q-item-label>{{ address }}</q-item-label>
+          <q-item-section side>
+            <q-item-label>
+              {{ tokenValueTxt(token.balance, token.decimals, token.symbol) }}
+            </q-item-label>
           </q-item-section>
         </q-item>
 
@@ -20,7 +22,7 @@
             <q-icon name="lock" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>{{ $t("Log Out") }}</q-item-label>
+            <q-item-label>{{ "Log Out" }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -30,7 +32,7 @@
   <q-btn
     v-else
     @click="logIn"
-    icon="lockOpen"
+    icon="lock_open"
     :label="$t('Log In')"
     color="primary"
   />
@@ -41,6 +43,8 @@ import { defineComponent, computed } from "vue";
 import { useStore } from "vuex";
 import jazzicon from "jazzicon";
 
+import { getEllipsisTxt, tokenValueTxt } from "../util/formatting";
+
 export default defineComponent({
   name: "UserMenu",
 
@@ -49,24 +53,20 @@ export default defineComponent({
 
     const user = computed(() => store.state.web3.user);
 
+    const balances = computed(() => store.state.web3.userBalances);
+
     const address = computed(() => {
       if (user.value) {
-        let address = user.value.get("ethAddress");
-        return `${address.substr(0, 6)}***${address.substr(-4)}`;
+        return "0x" + getEllipsisTxt(store.state.web3.userAddress.slice(2));
       }
       return "";
     });
 
-    const username = computed(() => {
-      if (user.value) {
-        return user.value.get("username");
-      }
-      return "";
-    });
+    const ens = computed(() => store.state.web3.userENS);
 
     const avatar = computed(() => {
       if (user.value) {
-        const addr = user.value.get("ethAddress").slice(2, 10);
+        const addr = store.state.web3.userAddress.slice(2, 10);
         const seed = parseInt(addr, 16);
         const avatar = jazzicon(24, seed);
         return avatar.innerHTML;
@@ -82,13 +82,13 @@ export default defineComponent({
       store.dispatch("logOut");
     };
 
-    store.dispatch("logIn", true);
-
     return {
+      tokenValueTxt,
       user,
+      balances,
       avatar,
       address,
-      username,
+      ens,
       logIn,
       logOut
     };

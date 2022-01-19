@@ -4,7 +4,7 @@ export default {
   close: "mdi-close-circle-outline",
   discord: "mdi-discord",
   lock: "mdi-lock",
-  lockOpen: "mdi-lock-open",
+  lock_open: "mdi-lock-open",
   twitter: "mdi-twitter",
-  wallet: "mdi-wallet",
+  wallet: "mdi-wallet"
 };
