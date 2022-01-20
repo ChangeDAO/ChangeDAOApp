@@ -1,5 +1,11 @@
 <template>
-  <LargeDialog v-if="project" v-bind="$attrs" :max-width="$q.screen.sizes.md">
+  <LargeDialog
+    v-if="project"
+    v-bind="$attrs"
+    :max-width="$q.screen.sizes.md"
+    :persistent="isPurchasing"
+    no-backdrop-dismiss
+  >
     <template v-slot:header>
       <DialogHeader :title="$t('Checkout')" />
     </template>
@@ -131,7 +137,13 @@
 
           <!-- Purchase -->
           <div class="row reverse">
-            <q-btn class="col-grow" :label="$t('Purchase')" color="primary" />
+            <q-btn
+              @click="purchase"
+              :loading="isPurchasing"
+              class="col-grow"
+              :label="$t('Purchase')"
+              color="primary"
+            />
             <div class="col-grow text-caption q-mt-sm q-mr-sm">
               {{ $t("This will open wallet") }}
             </div>
@@ -165,15 +177,18 @@
 <script>
 import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
 
-import DialogHeader from "../components/DialogHeader.vue";
-import LargeDialog from "../components/LargeDialog.vue";
-import SmoothReflow from "../components/SmoothReflow.vue";
+import DialogHeader from "../components/DialogHeader";
+import LargeDialog from "../components/LargeDialog";
+import SmoothReflow from "../components/SmoothReflow";
+
+import { formatError } from "../util/formatting";
 
 export default defineComponent({
-  name: "DialogCheckout",
+  name: "DialogMintCheckout",
 
   props: ["project"],
 
@@ -181,6 +196,7 @@ export default defineComponent({
 
   setup(props, context) {
     const { t } = useI18n();
+    const router = useRouter();
     const store = useStore();
     const $q = useQuasar();
 
@@ -245,6 +261,36 @@ export default defineComponent({
     const balanceUSDC = computed(() => balances.value.USDC);
     const balanceDAI = computed(() => balances.value.DAI);
 
+    const isPurchasing = ref(false);
+    const purchase = async () => {
+      try {
+        isPurchasing.value = true;
+        const receipt = await store.dispatch("mintNFT", {});
+        console.log(receipt);
+        $q.notify({
+          message: "Success",
+          type: "positive",
+          icon: "check",
+          position: "top-right"
+        });
+        isPurchasing.value = false;
+        router.push({
+          name: "mintTx",
+          params: { txID: "transactionIDgoesHERE" }
+        });
+      } catch (error) {
+        $q.notify({
+          message: formatError(error),
+          type: "negative",
+          icon: "alert",
+          position: "top-right"
+        });
+        console.error(error);
+      } finally {
+        isPurchasing.value = false;
+      }
+    };
+
     return {
       doubleColumn,
       backgroundImage,
@@ -260,7 +306,9 @@ export default defineComponent({
       total,
       currencies,
       currency,
-      disabledCurrencies
+      disabledCurrencies,
+      isPurchasing,
+      purchase
     };
   }
 });

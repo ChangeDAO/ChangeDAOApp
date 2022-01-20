@@ -6,13 +6,26 @@ const routes = [
       {
         name: "home",
         path: "",
-        redirect: { name: "mint", params: { id: "sample" } }
+        redirect: { name: "mint", params: { projectID: "sample" } }
       },
       {
         name: "mint",
-        path: "project/:id/mint/:dialog?",
+        path: "project/:projectID/mint",
         props: true,
-        component: () => import("pages/ProjectMint.vue")
+        component: () => import("pages/ProjectMint.vue"),
+        children: [
+          {
+            name: "mint-checkout",
+            path: "checkout",
+            component: () => import("pages/MintCheckout.vue")
+          }
+        ]
+      },
+      {
+        name: "mintTx",
+        path: "project/:projectID/mint/tx/:txID",
+        props: true,
+        component: () => import("pages/MintTx.vue")
       },
       {
         name: "user",

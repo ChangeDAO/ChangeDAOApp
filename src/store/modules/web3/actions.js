@@ -95,3 +95,18 @@ export async function getUserData({ commit, state }) {
   );
   commit("setUserBalances", balances);
 }
+
+// Mint nft
+export async function mintNFT({ commit, state }, options) {
+  // return Moralis.executeFunction({
+  //   chain,
+  //   contractAddress: AddrRecursiveExchange,
+  //   functionName: "placeOffering",
+  //   abi: [],
+  //   params: {
+  //     _hostContract: token_address,
+  //     _tokenId: token_id,
+  //     _price: Moralis.Units.ETH(price)
+  //   }
+  // });
+}

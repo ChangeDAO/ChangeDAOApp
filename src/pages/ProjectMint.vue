@@ -17,7 +17,7 @@
           <!-- Mint NFT -->
           <q-btn
             v-if="user"
-            @click="dialogCheckout = true"
+            @click="mint"
             :label="$t('Mint NFT')"
             class="full-width q-mb-lg"
             color="primary"
@@ -39,7 +39,7 @@
             {{ project.collection.name }}
           </span>
           <!-- <router-link
-            :to="{ name: 'collection', params: { id: project.collection.id } }"
+            :to="{ name: 'collection', params: { collectionID: project.collection.id } }"
             >
             {{ project.collection.name }}
           </router-link> -->
@@ -47,16 +47,14 @@
           <br />
 
           <!-- Creator -->
-          <span
-            class="text-h4 text-accent"
-          >
+          <span class="text-h4 text-accent">
             <q-avatar size="sm" color="grey-5" class="q-my-sm q-mr-sm" />{{
               project.creator.name
             }}
           </span>
           <!-- <router-link
             class="text-h4"
-            :to="{ name: 'user', params: { id: project.creator.id } }"
+            :to="{ name: 'user', params: { userID: project.creator.id } }"
           >
             <q-avatar size="sm" color="grey-5" class="q-my-sm q-mr-sm" />{{
               project.creator.name
@@ -136,7 +134,7 @@
           <!-- Connect Wallet -->
           <q-btn
             v-if="user"
-            @click="dialogCheckout = true"
+            @click="mint"
             :label="$t('Mint NFT')"
             color="primary"
           />
@@ -174,10 +172,12 @@
       </div>
     </div>
 
-    <Checkout
-      :project="project"
+    <router-view
       v-if="user"
-      v-model="dialogCheckout"
+      :project="project"
+      :model-value="true"
+      no-route-dismiss
+      @hide="$router.back()"
     />
   </q-page>
 </template>
@@ -201,20 +201,18 @@
 <script>
 import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
 import { useStore } from "vuex";
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 
-import Checkout from "./Checkout";
 import ProjectSplit from "../components/ProjectSplit";
 import SecondarySplit from "../components/SecondarySplit";
 
 export default defineComponent({
   name: "PageProjectMint",
 
-  props: ["id"],
+  props: ["projectID"],
 
   components: {
-    Checkout,
     ProjectSplit,
     SecondarySplit
   },
@@ -226,7 +224,7 @@ export default defineComponent({
     const $q = useQuasar();
 
     const doubleColumn = computed(() => $q.screen.width > 584);
-    const project = computed(() => store.state.projects[props.id]);
+    const project = computed(() => store.state.projects[props.projectID]);
     const backgroundImage = computed(() => {
       return project.value && project.value.img
         ? `url(${project.value.img})`
@@ -234,7 +232,7 @@ export default defineComponent({
     });
 
     // Fetch the project
-    store.dispatch("getProject", props.id).catch(message => {
+    store.dispatch("getProject", props.projectID).catch(message => {
       $q.notify({
         message,
         type: "negative",
@@ -250,25 +248,17 @@ export default defineComponent({
       store.dispatch("logIn");
     };
 
-    // Dialogs
-    const dialogCheckout = computed({
-      get: () => route.params.dialog === "checkout",
-      set: (value) => {
-        if (value && route.params.dialog !== "checkout") {
-          router.push({params: {dialog: "checkout"}});
-        } else if (!value && route.params.dialog === "checkout") {
-          router.back();
-        }
-      }
-    });
+    const mint = () => {
+      router.push({ name: "mint-checkout" });
+    };
 
     return {
-      dialogCheckout,
       doubleColumn,
       project,
       backgroundImage,
       connectWallet,
-      user
+      user,
+      mint
     };
   }
 });
