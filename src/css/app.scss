@@ -79,6 +79,10 @@ a:not(.q-btn) {
   backdrop-filter: blur(5px);
 }
 
+.q-dialog__inner > .q-layout-container {
+  background: $dark;
+}
+
 body.desktop {
   &::-webkit-scrollbar-corner,
   ::-webkit-scrollbar-corner {

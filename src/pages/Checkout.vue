@@ -130,11 +130,11 @@
           <q-separator />
 
           <!-- Purchase -->
-          <div class="row">
-            <div class="text-caption col-grow">
+          <div class="row reverse">
+            <q-btn class="col-grow" :label="$t('Purchase')" color="primary" />
+            <div class="col-grow text-caption q-mt-sm q-mr-sm">
               {{ $t("This will open wallet") }}
             </div>
-            <q-btn :label="$t('Purchase')" color="primary" />
           </div>
         </div>
       </div>
