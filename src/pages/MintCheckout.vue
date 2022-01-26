@@ -20,38 +20,7 @@
             <!-- Image -->
             <div class="square q-mb-lg" :style="{ backgroundImage }" />
 
-            <!-- Project Name -->
-            <p class="text-h4">{{ project.name }}</p>
-
-            <p>
-              <!-- Collection -->
-              {{ $t("Part of") }}
-              <span class="text-accent">
-                {{ project.collection.name }}
-              </span>
-              <!-- <router-link
-                :to="{ name: 'collection', params: { id: project.collection.id } }"
-                >
-                {{ project.collection.name }}
-              </router-link> -->
-
-              <br />
-
-              <!-- Creator -->
-              <span class="text-accent text-h5">
-                <q-avatar size="sm" color="grey-5" class="q-my-sm q-mr-sm" />{{
-                  project.creator.name
-                }}
-              </span>
-              <!-- <router-link
-                class="text-h4"
-                :to="{ name: 'user', params: { id: project.creator.id } }"
-              >
-                <q-avatar size="sm" color="grey-5" class="q-my-sm q-mr-sm" />{{
-                  project.creator.name
-                }}
-              </router-link> -->
-            </p>
+            <ProjectInfo :project="project" minimal />
           </div>
         </div>
 
@@ -183,6 +152,7 @@ import { useQuasar } from "quasar";
 
 import DialogHeader from "../components/DialogHeader";
 import LargeDialog from "../components/LargeDialog";
+import ProjectInfo from "../components/ProjectInfo";
 import SmoothReflow from "../components/SmoothReflow";
 
 import { formatError } from "../util/formatting";
@@ -192,7 +162,7 @@ export default defineComponent({
 
   props: ["project"],
 
-  components: { DialogHeader, LargeDialog, SmoothReflow },
+  components: { DialogHeader, LargeDialog, ProjectInfo, SmoothReflow },
 
   setup(props, context) {
     const { t } = useI18n();
@@ -267,14 +237,14 @@ export default defineComponent({
         isPurchasing.value = true;
         const receipt = await store.dispatch("mintNFT", {});
         console.log(receipt);
-        $q.notify({
-          message: "Success",
-          type: "positive",
-          icon: "check",
-          position: "top-right"
-        });
+        // $q.notify({
+        //   message: "Success",
+        //   type: "positive",
+        //   icon: "check",
+        //   position: "top-right"
+        // });
         isPurchasing.value = false;
-        router.push({
+        router.replace({
           name: "mintTx",
           params: { txID: "transactionIDgoesHERE" }
         });

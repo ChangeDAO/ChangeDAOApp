@@ -29,51 +29,7 @@
       </div>
 
       <div class="page-col col q-col-6">
-        <!-- Project Name -->
-        <p class="text-h3">{{ project.name }}</p>
-
-        <p>
-          <!-- Collection -->
-          {{ $t("Part of") }}
-          <span class="text-accent">
-            {{ project.collection.name }}
-          </span>
-          <!-- <router-link
-            :to="{ name: 'collection', params: { collectionID: project.collection.id } }"
-            >
-            {{ project.collection.name }}
-          </router-link> -->
-
-          <br />
-
-          <!-- Creator -->
-          <span class="text-h4 text-accent">
-            <q-avatar size="sm" color="grey-5" class="q-my-sm q-mr-sm" />{{
-              project.creator.name
-            }}
-          </span>
-          <!-- <router-link
-            class="text-h4"
-            :to="{ name: 'user', params: { userID: project.creator.id } }"
-          >
-            <q-avatar size="sm" color="grey-5" class="q-my-sm q-mr-sm" />{{
-              project.creator.name
-            }}
-          </router-link> -->
-        </p>
-
-        <!-- Areas of Change -->
-        <p class="q-gutter-md">
-          <q-chip
-            v-for="area in project.areasOfChange"
-            :key="area"
-            :label="$t('areasOfChange.' + area)"
-            class="text-subtitle1"
-            :clickable="false"
-            :ripple="false"
-            color="primary"
-          />
-        </p>
+        <ProjectInfo :project="project" />
 
         <q-separator class="q-my-lg" />
 
@@ -204,6 +160,7 @@ import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 
+import ProjectInfo from "../components/ProjectInfo";
 import ProjectSplit from "../components/ProjectSplit";
 import SecondarySplit from "../components/SecondarySplit";
 
@@ -213,6 +170,7 @@ export default defineComponent({
   props: ["projectID"],
 
   components: {
+    ProjectInfo,
     ProjectSplit,
     SecondarySplit
   },

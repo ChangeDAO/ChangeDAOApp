@@ -1,6 +1,7 @@
 export default {
   "About Us": "About Us",
   "Add a Tip": "Add a Tip",
+  "Areas of Change": "Areas of Change",
   "Artwork Description": "Artwork Description",
   Checkout: "Checkout",
   Collection: "Collection",
@@ -27,11 +28,13 @@ export default {
   "Number of Mints": "Number of Mints",
   of: "of",
   "Part of": "Part of",
-  "Please and thankyou": "Your gift powers the mission and vision of ChangeDAO. If you support the work we're doing, please consider adding a tip.",
+  "Please and thankyou":
+    "Your gift powers the mission and vision of ChangeDAO. If you support the work we're doing, please consider adding a tip.",
   "Price per Token": "Price per Token",
   "Primary Split Caption":
     "100% of all primary sales will be split as follows:",
   Privacy: "Privacy",
+  "Processing Transaction": "Processing Transaction",
   "Project Split": "Project Split",
   Purchase: "Purchase",
   "Ready to support?": "Ready to support this project?",
@@ -41,6 +44,7 @@ export default {
     "10% of all secondary sales will be split as follows:",
   "Select Currency": "Select Currency",
   Subtotal: "Subtotal",
+  "Supported Causes": "Supported Causes",
   Terms: "Terms",
   "This will open wallet": "This will open your wallet for authorization.",
   Tip: "Tip",

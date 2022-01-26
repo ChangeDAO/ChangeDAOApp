@@ -7,7 +7,11 @@
     no-route-dismiss
     v-bind="$attrs"
   >
-    <q-layout view="hHh lpr fFf" :style="{ height, maxWidth: maxWidth + 'px' }" container>
+    <q-layout
+      view="hHh lpr fFf"
+      :style="{ height, maxWidth: maxWidth + 'px' }"
+      container
+    >
       <q-header v-if="$slots.header" :reveal="$q.screen.height <= 400" elevated>
         <slot name="header" />
       </q-header>
@@ -61,7 +65,7 @@ export default {
       default: 560
     },
     noMaximize: Boolean,
-    contentClass: String,
+    contentClass: String
   },
   computed: {
     maximized() {
@@ -82,14 +86,14 @@ export default {
         classes.push("maximized");
       }
       return classes.join(" ");
-    },
+    }
   },
   methods: {
     hide() {
       if (this.goBack) {
         this.$router.back();
       }
-    },
-  },
+    }
+  }
 };
 </script>

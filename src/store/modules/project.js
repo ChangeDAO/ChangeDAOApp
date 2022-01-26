@@ -36,6 +36,11 @@ export default {
             id: "samplecollection",
             name: "Collection Name Here"
           },
+          supportedCauses: [
+            "Cause1",
+            "Cause2",
+            "Cause3"
+          ],
           areasOfChange: [
             "energy-environment",
             "financial-inclusion",

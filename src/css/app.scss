@@ -20,9 +20,10 @@ p {
   font-weight: 600;
 }
 
-.q-layout {
+.q-layout-container {
   background: $dark;
-
+}
+.q-layout {
   .q-header {
     background: $dark-header;
     box-shadow: 0px 2px 8px 0px #5200A166;
@@ -34,6 +35,31 @@ p {
 
     a:not(.q-btn) {
       color: inherit;
+    }
+  }
+}
+
+.q-dialog__backdrop {
+  backdrop-filter: blur(5px);
+  background: $dialog-dark;
+}
+.q-dialog__inner {
+  .q-layout-container {
+    background: $dialog-dark-header;
+  }
+  .q-layout-container {
+    .q-header {
+      background: $dialog-dark-footer;
+      box-shadow: none;
+    }
+
+    .q-footer {
+      background: transparent;
+      box-shadow: none;
+
+      a:not(.q-btn) {
+        color: inherit;
+      }
     }
   }
 }
@@ -73,14 +99,6 @@ a:not(.q-btn) {
   height: $header-height;
   padding-top: 12px;
   padding-bottom: 11px;
-}
-
-.q-dialog__backdrop {
-  backdrop-filter: blur(5px);
-}
-
-.q-dialog__inner > .q-layout-container {
-  background: $dark;
 }
 
 body.desktop {
