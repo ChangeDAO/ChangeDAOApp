@@ -56,16 +56,6 @@ export async function logIn({ state, commit, dispatch }, silently = false) {
   commit("setUser", user);
   dispatch("getUserData");
 
-  if (user) {
-    // Initialize Web3
-    try {
-      const provider = Moralis.provider;
-      await Moralis.enableWeb3({ chain, provider });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   return user;
 }
 
@@ -77,23 +67,41 @@ export async function logOut({ commit }) {
 
 // Get User Data
 export async function getUserData({ commit, state }) {
-  if (!state.address) {
+  if (!state.userAddress) {
     return;
   }
-  const address = state.address;
 
-  const ens = await Moralis.Web3API.resolve.resolveAddress({ address, chain });
-  commit("setUserENS", ens);
+  const user = state.user;
+  const address = state.userAddress;
 
-  const nfts = await Moralis.Web3.getNFTs({ chain });
+  const balances = {};
+
+  // Native balance
+  let nativeBalance = await Moralis.Web3API.account.getNativeBalance({
+    address,
+    chain
+  });
+  if (nativeBalance && nativeBalance.balance) {
+    balances.ETH = { ...nativeBalance, symbol: "ETH", decimals: 18 };
+  }
+
+  // ERC20 Tokens
+  let tokens = await Moralis.Web3API.account.getTokenBalances({
+    address,
+    chain
+  });
+  if (tokens && tokens.length) {
+    tokens.forEach(t => (balances[t.symbol] = t));
+  }
+  commit("setUserBalances", balances);
+
+  // NFTs
+  const nfts = await Moralis.Web3API.account.getNFTs({ address, chain });
   commit("setUserNFTs", nfts);
 
-  let balances = await Moralis.Web3.getAllERC20({ chain });
-  balances = zipObject(
-    balances.map(b => b.symbol),
-    balances
-  );
-  commit("setUserBalances", balances);
+  // ENS (Mainnet only?)
+  // const ens = await Moralis.Web3API.resolve.resolveAddress({ address });
+  // commit("setUserENS", ens);
 }
 
 // Mint nft
