@@ -51,6 +51,8 @@ export async function logIn({ state, commit, dispatch }, silently = false) {
         }
       }
     }
+  } else {
+    Moralis.enableWeb3();
   }
 
   commit("setUser", user);
