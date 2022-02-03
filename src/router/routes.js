@@ -53,6 +53,11 @@ const routes = [
         name: "terms",
         path: "terms",
         component: () => import("pages/Terms.vue")
+      },
+      {
+        name: "funding",
+        path: "funding",
+        component: () => import("pages/FundingAllocations.vue")
       }
     ]
   },
