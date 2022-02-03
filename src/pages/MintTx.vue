@@ -8,7 +8,7 @@
       <q-linear-progress indeterminate />
     </div>
 
-    <div class="row q-col-gutter-xl">
+    <div class="row" :class="{ 'q-col-gutter-xl': doubleColumn }">
       <!-- Info column -->
       <div class="image-column page-col col q-col-3">
         <div>
@@ -27,9 +27,71 @@
         <!-- Project Info -->
         <ProjectInfo :project="project" />
 
-        <q-separator />
+        <q-separator color="white" />
 
         <!-- Transaction Details -->
+
+        <q-list separator>
+          <q-item>
+            <q-item-section>
+              <q-item-label>{{ $t("Transaction Summary") }}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label>
+                <a
+                  :href="etherscanURL"
+                  class="external"
+                  target="_blank"
+                  rel="nofollow"
+                >
+                  {{ $t("View on Etherscan") }}
+                </a>
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item>
+            <q-item-section>
+              <q-item-label>{{ $t("Cost per Mint") }}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label>
+                {{ $n(project.tokenPriceUSD, "USD") }} USD
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item>
+            <q-item-section>
+              <q-item-label>{{ $t("Number of Mints") }}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label>{{ 2 }}</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item>
+            <q-item-section>
+              <q-item-label>ChangeDAO {{ $t("Tip") }}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label>tip</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item>
+            <q-item-section>
+              <q-item-label>{{ $t("Total") }}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label>{{ $n(525, "USD") }} USD</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item>
+            <q-item-section>
+              <q-item-label>{{ $t("Currency") }}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label>ETH</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
       </div>
     </div>
   </q-page>
@@ -97,11 +159,14 @@ export default defineComponent({
     // Web3
     const user = computed(() => store.state.web3.user);
 
+    const etherscanURL = "https://etherscan.io/";
+
     return {
       doubleColumn,
       project,
       backgroundImage,
-      user
+      user,
+      etherscanURL
     };
   }
 });

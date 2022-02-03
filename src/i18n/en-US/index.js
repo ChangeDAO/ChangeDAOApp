@@ -8,6 +8,7 @@ export default {
   "Connect Wallet": "Connect Wallet",
   Copyright: "© Copyright 2021 Mount Change LLC. All rights reserved.",
   "Cost per Mint": "Cost per Mint",
+  Currency: "Currency",
   Custom: "Custom",
   Discord: "Discord",
   "From ChangeDAO": "From ChangeDAO",
@@ -50,9 +51,11 @@ export default {
   Tip: "Tip",
   Total: "Total",
   "Total Minted": "Total Minted",
+  "Transaction Summary": "Transaction Summary",
   Twitter: "Twitter",
   User: "User",
   "via [PaymentMethods]": "via DAI / USDC / ETH",
+  "View on Etherscan": "View on Etherscan",
 
   areasOfChange: {
     "energy-environment": "Energy & Environment",
