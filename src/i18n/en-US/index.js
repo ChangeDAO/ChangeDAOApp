@@ -1,7 +1,7 @@
 export default {
   "About Us": "About Us",
   "Add a Tip": "Add a Tip",
-  "Areas of Change": "Areas of Change",
+  "Area of Change": "Area of Change",
   "Artwork Description": "Artwork Description",
   Checkout: "Checkout",
   Collection: "Collection",

@@ -53,13 +53,11 @@
         </template>
       </p>
 
-      <!-- Areas of Change -->
-      <p>{{ $t("Areas of Change") }}</p>
+      <!-- Area of Change -->
+      <p>{{ $t("Area of Change") }}</p>
       <div class="q-gutter-md">
         <q-chip
-          v-for="area in project.areasOfChange"
-          :key="area"
-          :label="$t('areasOfChange.' + area)"
+          :label="$t('areasOfChange.' + project.areaOfChange)"
           class="text-subtitle1"
           :clickable="false"
           :ripple="false"
