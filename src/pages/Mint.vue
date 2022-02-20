@@ -28,7 +28,7 @@ import contractSubnodeRegistrar from "../../../changedao_contracts/deployments/l
 import contractNode from "../../../changedao_contracts/deployments/localhost/Node.json";
 
 export default defineComponent({
-  name: "PageFundingAllocations",
+  name: "PageMint",
 
   setup() {
     const label = ref("");

@@ -55,9 +55,9 @@ const routes = [
         component: () => import("pages/Terms.vue")
       },
       {
-        name: "funding",
-        path: "funding",
-        component: () => import("pages/FundingAllocations.vue")
+        name: "mint",
+        path: "mint",
+        component: () => import("pages/Mint.vue")
       }
     ]
   },
