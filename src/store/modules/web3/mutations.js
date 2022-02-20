@@ -13,6 +13,14 @@ export async function setUser(state, user) {
   }
 }
 
+export function setChain(state, chain) {
+  state.chain = chain || null;
+}
+
+export function setProvider(state, provider) {
+  state.provider = provider || null;
+}
+
 export function setUserAddress(state, address) {
   state.userAddress = (address || "").toLowerCase();
 }

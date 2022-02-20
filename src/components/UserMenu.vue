@@ -2,16 +2,22 @@
   <q-btn v-if="user" color="primary" class="q-pl-sm" no-caps rounded>
     <q-avatar v-html="avatar" size="sm" class="overflow-hidden q-mr-md" />
     {{ ens || address }}
-    <q-menu>
+    <q-menu auto-close>
       <q-list class="text-no-wrap">
-        <!-- balances -->
-        <q-item v-for="token in balances" :key="token.symbol" disabled>
+        <!-- Wallet Providers -->
+        <q-item
+          v-for="provider in providers"
+          :key="provider.value"
+          clickable
+          v-ripple
+          @click="logIn(provider.value)"
+        >
           <q-item-section avatar>
             <q-icon name="wallet" />
           </q-item-section>
           <q-item-section side>
             <q-item-label>
-              {{ tokenValueTxt(token.balance, token.decimals, token.symbol) }}
+              {{ provider.label }}
             </q-item-label>
           </q-item-section>
         </q-item>
@@ -29,13 +35,29 @@
     </q-menu>
   </q-btn>
 
-  <q-btn
-    v-else
-    @click="logIn"
-    icon="lock_open"
-    :label="$t('Log In')"
-    color="primary"
-  />
+  <q-btn v-else icon="lock_open" :label="$t('Log In')" color="primary">
+    <q-menu auto-close>
+      <q-list class="text-no-wrap">
+        <!-- Wallet Providers -->
+        <q-item
+          v-for="provider in providers"
+          :key="provider.value"
+          clickable
+          v-ripple
+          @click="logIn(provider.value)"
+        >
+          <q-item-section avatar>
+            <q-icon name="wallet" />
+          </q-item-section>
+          <q-item-section side>
+            <q-item-label>
+              {{ provider.label }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-menu>
+  </q-btn>
 </template>
 
 <script>
@@ -50,6 +72,25 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
+
+    const logIn = provider => {
+      store.dispatch("logIn", provider);
+    };
+
+    const logOut = () => {
+      store.dispatch("logOut");
+    };
+
+    const providers = [
+      {
+        value: "metamask",
+        label: "Metamask"
+      },
+      {
+        value: "walletconnect",
+        label: "WalletConnect"
+      }
+    ];
 
     const user = computed(() => store.state.web3.user);
 
@@ -74,23 +115,16 @@ export default defineComponent({
       return "";
     });
 
-    const logIn = () => {
-      store.dispatch("logIn");
-    };
-
-    const logOut = () => {
-      store.dispatch("logOut");
-    };
-
     return {
+      logIn,
+      logOut,
+      providers,
       tokenValueTxt,
       user,
       balances,
       avatar,
       address,
-      ens,
-      logIn,
-      logOut
+      ens
     };
   }
 });

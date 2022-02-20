@@ -6,53 +6,54 @@ const { t } = i18n.global;
 const chain = process.env.chain;
 
 // Init
-export async function init({ commit, dispatch }) {
+export async function init({ commit, dispatch, state }) {
+  Moralis.onChainChanged(chain => {
+    console.log("chain:", chain);
+    commit("setChain", chain);
+    dispatch("getUserData");
+  });
+
   Moralis.onAccountChanged(async address => {
-    if (!address) {
-      dispatch("logOut");
-      return;
-    }
-
-    commit("setUserAddress", address);
-
-    // 'Link this address to your account?'
-    // await Moralis.link(address);
-    // 'Address added!';
-
     if (address) {
+      // await Moralis.link(address);
       commit("setUser", Moralis.User.current());
+      commit("setUserAddress", address);
       dispatch("getUserData");
+    } else {
+      commit("setUserAddress");
+      return dispatch("logOut");
     }
   });
 
-  return dispatch("logIn", true);
+  Moralis.onConnect(provider => {
+    console.log("connect:", provider);
+    commit("setProvider", provider);
+  });
+
+  return dispatch("logIn");
 }
 
 // Log In
-export async function logIn({ state, commit, dispatch }, silently = false) {
-  let user = Moralis.User.current();
-  if (!user && !silently) {
-    const signingMessage = "Log in to ChangeDAO";
+export async function logIn({ state, commit, dispatch }, provider) {
+  // let user = Moralis.User.current();
+  let user = null;
+  if (provider) {
     try {
       user = await Moralis.authenticate({
-        signingMessage,
-        provider: "metamask"
+        signingMessage: t("Log in to ChangeDAO"),
+        provider,
+        chain
       });
+      console.log(user);
+      commit("setProvider", provider);
+      commit("setChain", Moralis.chainId);
     } catch (error) {
       if (!user && error.code !== 4001) {
         console.log(error);
-        try {
-          user = await Moralis.authenticate({
-            signingMessage,
-            provider: "walletconnect"
-          });
-        } catch (error) {
-          console.error(error);
-        }
       }
     }
-  } else {
-    Moralis.enableWeb3();
+  } else if (!user) {
+    Moralis.enableWeb3({ provider: state.provider || "metamask" });
   }
 
   commit("setUser", user);
