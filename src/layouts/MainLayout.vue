@@ -45,14 +45,14 @@
         >
           <q-btn color="primary" :label="$t('Get Email Updates')" />
           <div class="text-center q-gutter-md q-ma-none">
-            <q-btn
+            <!-- <q-btn
               @click="discord"
               icon="discord"
               :label="$t('Discord')"
               size="sm"
               padding="sm"
               outline
-            />
+            /> -->
             <q-btn
               @click="twitter"
               icon="twitter"
