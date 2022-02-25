@@ -8,7 +8,6 @@ const chain = process.env.chain;
 // Init
 export async function init({ commit, dispatch, state }) {
   Moralis.onChainChanged(chain => {
-    console.log("chain:", chain);
     commit("setChain", chain);
     dispatch("getUserData");
   });
@@ -35,8 +34,7 @@ export async function init({ commit, dispatch, state }) {
 
 // Log In
 export async function logIn({ state, commit, dispatch }, provider) {
-  // let user = Moralis.User.current();
-  let user = null;
+  let user = Moralis.User.current();
   if (provider) {
     try {
       user = await Moralis.authenticate({
@@ -44,20 +42,21 @@ export async function logIn({ state, commit, dispatch }, provider) {
         provider,
         chain
       });
-      console.log(user);
       commit("setProvider", provider);
       commit("setChain", Moralis.chainId);
     } catch (error) {
-      if (!user && error.code !== 4001) {
-        console.log(error);
-      }
+      console.log(error);
     }
-  } else if (!user) {
+  } else {
     Moralis.enableWeb3({ provider: state.provider || "metamask" });
   }
 
-  commit("setUser", user);
-  dispatch("getUserData");
+  if (Moralis.User.current()) {
+    commit("setUser", user);
+    dispatch("getUserData");
+  } else {
+    commit("setUser", null);
+  }
 
   return user;
 }
