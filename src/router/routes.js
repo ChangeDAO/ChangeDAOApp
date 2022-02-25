@@ -55,9 +55,9 @@ const routes = [
         component: () => import("pages/Terms.vue")
       },
       {
-        name: "dev-mint",
-        path: "mint",
-        component: () => import("pages/Mint.vue")
+        name: "deployment",
+        path: "deployment",
+        component: () => import("pages/DeploymentManagement.vue")
       }
     ]
   },
