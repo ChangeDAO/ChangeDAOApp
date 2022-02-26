@@ -63,7 +63,7 @@
 <script>
 import { defineComponent, computed } from "vue";
 import { useStore } from "vuex";
-import jazzicon from "jazzicon";
+import jazzicon from "@metamask/jazzicon";
 
 import { getEllipsisTxt, tokenValueTxt } from "../util/formatting";
 
