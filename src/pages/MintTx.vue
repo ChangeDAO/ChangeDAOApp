@@ -151,8 +151,8 @@ export default defineComponent({
       $q.notify({
         message,
         type: "negative",
-        icon: "alert",
-        position: "top"
+        icon: "error",
+        position: "top-right"
       });
     });
 

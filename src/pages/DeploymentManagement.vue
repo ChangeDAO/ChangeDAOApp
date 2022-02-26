@@ -92,8 +92,8 @@ export default defineComponent({
         $q.notify({
           message: formatError(error),
           type: "negative",
-          icon: "alert",
-          position: "top"
+          icon: "error",
+          position: "top-right"
         });
       }
     };

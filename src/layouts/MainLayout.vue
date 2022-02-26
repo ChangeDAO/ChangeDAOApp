@@ -14,6 +14,10 @@
       </q-toolbar>
     </q-header>
 
+    <q-page-container>
+      <router-view />
+    </q-page-container>
+
     <q-footer
       :class="{
         'q-px-xl q-pt-lg q-pb-md': $q.screen.gt.xs,
@@ -43,7 +47,11 @@
             'justify-center': !$q.screen.gt.xs
           }"
         >
-          <q-btn color="primary" :label="$t('Get Email Updates')" />
+          <q-btn
+            @click="dialogEmail = true"
+            color="primary"
+            :label="$t('Get Email Updates')"
+          />
           <div class="text-center q-gutter-md q-ma-none">
             <!-- <q-btn
               @click="discord"
@@ -83,17 +91,50 @@
       </div>
     </q-footer>
 
-    <q-page-container>
-      <router-view />
-    </q-page-container>
+    <q-dialog v-model="dialogEmail">
+      <q-card>
+        <q-card-section class="text-h4">
+          {{ $t("Get Email Updates") }}
+        </q-card-section>
+
+        <q-separator />
+
+        <q-form @submit="submitEmail" @reset="email = ''">
+          <q-card-section>
+            <q-input
+              v-model="email"
+              :label="$t('Email Address')"
+              :hint="$t('emailPrivacy')"
+              type="email"
+              name="email"
+            />
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn type="reset" :label="$t('Cancel')" flat v-close-popup />
+            <q-btn
+              :label="$t('Submit')"
+              type="submit"
+              color="primary"
+              :flat="!isEmailValid"
+              :disabled="!isEmailValid"
+              :loading="isSubmitting"
+            />
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-dialog>
   </q-layout>
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { openURL } from "quasar";
+import { formatError } from "../util/formatting";
 
 import UserMenu from "../components/UserMenu";
+
+export const EMAIL_FORMAT = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default defineComponent({
   name: "MainLayout",
@@ -101,6 +142,38 @@ export default defineComponent({
   components: { UserMenu },
 
   setup() {
+    const dialogEmail = ref(false);
+    const email = ref("");
+    const isEmailValid = computed(() => EMAIL_FORMAT.test(email.value));
+
+    const isSubmitting = ref(false);
+    const submitEmail = async () => {
+      try {
+        isSubmitting.value = true;
+        await fetch(
+          "https://getform.io/f/664280cb-7478-486f-8945-4cc9d819e88a",
+          {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            body: JSON.stringify({})
+          }
+        );
+        dialogEmail.value = false;
+        email.value = "";
+      } catch (error) {
+        console.error(error);
+        $q.notify({
+          message: formatError(error),
+          type: "negative",
+          icon: "error",
+          position: "top-right"
+        });
+      } finally {
+        isSubmitting.value = false;
+      }
+    };
+
     const discord = () => {
       openURL("https://discord.gg/88KeENZnyQ");
     };
@@ -109,6 +182,11 @@ export default defineComponent({
     };
 
     return {
+      dialogEmail,
+      email,
+      isEmailValid,
+      isSubmitting,
+      submitEmail,
       discord,
       twitter
     };

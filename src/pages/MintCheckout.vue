@@ -252,7 +252,7 @@ export default defineComponent({
         $q.notify({
           message: formatError(error),
           type: "negative",
-          icon: "alert",
+          icon: "error",
           position: "top-right"
         });
         console.error(error);
