@@ -55,8 +55,8 @@ const routes = [
         component: () => import("pages/Terms.vue")
       },
       {
-        name: "deployment",
-        path: "deployment",
+        name: "admin-deploy",
+        path: "admin/deploy",
         component: () => import("pages/DeploymentManagement.vue")
       }
     ]

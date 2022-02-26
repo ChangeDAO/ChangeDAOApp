@@ -5,14 +5,23 @@
     <q-list separator bordered>
       <q-item>
         <q-item-section>
-          <q-item-label caption>ChangeDaoERC721Factory.sol:</q-item-label>
-          <q-item-label>{{ ChangeDaoERC721Factory.address }}</q-item-label>
+          <q-item-label class="ellipsis" caption>
+            ChangeDaoERC721Factory.sol:
+          </q-item-label>
+          <q-item-label class="ellipsis">
+            {{ ChangeDaoERC721Factory.address }}
+          </q-item-label>
         </q-item-section>
       </q-item>
+
       <q-item>
         <q-item-section>
-          <q-item-label caption>ChangeDaoERC721:</q-item-label>
-          <q-item-label>{{ ChangeDaoERC721FactoryAddress }}</q-item-label>
+          <q-item-label class="ellipsis" caption>
+            ChangeDaoERC721:
+          </q-item-label>
+          <q-item-label class="ellipsis">
+            {{ changeDaoERC721FactoryAddress }}
+          </q-item-label>
         </q-item-section>
         <q-item-section side>
           <q-btn
@@ -23,12 +32,42 @@
           />
         </q-item-section>
       </q-item>
+
+      <q-item>
+        <q-item-section>
+          <q-item-label class="ellipsis" caption>
+            ChangeDaoERC721.sol:
+          </q-item-label>
+          <q-item-label class="ellipsis">
+            {{ ChangeDaoERC721.address }}
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+
+      <q-item>
+        <q-item-section>
+          <q-item-label class="ellipsis" caption>
+            ChangeDaoERC721Factory:
+          </q-item-label>
+          <q-item-label class="ellipsis">
+            {{ changeDaoERC721ImplementationAddress }}
+          </q-item-label>
+        </q-item-section>
+        <q-item-section side>
+          <q-btn
+            @click="setImplementationAddress"
+            label="Set"
+            color="primary"
+            :loading="setImplementationAddressLoading"
+          />
+        </q-item-section>
+      </q-item>
     </q-list>
   </q-page>
 </template>
 
 <script>
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, onMounted, ref } from "vue";
 import { useQuasar } from "quasar";
 
 import { formatError } from "../util/formatting";
@@ -48,18 +87,21 @@ export default defineComponent({
     const $q = useQuasar();
 
     const notifyError = error => {
-      $q.notify({
-        message: formatError(error),
-        type: "negative",
-        icon: "alert",
-        position: "top"
-      });
+      console.error(error);
+      if (!error.code || error.code !== 4001) {
+        $q.notify({
+          message: formatError(error),
+          type: "negative",
+          icon: "alert",
+          position: "top"
+        });
+      }
     };
 
     // Get factory address
-    const ChangeDaoERC721FactoryAddress = ref("");
+    const changeDaoERC721FactoryAddress = ref("");
     const getFactoryAddress = async () => {
-      return (ChangeDaoERC721FactoryAddress.value = await Moralis.executeFunction(
+      return (changeDaoERC721FactoryAddress.value = await Moralis.executeFunction(
         {
           contractAddress: ChangeDaoERC721.address,
           abi: ChangeDaoERC721.abi,
@@ -73,7 +115,7 @@ export default defineComponent({
     const setFactoryAddress = async () => {
       setFactoryAddressLoading.value = true;
       try {
-        await Moralis.executeFunction({
+        const tx = await Moralis.executeFunction({
           contractAddress: ChangeDaoERC721.address,
           abi: ChangeDaoERC721.abi,
           functionName: "setFactory",
@@ -81,7 +123,10 @@ export default defineComponent({
             _changeDaoERC721Factory: ChangeDaoERC721Factory.address
           }
         });
-        return getFactoryAddress();
+        console.log("tx:", tx);
+        const receipt = await tx.wait();
+        console.log("receipt:", receipt);
+        await getFactoryAddress();
       } catch (error) {
         notifyError(error);
       } finally {
@@ -89,21 +134,62 @@ export default defineComponent({
       }
     };
 
+    // Get implementation address
+    const changeDaoERC721ImplementationAddress = ref("");
+    const getImplementationAddress = async () => {
+      return (changeDaoERC721ImplementationAddress.value = await Moralis.executeFunction(
+        {
+          contractAddress: ChangeDaoERC721Factory.address,
+          abi: ChangeDaoERC721Factory.abi,
+          functionName: "changeDaoERC721Implementation"
+        }
+      ));
+    };
+
+    // Set implementation address
+    const setImplementationAddressLoading = ref(false);
+    const setImplementationAddress = async () => {
+      setImplementationAddressLoading.value = true;
+      try {
+        const tx = await Moralis.executeFunction({
+          contractAddress: ChangeDaoERC721Factory.address,
+          abi: ChangeDaoERC721Factory.abi,
+          functionName: "setImplementation",
+          params: {
+            _newChangeDaoERC721Implementation: ChangeDaoERC721.address
+          }
+        });
+        console.log("tx:", tx);
+        const receipt = await tx.wait();
+        console.log("receipt:", receipt);
+        await getImplementationAddress();
+      } catch (error) {
+        notifyError(error);
+      } finally {
+        setImplementationAddressLoading.value = false;
+      }
+    };
+
     // Call getters
     const init = async () => {
       try {
         getFactoryAddress();
+        getImplementationAddress();
       } catch (error) {
         notifyError(error);
       }
     };
-    init();
+    onMounted(init);
 
     return {
       ChangeDaoERC721Factory,
-      ChangeDaoERC721FactoryAddress,
+      ChangeDaoERC721,
+      changeDaoERC721FactoryAddress,
+      changeDaoERC721ImplementationAddress,
       setFactoryAddressLoading,
-      setFactoryAddress
+      setFactoryAddress,
+      setImplementationAddressLoading,
+      setImplementationAddress
     };
   }
 });
