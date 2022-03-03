@@ -6,10 +6,10 @@
       <q-item>
         <q-item-section>
           <q-item-label class="ellipsis" caption>
-            ChangeDaoERC721Factory.sol:
+            ChangeDaoNFTFactory.sol:
           </q-item-label>
           <q-item-label class="ellipsis">
-            {{ ChangeDaoERC721Factory.address }}
+            {{ ChangeDaoNFTFactory.address }}
           </q-item-label>
         </q-item-section>
       </q-item>
@@ -17,10 +17,10 @@
       <q-item>
         <q-item-section>
           <q-item-label class="ellipsis" caption>
-            ChangeDaoERC721:
+            ChangeDaoNFT:
           </q-item-label>
           <q-item-label class="ellipsis">
-            {{ changeDaoERC721FactoryAddress }}
+            {{ changeDaoNFTFactoryAddress }}
           </q-item-label>
         </q-item-section>
         <q-item-section side>
@@ -36,10 +36,10 @@
       <q-item>
         <q-item-section>
           <q-item-label class="ellipsis" caption>
-            ChangeDaoERC721.sol:
+            ChangeDaoNFT.sol:
           </q-item-label>
           <q-item-label class="ellipsis">
-            {{ ChangeDaoERC721.address }}
+            {{ ChangeDaoNFT.address }}
           </q-item-label>
         </q-item-section>
       </q-item>
@@ -47,10 +47,10 @@
       <q-item>
         <q-item-section>
           <q-item-label class="ellipsis" caption>
-            ChangeDaoERC721Factory:
+            ChangeDaoNFTFactory:
           </q-item-label>
           <q-item-label class="ellipsis">
-            {{ changeDaoERC721ImplementationAddress }}
+            {{ changeDaoNFTImplementationAddress }}
           </q-item-label>
         </q-item-section>
         <q-item-section side>
@@ -72,12 +72,11 @@ import { useQuasar } from "quasar";
 
 import { formatError } from "../util/formatting";
 
-import ChangeDaoERC721Factory from "../../../changedao_production/deployments/localhost/ChangeDaoERC721Factory.json";
-import ChangeDaoERC721 from "../../../changedao_production/deployments/localhost/ChangeDaoERC721.json";
+import ChangeDaoNFTFactory from "../../../changedao_production/deployments/localhost/ChangeDaoNFTFactory.json";
+import ChangeDaoNFT from "../../../changedao_production/deployments/localhost/ChangeDaoNFT.json";
 import SharedFunding from "../../../changedao_production/deployments/localhost/SharedFunding.json";
 import PaymentSplitter from "../../../changedao_production/deployments/localhost/PaymentSplitter.json";
 import FundingAllocations from "../../../changedao_production/deployments/localhost/FundingAllocations.json";
-import FundingFactory from "../../../changedao_production/deployments/localhost/FundingFactory.json";
 import PaymentSplitterFactory from "../../../changedao_production/deployments/localhost/PaymentSplitterFactory.json";
 
 export default defineComponent({
@@ -99,15 +98,13 @@ export default defineComponent({
     };
 
     // Get factory address
-    const changeDaoERC721FactoryAddress = ref("");
+    const changeDaoNFTFactoryAddress = ref("");
     const getFactoryAddress = async () => {
-      return (changeDaoERC721FactoryAddress.value = await Moralis.executeFunction(
-        {
-          contractAddress: ChangeDaoERC721.address,
-          abi: ChangeDaoERC721.abi,
-          functionName: "changeDaoERC721Factory"
-        }
-      ));
+      return (changeDaoNFTFactoryAddress.value = await Moralis.executeFunction({
+        contractAddress: ChangeDaoNFT.address,
+        abi: ChangeDaoNFT.abi,
+        functionName: "changeDaoNFTFactory"
+      }));
     };
 
     // Set factory address
@@ -115,17 +112,17 @@ export default defineComponent({
     const setFactoryAddress = async () => {
       setFactoryAddressLoading.value = true;
       try {
-        const tx = await Moralis.executeFunction({
-          contractAddress: ChangeDaoERC721.address,
-          abi: ChangeDaoERC721.abi,
-          functionName: "setFactory",
+        const request = await Moralis.executeFunction({
+          contractAddress: ChangeDaoNFT.address,
+          abi: ChangeDaoNFT.abi,
+          functionName: "setChangeDaoNFTFactory",
           params: {
-            _changeDaoERC721Factory: ChangeDaoERC721Factory.address
+            _changeDaoNFTFactory: ChangeDaoNFTFactory.address
           }
         });
-        console.log("tx:", tx);
-        const receipt = await tx.wait();
-        console.log("receipt:", receipt);
+        console.log("request:", request);
+        const response = await request.wait();
+        console.log("response:", response);
         await getFactoryAddress();
       } catch (error) {
         notifyError(error);
@@ -135,13 +132,13 @@ export default defineComponent({
     };
 
     // Get implementation address
-    const changeDaoERC721ImplementationAddress = ref("");
+    const changeDaoNFTImplementationAddress = ref("");
     const getImplementationAddress = async () => {
-      return (changeDaoERC721ImplementationAddress.value = await Moralis.executeFunction(
+      return (changeDaoNFTImplementationAddress.value = await Moralis.executeFunction(
         {
-          contractAddress: ChangeDaoERC721Factory.address,
-          abi: ChangeDaoERC721Factory.abi,
-          functionName: "changeDaoERC721Implementation"
+          contractAddress: ChangeDaoNFTFactory.address,
+          abi: ChangeDaoNFTFactory.abi,
+          functionName: "changeDaoNFTImplementation"
         }
       ));
     };
@@ -151,17 +148,17 @@ export default defineComponent({
     const setImplementationAddress = async () => {
       setImplementationAddressLoading.value = true;
       try {
-        const tx = await Moralis.executeFunction({
-          contractAddress: ChangeDaoERC721Factory.address,
-          abi: ChangeDaoERC721Factory.abi,
+        const request = await Moralis.executeFunction({
+          contractAddress: ChangeDaoNFTFactory.address,
+          abi: ChangeDaoNFTFactory.abi,
           functionName: "setImplementation",
           params: {
-            _newChangeDaoERC721Implementation: ChangeDaoERC721.address
+            _newChangeDaoNFTImplementation: ChangeDaoNFT.address
           }
         });
-        console.log("tx:", tx);
-        const receipt = await tx.wait();
-        console.log("receipt:", receipt);
+        console.log("request:", request);
+        const response = await request.wait();
+        console.log("response:", response);
         await getImplementationAddress();
       } catch (error) {
         notifyError(error);
@@ -182,10 +179,10 @@ export default defineComponent({
     onMounted(init);
 
     return {
-      ChangeDaoERC721Factory,
-      ChangeDaoERC721,
-      changeDaoERC721FactoryAddress,
-      changeDaoERC721ImplementationAddress,
+      ChangeDaoNFTFactory,
+      ChangeDaoNFT,
+      changeDaoNFTFactoryAddress,
+      changeDaoNFTImplementationAddress,
       setFactoryAddressLoading,
       setFactoryAddress,
       setImplementationAddressLoading,
