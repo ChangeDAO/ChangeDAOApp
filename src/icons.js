@@ -1,5 +1,5 @@
 export default {
-  arrow_drop_down: "mdi-menu-down",
+  keyboard_arrow_down: "mdi-menu-down",
   check: "mdi-check-circle",
   close: "mdi-close-circle-outline",
   discord: "mdi-discord",
