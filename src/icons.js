@@ -1,9 +1,10 @@
 export default {
-  keyboard_arrow_down: "mdi-menu-down",
+  arrow_drop_down: "mdi-menu-down",
   check: "mdi-check-circle",
   close: "mdi-close-circle-outline",
   discord: "mdi-discord",
   error: "mdi-alert-circle",
+  keyboard_arrow_down: "mdi-chevron-down",
   lock: "mdi-lock",
   lock_open: "mdi-lock-open",
   twitter: "mdi-twitter",
