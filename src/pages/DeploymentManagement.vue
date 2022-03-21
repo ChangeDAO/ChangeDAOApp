@@ -480,6 +480,28 @@
               </q-item-section>
             </q-item>
           </q-expansion-item>
+
+          <q-expansion-item label="PaymentSplitter" expand-separator>
+            <q-item>
+              <q-item-section>
+                <q-item-label class="ellipsis" caption>
+                  Release Funds
+                </q-item-label>
+                <q-item-label class="ellipsis">
+                  ChangeDao can release any funds inadvertently sent to the
+                  implementation contract.
+                </q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn
+                  @click="paymentSplitter.releaseFunds"
+                  label="Release Funds"
+                  color="primary"
+                  :loading="paymentSplitter.releasing.value"
+                />
+              </q-item-section>
+            </q-item>
+          </q-expansion-item>
         </q-list>
       </q-expansion-item>
     </q-list>
@@ -1187,6 +1209,26 @@ export default defineComponent({
       }
     };
 
+    const paymentSplitter = {
+      funds: ref(""),
+      releasing: ref(false),
+      releaseFunds: async () => {
+        try {
+          paymentSplitter.releasing.value = true;
+          const request = await Moralis.executeFunction({
+            contractAddress: PaymentSplitter.address,
+            abi: PaymentSplitter.abi,
+            functionName: "ownerReleaseAll"
+          });
+          const response = await request.wait();
+        } catch (error) {
+          notifyError(error);
+        } finally {
+          paymentSplitter.releasing.value = false;
+        }
+      }
+    };
+
     // Validation rules
     const isValidAddress = address =>
       Moralis.web3Library.utils.isAddress(address);
@@ -1210,7 +1252,8 @@ export default defineComponent({
       changeDaoNFTFactory,
       paymentSplitterFactory,
       sharedFundingFactory,
-      fundingA9s
+      fundingA9s,
+      paymentSplitter
     };
   }
 });
