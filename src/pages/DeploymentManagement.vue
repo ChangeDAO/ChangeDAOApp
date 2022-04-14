@@ -574,6 +574,7 @@
 </template>
 
 <script>
+import Moralis from "moralis";
 import { defineComponent, computed, ref } from "vue";
 import { useQuasar } from "quasar";
 import jazzicon from "@metamask/jazzicon";
@@ -597,14 +598,12 @@ export default defineComponent({
     const $q = useQuasar();
 
     const notifyError = error => {
-      if (!error.code || error.code !== 4001) {
-        $q.notify({
-          message: formatError(error.error),
-          type: "negative",
-          icon: "error",
-          position: "top-right"
-        });
-      }
+      $q.notify({
+        message: formatError(error.error || error),
+        type: "negative",
+        icon: "error",
+        position: "top-right"
+      });
     };
 
     const changeDaoNFT = {

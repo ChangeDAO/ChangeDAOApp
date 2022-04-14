@@ -45,7 +45,7 @@ export const tokenValueTxt = (value, decimals, symbol) =>
 export const formatError = error => {
   if (typeof error === "string") {
     return error;
-  } else {
+  } else if (error) {
     if ("message" in error) {
       return error.message;
     } else if ("code" in error) {
