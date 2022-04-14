@@ -597,10 +597,9 @@ export default defineComponent({
     const $q = useQuasar();
 
     const notifyError = error => {
-      console.error(error);
       if (!error.code || error.code !== 4001) {
         $q.notify({
-          message: formatError(error),
+          message: formatError(error.error),
           type: "negative",
           icon: "error",
           position: "top-right"
