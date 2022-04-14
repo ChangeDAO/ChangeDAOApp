@@ -6,6 +6,13 @@
       <!-- Addresses -->
       <q-expansion-item label="Contract Addresses" header-class="text-bold">
         <q-item v-for="(contract, name) in contracts" :key="name">
+          <q-item-section avatar>
+            <q-avatar
+              v-html="getAvatar(contract.address)"
+              size="sm"
+              class="overflow-hidden"
+            />
+          </q-item-section>
           <q-item-section>
             <q-item-label class="ellipsis" caption>{{ name }}:</q-item-label>
             <q-item-label class="ellipsis">
@@ -18,11 +25,20 @@
       <!-- Configuration -->
       <q-expansion-item label="Contract Configuration" header-class="text-bold">
         <q-list>
-          <q-expansion-item
-            label="ChangeDaoNFT"
-            @show="changeDaoNFT.get"
-            expand-separator
-          >
+          <q-expansion-item @show="changeDaoNFT.get" expand-separator>
+            <template v-slot:header>
+              <q-item-section avatar>
+                <q-avatar
+                  v-html="getAvatar(contracts.ChangeDaoNFT.address)"
+                  size="sm"
+                  class="overflow-hidden"
+                />
+              </q-item-section>
+              <q-item-section>
+                ChangeDaoNFT
+              </q-item-section>
+            </template>
+
             <!-- ChangeDaoNFT.changeDaoNFTFactory Address -->
             <q-item>
               <q-item-section>
@@ -121,11 +137,20 @@
             </q-item>
           </q-expansion-item>
 
-          <q-expansion-item
-            label="ChangeDaoNFTFactory"
-            @show="changeDaoNFTFactory.get"
-            expand-separator
-          >
+          <q-expansion-item @show="changeDaoNFTFactory.get" expand-separator>
+            <template v-slot:header>
+              <q-item-section avatar>
+                <q-avatar
+                  v-html="getAvatar(contracts.ChangeDaoNFTFactory.address)"
+                  size="sm"
+                  class="overflow-hidden"
+                />
+              </q-item-section>
+              <q-item-section>
+                ChangeDaoNFTFactory
+              </q-item-section>
+            </template>
+
             <!-- ChangeDaoNFTFactory.changeDaoNFT Address -->
             <q-item>
               <q-item-section>
@@ -187,11 +212,20 @@
             </q-item>
           </q-expansion-item>
 
-          <q-expansion-item
-            label="PaymentSplitterFactory"
-            @show="paymentSplitterFactory.get"
-            expand-separator
-          >
+          <q-expansion-item @show="paymentSplitterFactory.get" expand-separator>
+            <template v-slot:header>
+              <q-item-section avatar>
+                <q-avatar
+                  v-html="getAvatar(contracts.PaymentSplitterFactory.address)"
+                  size="sm"
+                  class="overflow-hidden"
+                />
+              </q-item-section>
+              <q-item-section>
+                PaymentSplitterFactory
+              </q-item-section>
+            </template>
+
             <!-- PaymentSplitterFactory.fundingAllocations Address -->
             <q-item>
               <q-item-section>
@@ -300,11 +334,20 @@
             </q-item>
           </q-expansion-item>
 
-          <q-expansion-item
-            label="SharedFundingFactory"
-            @show="sharedFundingFactory.get"
-            expand-separator
-          >
+          <q-expansion-item @show="sharedFundingFactory.get" expand-separator>
+            <template v-slot:header>
+              <q-item-section avatar>
+                <q-avatar
+                  v-html="getAvatar(contracts.SharedFundingFactory.address)"
+                  size="sm"
+                  class="overflow-hidden"
+                />
+              </q-item-section>
+              <q-item-section>
+                SharedFundingFactory
+              </q-item-section>
+            </template>
+
             <!-- SharedFundingFactory.sharedFunding Address -->
             <q-item>
               <q-item-section>
@@ -400,11 +443,20 @@
             </q-item>
           </q-expansion-item>
 
-          <q-expansion-item
-            label="FundingAllocations"
-            @show="fundingA9s.get"
-            expand-separator
-          >
+          <q-expansion-item @show="fundingA9s.get" expand-separator>
+            <template v-slot:header>
+              <q-item-section avatar>
+                <q-avatar
+                  v-html="getAvatar(contracts.FundingAllocations.address)"
+                  size="sm"
+                  class="overflow-hidden"
+                />
+              </q-item-section>
+              <q-item-section>
+                FundingAllocations
+              </q-item-section>
+            </template>
+
             <!-- FundingAllocations.changeDaoRoyalties Value -->
             <q-item>
               <q-item-section>
@@ -481,7 +533,20 @@
             </q-item>
           </q-expansion-item>
 
-          <q-expansion-item label="PaymentSplitter" expand-separator>
+          <q-expansion-item expand-separator>
+            <template v-slot:header>
+              <q-item-section avatar>
+                <q-avatar
+                  v-html="getAvatar(contracts.PaymentSplitter.address)"
+                  size="sm"
+                  class="overflow-hidden"
+                />
+              </q-item-section>
+              <q-item-section>
+                PaymentSplitter
+              </q-item-section>
+            </template>
+
             <q-item>
               <q-item-section>
                 <q-item-label class="ellipsis" caption>
@@ -511,6 +576,7 @@
 <script>
 import { defineComponent, computed, ref } from "vue";
 import { useQuasar } from "quasar";
+import jazzicon from "@metamask/jazzicon";
 
 import { formatError } from "../util/formatting";
 
@@ -1234,7 +1300,16 @@ export default defineComponent({
       Moralis.web3Library.utils.isAddress(address);
     const isValidShare = share => share >= 0 && share <= 1e4;
 
+    // Avatars
+    const getAvatar = address => {
+      const addr = address.slice(2, 10);
+      const seed = parseInt(addr, 16);
+      const avatar = jazzicon(24, seed);
+      return avatar.innerHTML;
+    };
+
     return {
+      getAvatar,
       isValidAddress,
       isValidShare,
       contracts: {
