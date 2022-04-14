@@ -514,15 +514,15 @@ import { useQuasar } from "quasar";
 
 import { formatError } from "../util/formatting";
 
-import ChangeDaoNFT from "../../../changedao_production/deployments/localhost/ChangeDaoNFT.json";
-import ChangeDaoNFTFactory from "../../../changedao_production/deployments/localhost/ChangeDaoNFTFactory.json";
-import ChangeMakers from "../../../changedao_production/deployments/localhost/ChangeMakers.json";
-import Controller from "../../../changedao_production/deployments/localhost/Controller.json";
-import FundingAllocations from "../../../changedao_production/deployments/localhost/FundingAllocations.json";
-import PaymentSplitter from "../../../changedao_production/deployments/localhost/PaymentSplitter.json";
-import PaymentSplitterFactory from "../../../changedao_production/deployments/localhost/PaymentSplitterFactory.json";
-import SharedFunding from "../../../changedao_production/deployments/localhost/SharedFunding.json";
-import SharedFundingFactory from "../../../changedao_production/deployments/localhost/SharedFundingFactory.json";
+import ChangeDaoNFT from "../../../changedao_production/deployments/rinkeby/ChangeDaoNFT.json";
+import ChangeDaoNFTFactory from "../../../changedao_production/deployments/rinkeby/ChangeDaoNFTFactory.json";
+import ChangeMakers from "../../../changedao_production/deployments/rinkeby/ChangeMakers.json";
+import Controller from "../../../changedao_production/deployments/rinkeby/Controller.json";
+import FundingAllocations from "../../../changedao_production/deployments/rinkeby/FundingAllocations.json";
+import PaymentSplitter from "../../../changedao_production/deployments/rinkeby/PaymentSplitter.json";
+import PaymentSplitterFactory from "../../../changedao_production/deployments/rinkeby/PaymentSplitterFactory.json";
+import SharedFunding from "../../../changedao_production/deployments/rinkeby/SharedFunding.json";
+import SharedFundingFactory from "../../../changedao_production/deployments/rinkeby/SharedFundingFactory.json";
 
 export default defineComponent({
   name: "PageDeploymentManagement",
@@ -1109,7 +1109,7 @@ export default defineComponent({
             const request = await Moralis.executeFunction({
               contractAddress: FundingAllocations.address,
               abi: FundingAllocations.abi,
-              functionName: "SetRoyaltiesShares",
+              functionName: "setChangeDaoRoyalties",
               params: {
                 _royaltiesShares: Moralis.web3Library.BigNumber.from(
                   fundingA9s.changeDaoRoyalties.model.value
@@ -1151,7 +1151,7 @@ export default defineComponent({
             const request = await Moralis.executeFunction({
               contractAddress: FundingAllocations.address,
               abi: FundingAllocations.abi,
-              functionName: "SetFundingShares",
+              functionName: "setChangeDaoFunding",
               params: {
                 _fundingShares: Moralis.web3Library.BigNumber.from(
                   fundingA9s.changeDaoFunding.model.value
