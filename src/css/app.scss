@@ -11,10 +11,42 @@ p {
   line-height: 24px;
 }
 
-.text-h1 { font-weight: bold; font-size: 92px; line-height: 112px; }
-.text-h2 { font-weight: bold; font-size: 56px; line-height: 68px; }
-.text-h3 { font-weight: bold; font-size: 32px; line-height: 39px; }
-.text-h4 { font-weight: 500; font-size: 24px; line-height: 29.09px; }
+.text-h1 {
+  font-weight: bold;
+  font-size: 92px;
+  line-height: 112px;
+  @media (max-width: $breakpoint-sm-max) {
+    font-size: 9vw;
+    line-height: 10.9vw;
+  }
+}
+.text-h2 {
+  font-weight: bold;
+  font-size: 56px;
+  line-height: 68px;
+  @media (max-width: $breakpoint-sm-max) {
+    font-size: 5.5vw;
+    line-height: 6.6vw;
+  }
+}
+.text-h3 {
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 39px;
+  @media (max-width: $breakpoint-sm-max) {
+    font-size: 3.125vw;
+    line-height: 3.8vw;
+  }
+}
+.text-h4 {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29.09px;
+  @media (max-width: $breakpoint-sm-max) {
+    font-size: 2.34vw;
+    line-height: 2.84vw;
+  }
+}
 
 .text-subtitle, .q-btn__content {
   font-weight: 600;

@@ -7,6 +7,7 @@ export default {
   keyboard_arrow_down: "mdi-chevron-down",
   lock: "mdi-lock",
   lock_open: "mdi-lock-open",
+  slack: "mdi-slack",
   twitter: "mdi-twitter",
   wallet: "mdi-wallet"
 };

@@ -6,7 +6,7 @@ const routes = [
       {
         name: "home",
         path: "",
-        redirect: { name: "mint", params: { projectID: "sample" } }
+        component: () => import("pages/Home.vue")
       },
       {
         name: "mint",
