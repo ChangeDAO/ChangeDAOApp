@@ -7,7 +7,7 @@ export default {
   Checkout: "Checkout",
   Collection: "Collection",
   "Connect Wallet": "Connect Wallet",
-  Copyright: "© Copyright 2021 Mount Change LLC. All rights reserved.",
+  Copyright: "© Copyright 2022 ChangeDAO LLC. All rights reserved.",
   "Cost per Mint": "Cost per Mint",
   Currency: "Currency",
   Custom: "Custom",
