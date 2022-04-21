@@ -28,6 +28,12 @@ const routes = [
         component: () => import("pages/MintTx.vue")
       },
       {
+        name: "cm-signup",
+        path: "signup",
+        props: true,
+        component: () => import("pages/Signup.vue")
+      },
+      {
         name: "user",
         path: "user/:id",
         props: true,
