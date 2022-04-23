@@ -29,6 +29,10 @@ export const getEllipsisTxt = (str, n = 4) => {
   return "";
 };
 
+export const shortAddr = (address, n) => {
+  return "0x" + getEllipsisTxt(address.slice(2), n);
+};
+
 export const tokenValue = (value, decimals) =>
   decimals ? value / Math.pow(10, decimals) : value;
 

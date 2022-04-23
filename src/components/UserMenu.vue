@@ -1,6 +1,6 @@
 <template>
   <q-btn v-if="user" color="primary" class="q-pl-sm" no-caps rounded>
-    <q-avatar v-html="avatar" size="sm" class="overflow-hidden q-mr-md" />
+    <AddrAvatar :value="address" class="q-mr-md" />
     {{ ens || address }}
     <q-menu auto-close>
       <q-list class="text-no-wrap">
@@ -63,12 +63,14 @@
 <script>
 import { defineComponent, computed } from "vue";
 import { useStore } from "vuex";
-import jazzicon from "@metamask/jazzicon";
 
-import { getEllipsisTxt, tokenValueTxt } from "../util/formatting";
+import { shortAddr, tokenValueTxt } from "../util/formatting";
+import AddrAvatar from "./AddrAvatar";
 
 export default defineComponent({
   name: "UserMenu",
+
+  components: { AddrAvatar },
 
   setup() {
     const store = useStore();
@@ -98,7 +100,7 @@ export default defineComponent({
 
     const address = computed(() => {
       if (user.value) {
-        return "0x" + getEllipsisTxt(store.state.web3.userAddress.slice(2));
+        return shortAddr(store.state.web3.userAddress);
       }
       return "";
     });
@@ -107,10 +109,7 @@ export default defineComponent({
 
     const avatar = computed(() => {
       if (user.value) {
-        const addr = store.state.web3.userAddress.slice(2, 10);
-        const seed = parseInt(addr, 16);
-        const avatar = jazzicon(24, seed);
-        return avatar.innerHTML;
+        return addressAvatar(store.state.web3.userAddress);
       }
       return "";
     });
