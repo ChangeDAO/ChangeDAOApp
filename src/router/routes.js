@@ -64,6 +64,11 @@ const routes = [
         name: "admin-deploy",
         path: "admin/deploy",
         component: () => import("pages/DeploymentManagement.vue")
+      },
+      {
+        name: "admin-approve",
+        path: "admin/approve",
+        component: () => import("pages/ChangemakerManagement.vue")
       }
     ]
   },

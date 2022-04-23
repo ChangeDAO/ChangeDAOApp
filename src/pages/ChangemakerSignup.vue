@@ -80,10 +80,10 @@
         <!-- YouTube -->
         <q-input v-model="data.youtube" :label="$t('YouTube')" item-aligned />
 
-        <!-- Portfolio URL -->
+        <!-- Website URL -->
         <q-input
           v-model="data.website"
-          :label="$t('Portfolio URL')"
+          :label="$t('Website URL')"
           item-aligned
         />
       </q-list>
@@ -108,7 +108,7 @@
 <script>
 import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { LocalStorage, useQuasar } from "quasar";
+import { LocalStorage } from "quasar";
 import Moralis from "moralis";
 
 import { notifyError } from "../util/notify";
@@ -123,8 +123,6 @@ export default {
   components: { AddrAvatar },
 
   setup() {
-    const $q = useQuasar();
-
     const store = useStore();
 
     const address = computed(() => store.state.web3.userAddress);
@@ -149,7 +147,10 @@ export default {
     watch(
       data,
       value => {
-        LocalStorage.set(LOCALSTORAGE_KEY, value);
+        LocalStorage.set(LOCALSTORAGE_KEY, {
+          ...value,
+          address: address.value
+        });
       },
       { deep: true }
     );

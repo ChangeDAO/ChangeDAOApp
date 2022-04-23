@@ -1,6 +1,7 @@
 export default {
   "About Us": "About Us",
   "Add a Tip": "Add a Tip",
+  Approve: "Approve",
   "Area of Change": "Area of Change",
   "Artwork Description": "Artwork Description",
   Cancel: "Cancel",
@@ -13,6 +14,7 @@ export default {
   Currency: "Currency",
   Custom: "Custom",
   Discord: "Discord",
+  Deny: "Deny",
   "Email Address": "Email Address",
   emailPrivacy: "We'll never share your email with anyone else.",
   "First Name": "First Name",
@@ -31,6 +33,7 @@ export default {
   "Long Bio": "Long Bio",
   "Making Change By": "Making Change By",
   "Mint NFT": "Mint NFT",
+  Name: "Name",
   "Need help?": "Need help?",
   "No Tip": "No Tip",
   "Not enough X": "Your wallet does not contain enough {X}",
@@ -39,7 +42,6 @@ export default {
   "Part of": "Part of",
   "Please and thankyou":
     "Your gift powers the mission and vision of ChangeDAO. If you support the work we're doing, please consider adding a tip.",
-  "Portfolio URL": "Portfolio URL",
   "Price per Token": "Price per Token",
   "Primary Split Caption":
     "100% of all primary sales will be split as follows:",
@@ -70,6 +72,7 @@ export default {
   "via [PaymentMethods]": "via DAI / USDC / ETH",
   "View on Etherscan": "View on Etherscan",
   "Wallet Address": "Wallet Address",
+  "Website URL": "Website URL",
   YouTube: "YouTube",
 
   areasOfChange: {
