@@ -31,7 +31,7 @@ const routes = [
         name: "cm-signup",
         path: "signup",
         props: true,
-        component: () => import("pages/Signup.vue")
+        component: () => import("pages/ChangemakerSignup.vue")
       },
       {
         name: "user",
