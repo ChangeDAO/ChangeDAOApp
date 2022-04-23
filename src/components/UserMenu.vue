@@ -1,7 +1,7 @@
 <template>
   <q-btn v-if="user" color="primary" class="q-pl-sm" no-caps rounded>
     <AddrAvatar :value="address" class="q-mr-md" />
-    {{ ens || address }}
+    {{ ens || shortAddr(address) }}
     <q-menu auto-close>
       <q-list class="text-no-wrap">
         <!-- Wallet Providers -->
@@ -100,7 +100,7 @@ export default defineComponent({
 
     const address = computed(() => {
       if (user.value) {
-        return shortAddr(store.state.web3.userAddress);
+        return store.state.web3.userAddress;
       }
       return "";
     });
@@ -123,6 +123,7 @@ export default defineComponent({
       balances,
       avatar,
       address,
+      shortAddr,
       ens
     };
   }
