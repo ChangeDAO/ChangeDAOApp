@@ -579,7 +579,7 @@ import { defineComponent, computed, ref } from "vue";
 import { useQuasar } from "quasar";
 import jazzicon from "@metamask/jazzicon";
 
-import { formatError } from "../util/formatting";
+import { notifyError } from "../util/notify";
 
 import ChangeDaoNFT from "../../../changedao_production/deployments/rinkeby/ChangeDaoNFT.json";
 import ChangeDaoNFTFactory from "../../../changedao_production/deployments/rinkeby/ChangeDaoNFTFactory.json";
@@ -596,15 +596,6 @@ export default defineComponent({
 
   setup() {
     const $q = useQuasar();
-
-    const notifyError = error => {
-      $q.notify({
-        message: formatError(error.error || error),
-        type: "negative",
-        icon: "error",
-        position: "top-right"
-      });
-    };
 
     const changeDaoNFT = {
       get: () =>
@@ -634,7 +625,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             changeDaoNFT.factoryAddress.loading.value = false;
           }
@@ -653,7 +644,7 @@ export default defineComponent({
             const response = await request.wait();
             await changeDaoNFT.factoryAddress.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             changeDaoNFT.factoryAddress.setting.value = false;
           }
@@ -679,7 +670,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             changeDaoNFT.controllerAddress.loading.value = false;
           }
@@ -698,7 +689,7 @@ export default defineComponent({
             const response = await request.wait();
             await changeDaoNFT.controllerAddress.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             changeDaoNFT.controllerAddress.setting.value = false;
           }
@@ -719,7 +710,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             changeDaoNFT.feeNumerator.loading.value = false;
           }
@@ -740,7 +731,7 @@ export default defineComponent({
             const response = await request.wait();
             await changeDaoNFT.feeNumerator.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             changeDaoNFT.feeNumerator.setting.value = false;
           }
@@ -774,7 +765,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             changeDaoNFTFactory.i12nAddress.loading.value = false;
           }
@@ -793,7 +784,7 @@ export default defineComponent({
             const response = await request.wait();
             await changeDaoNFTFactory.i12nAddress.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             changeDaoNFTFactory.i12nAddress.setting.value = false;
           }
@@ -820,7 +811,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             changeDaoNFTFactory.controllerAddress.loading.value = false;
           }
@@ -839,7 +830,7 @@ export default defineComponent({
             const response = await request.wait();
             await changeDaoNFTFactory.controllerAddress.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             changeDaoNFTFactory.controllerAddress.setting.value = false;
           }
@@ -875,7 +866,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             paymentSplitterFactory.fundingA9sAddress.loading.value = false;
           }
@@ -894,7 +885,7 @@ export default defineComponent({
             const response = await request.wait();
             await paymentSplitterFactory.fundingA9sAddress.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             paymentSplitterFactory.fundingA9sAddress.setting.value = false;
           }
@@ -921,7 +912,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             paymentSplitterFactory.paymentSplitterAddress.loading.value = false;
           }
@@ -940,7 +931,7 @@ export default defineComponent({
             const response = await request.wait();
             await paymentSplitterFactory.paymentSplitterAddress.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             paymentSplitterFactory.paymentSplitterAddress.setting.value = false;
           }
@@ -967,7 +958,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             paymentSplitterFactory.controllerAddress.loading.value = false;
           }
@@ -986,7 +977,7 @@ export default defineComponent({
             const response = await request.wait();
             await paymentSplitterFactory.controllerAddress.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             paymentSplitterFactory.controllerAddress.setting.value = false;
           }
@@ -1021,7 +1012,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             sharedFundingFactory.i12nAddress.loading.value = false;
           }
@@ -1040,7 +1031,7 @@ export default defineComponent({
             const response = await request.wait();
             await sharedFundingFactory.i12nAddress.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             sharedFundingFactory.i12nAddress.setting.value = false;
           }
@@ -1067,7 +1058,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             sharedFundingFactory.fundingA9sAddress.loading.value = false;
           }
@@ -1086,7 +1077,7 @@ export default defineComponent({
             const response = await request.wait();
             await sharedFundingFactory.fundingA9sAddress.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             sharedFundingFactory.fundingA9sAddress.setting.value = false;
           }
@@ -1113,7 +1104,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             sharedFundingFactory.controllerAddress.loading.value = false;
           }
@@ -1132,7 +1123,7 @@ export default defineComponent({
             const response = await request.wait();
             await sharedFundingFactory.controllerAddress.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             sharedFundingFactory.controllerAddress.setting.value = false;
           }
@@ -1162,7 +1153,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             fundingA9s.changeDaoRoyalties.loading.value = false;
           }
@@ -1183,7 +1174,7 @@ export default defineComponent({
             const response = await request.wait();
             await fundingA9s.changeDaoRoyalties.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             fundingA9s.changeDaoRoyalties.setting.value = false;
           }
@@ -1204,7 +1195,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             fundingA9s.changeDaoFunding.loading.value = false;
           }
@@ -1225,7 +1216,7 @@ export default defineComponent({
             const response = await request.wait();
             await fundingA9s.changeDaoFunding.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             fundingA9s.changeDaoFunding.setting.value = false;
           }
@@ -1246,7 +1237,7 @@ export default defineComponent({
               }
             );
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             fundingA9s.changeDaoWallet.loading.value = false;
           }
@@ -1265,7 +1256,7 @@ export default defineComponent({
             const response = await request.wait();
             await fundingA9s.changeDaoWallet.get();
           } catch (error) {
-            notifyError(error);
+            notifyError(error.error || error);
           } finally {
             fundingA9s.changeDaoWallet.setting.value = false;
           }
@@ -1286,7 +1277,7 @@ export default defineComponent({
           });
           const response = await request.wait();
         } catch (error) {
-          notifyError(error);
+          notifyError(error.error || error);
         } finally {
           paymentSplitter.releasing.value = false;
         }

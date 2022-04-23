@@ -130,7 +130,7 @@
 <script>
 import { defineComponent, computed, ref } from "vue";
 import { openURL } from "quasar";
-import { formatError } from "../util/formatting";
+import { notifyError } from "../util/notify";
 
 import UserMenu from "../components/UserMenu";
 
@@ -163,12 +163,7 @@ export default defineComponent({
         email.value = "";
       } catch (error) {
         console.error(error);
-        $q.notify({
-          message: formatError(error),
-          type: "negative",
-          icon: "error",
-          position: "top-right"
-        });
+        notifyError(error);
       } finally {
         isSubmitting.value = false;
       }

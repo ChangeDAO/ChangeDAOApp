@@ -80,5 +80,11 @@ export default {
 
   error: {
     loadingProject: "There was a problem getting the project information"
-  }
+  },
+
+  success: {},
+
+  warning: {},
+
+  hint: {}
 };

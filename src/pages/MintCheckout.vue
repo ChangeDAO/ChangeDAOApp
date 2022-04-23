@@ -155,7 +155,7 @@ import LargeDialog from "../components/LargeDialog";
 import ProjectInfo from "../components/ProjectInfo";
 import SmoothReflow from "../components/SmoothReflow";
 
-import { formatError } from "../util/formatting";
+import { notifyError, notifySuccess } from "../util/notify";
 
 export default defineComponent({
   name: "DialogMintCheckout",
@@ -237,24 +237,14 @@ export default defineComponent({
         isPurchasing.value = true;
         const receipt = await store.dispatch("mintNFT", {});
         console.log(receipt);
-        // $q.notify({
-        //   message: "Success",
-        //   type: "positive",
-        //   icon: "check",
-        //   position: "top-right"
-        // });
+        notifySuccess("Success");
         isPurchasing.value = false;
         router.replace({
           name: "mintTx",
           params: { txID: "transactionIDgoesHERE" }
         });
       } catch (error) {
-        $q.notify({
-          message: formatError(error),
-          type: "negative",
-          icon: "error",
-          position: "top-right"
-        });
+        notifyError(error);
         console.error(error);
       } finally {
         isPurchasing.value = false;
