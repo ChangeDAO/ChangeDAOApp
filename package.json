@@ -11,7 +11,7 @@
     "dev": "quasar dev -m spa",
     "emulate": "moralis-admin-cli connect-local-devchain",
     "build": "quasar build -m pwa",
-    "deploy:dev": "moralis-admin-cli deploy -p dist/pwa -d e69yfeykvwjv.usemoralis.com"
+    "deploy:dev": "moralis-admin-cli deploy -p dist/pwa -d cbxan2ahb1bf.usemoralis.com"
   },
   "dependencies": {
     "@metamask/jazzicon": "^2.0.0",
