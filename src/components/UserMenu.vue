@@ -35,29 +35,7 @@
     </q-menu>
   </q-btn>
 
-  <q-btn v-else icon="lock_open" :label="$t('Log In')" color="primary">
-    <q-menu auto-close>
-      <q-list class="text-no-wrap">
-        <!-- Wallet Providers -->
-        <q-item
-          v-for="provider in providers"
-          :key="provider.value"
-          clickable
-          v-ripple
-          @click="logIn(provider.value)"
-        >
-          <q-item-section avatar>
-            <q-icon name="wallet" />
-          </q-item-section>
-          <q-item-section side>
-            <q-item-label>
-              {{ provider.label }}
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-menu>
-  </q-btn>
+  <LogIn v-else />
 </template>
 
 <script>
@@ -66,11 +44,12 @@ import { useStore } from "vuex";
 
 import { shortAddr, tokenValueTxt } from "../util/formatting";
 import AddrAvatar from "./AddrAvatar";
+import LogIn from "./LogIn";
 
 export default defineComponent({
   name: "UserMenu",
 
-  components: { AddrAvatar },
+  components: { AddrAvatar, LogIn },
 
   setup() {
     const store = useStore();
@@ -107,13 +86,6 @@ export default defineComponent({
 
     const ens = computed(() => store.state.web3.userENS);
 
-    const avatar = computed(() => {
-      if (user.value) {
-        return addressAvatar(store.state.web3.userAddress);
-      }
-      return "";
-    });
-
     return {
       logIn,
       logOut,
@@ -121,7 +93,6 @@ export default defineComponent({
       tokenValueTxt,
       user,
       balances,
-      avatar,
       address,
       shortAddr,
       ens

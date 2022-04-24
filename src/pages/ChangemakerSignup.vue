@@ -6,7 +6,7 @@
       <div class="row q-my-xl">
         <q-list class="page-col col">
           <!-- Wallet Address -->
-          <q-item>
+          <q-item v-if="address">
             <q-item-section side>
               <AddrAvatar :value="address" />
             </q-item-section>
@@ -19,6 +19,7 @@
               </q-item-label>
             </q-item-section>
           </q-item>
+          <LogIn v-else />
 
           <!-- First Name -->
           <q-input
@@ -104,6 +105,7 @@
               @click="submit"
               :label="$t('Submit')"
               :loading="isSubmitting"
+              :disable="!isValid"
               color="primary"
             />
           </q-item-label>
@@ -127,7 +129,7 @@
     background-color: $dark;
     width: 350px;
     max-width: 100%;
-    margin-top: -175px;
+    margin-top: -190px;
 
     &:after {
       content: "";
@@ -144,16 +146,17 @@ import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
 import Moralis from "moralis";
 
-import { notifyError } from "../util/notify";
+import { notifyError, notifySuccess } from "../util/notify";
 import { shortAddr } from "../util/formatting";
 import AddrAvatar from "../components/AddrAvatar";
+import LogIn from "../components/LogIn";
 
 const LOCALSTORAGE_KEY = "changemakerSignup";
 
 export default {
   name: "PageChangemakerSignup",
 
-  components: { AddrAvatar },
+  components: { AddrAvatar, LogIn },
 
   setup() {
     const store = useStore();
@@ -177,6 +180,14 @@ export default {
       }
     );
 
+    const isValid = computed(
+      () =>
+        address.value &&
+        data.value.firstName &&
+        data.value.lastName &&
+        data.value.username
+    );
+
     watch(
       data,
       value => {
@@ -194,8 +205,9 @@ export default {
         isSubmitting.value = true;
         await Moralis.Cloud.run("createChangemakerRequest", data.value);
         LocalStorage.remove(LOCALSTORAGE_KEY);
+        notifySuccess("Success");
       } catch (error) {
-        notifyError(error);
+        notifyError(error.error || error);
       } finally {
         isSubmitting.value = false;
       }
@@ -206,7 +218,8 @@ export default {
       address,
       data,
       submit,
-      isSubmitting
+      isSubmitting,
+      isValid
     };
   }
 };
