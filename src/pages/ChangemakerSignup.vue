@@ -1,109 +1,142 @@
 <template>
-  <q-page padding>
-    <div class="row">
-      <q-list class="page-col col">
-        <!-- Wallet Address -->
-        <q-item>
-          <q-item-section side>
-            <AddrAvatar :value="address" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label caption>
-              {{ $t("Wallet Address") }}
-            </q-item-label>
-            <q-item-label>
-              {{ shortAddr(address) }}
-            </q-item-label>
-          </q-item-section>
-        </q-item>
+  <q-page class="page-changemaker-signup">
+    <div class="banner q-layout-padding"></div>
+    <div class="q-layout-padding">
+      <div class="avatar"></div>
+      <div class="row q-my-xl">
+        <q-list class="page-col col">
+          <!-- Wallet Address -->
+          <q-item>
+            <q-item-section side>
+              <AddrAvatar :value="address" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label caption>
+                {{ $t("Wallet Address") }}
+              </q-item-label>
+              <q-item-label>
+                {{ shortAddr(address) }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
 
-        <!-- First Name -->
-        <q-input
-          v-model="data.firstName"
-          :label="$t('First Name')"
-          item-aligned
-        />
-
-        <!-- Last Name -->
-        <q-input
-          v-model="data.lastName"
-          :label="$t('Last Name')"
-          item-aligned
-        />
-
-        <!-- Username -->
-        <q-input v-model="data.username" :label="$t('Username')" item-aligned />
-
-        <!-- Short Bio -->
-        <q-input
-          v-model="data.shortBio"
-          :label="$t('Short Bio')"
-          autogrow
-          item-aligned
-        />
-
-        <!-- Long Bio -->
-        <q-input
-          v-model="data.longBio"
-          :label="$t('Long Bio')"
-          autogrow
-          item-aligned
-        />
-
-        <!-- Creating Change By -->
-        <q-input
-          v-model="data.creatingChangeBy"
-          :label="$t('Creating Change By')"
-          autogrow
-          item-aligned
-        />
-      </q-list>
-
-      <!-- Second Column -->
-      <q-list class="page-col col">
-        <!-- Twitter -->
-        <q-input v-model="data.twitter" :label="$t('Twitter')" item-aligned />
-
-        <!-- Discord -->
-        <q-input v-model="data.discord" :label="$t('Discord')" item-aligned />
-
-        <!-- Instagram -->
-        <q-input
-          v-model="data.instagram"
-          :label="$t('Instagram')"
-          item-aligned
-        />
-
-        <!-- TikTok -->
-        <q-input v-model="data.tiktok" :label="$t('TikTok')" item-aligned />
-
-        <!-- YouTube -->
-        <q-input v-model="data.youtube" :label="$t('YouTube')" item-aligned />
-
-        <!-- Website URL -->
-        <q-input
-          v-model="data.website"
-          :label="$t('Website URL')"
-          item-aligned
-        />
-      </q-list>
-    </div>
-
-    <!-- Submit -->
-    <q-item>
-      <q-item-section>
-        <q-item-label class="text-center">
-          <q-btn
-            @click="submit"
-            :label="$t('Submit')"
-            :loading="isSubmitting"
-            color="primary"
+          <!-- First Name -->
+          <q-input
+            v-model="data.firstName"
+            :label="$t('First Name')"
+            item-aligned
           />
-        </q-item-label>
-      </q-item-section>
-    </q-item>
+
+          <!-- Last Name -->
+          <q-input
+            v-model="data.lastName"
+            :label="$t('Last Name')"
+            item-aligned
+          />
+
+          <!-- Username -->
+          <q-input
+            v-model="data.username"
+            :label="$t('Username')"
+            item-aligned
+          />
+
+          <!-- Short Bio -->
+          <q-input
+            v-model="data.shortBio"
+            :label="$t('Short Bio')"
+            autogrow
+            item-aligned
+          />
+
+          <!-- Long Bio -->
+          <q-input
+            v-model="data.longBio"
+            :label="$t('Long Bio')"
+            autogrow
+            item-aligned
+          />
+
+          <!-- Creating Change By -->
+          <q-input
+            v-model="data.creatingChangeBy"
+            :label="$t('Creating Change By')"
+            autogrow
+            item-aligned
+          />
+        </q-list>
+
+        <!-- Second Column -->
+        <q-list class="page-col col">
+          <!-- Twitter -->
+          <q-input v-model="data.twitter" :label="$t('Twitter')" item-aligned />
+
+          <!-- Discord -->
+          <q-input v-model="data.discord" :label="$t('Discord')" item-aligned />
+
+          <!-- Instagram -->
+          <q-input
+            v-model="data.instagram"
+            :label="$t('Instagram')"
+            item-aligned
+          />
+
+          <!-- TikTok -->
+          <q-input v-model="data.tiktok" :label="$t('TikTok')" item-aligned />
+
+          <!-- YouTube -->
+          <q-input v-model="data.youtube" :label="$t('YouTube')" item-aligned />
+
+          <!-- Website URL -->
+          <q-input
+            v-model="data.website"
+            :label="$t('Website URL')"
+            item-aligned
+          />
+        </q-list>
+      </div>
+
+      <!-- Submit -->
+      <q-item>
+        <q-item-section>
+          <q-item-label class="text-center">
+            <q-btn
+              @click="submit"
+              :label="$t('Submit')"
+              :loading="isSubmitting"
+              color="primary"
+            />
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+    </div>
   </q-page>
 </template>
+
+<style lang="scss">
+.page-changemaker-signup {
+  .banner {
+    background-color: $separator-dark-color;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 288px;
+  }
+
+  .avatar {
+    background-color: $dark;
+    width: 350px;
+    max-width: 100%;
+    margin-top: -175px;
+
+    &:after {
+      content: "";
+      display: block;
+      padding-bottom: 100%;
+    }
+  }
+}
+</style>
 
 <script>
 import { computed, ref, watch } from "vue";
