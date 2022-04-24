@@ -240,7 +240,7 @@ export default defineComponent({
     const approving = ref({});
     const approve = async cm => {
       try {
-        approving[cm.address] = true;
+        approving.value[cm.address] = true;
         const tx = await Moralis.executeFunction({
           contractAddress: ChangeMakers.address,
           abi: ChangeMakers.abi,
@@ -255,14 +255,14 @@ export default defineComponent({
       } catch (error) {
         notifyError(error.error || error);
       } finally {
-        approving[cm.address] = false;
+        approving.value[cm.address] = false;
       }
     };
 
     const updating = ref({});
     const update = async cm => {
       try {
-        updating[cm.address] = true;
+        updating.value[cm.address] = true;
         cm.isApproved = await Moralis.executeFunction({
           contractAddress: ChangeMakers.address,
           abi: ChangeMakers.abi,
@@ -274,7 +274,7 @@ export default defineComponent({
       } catch (error) {
         notifyError(error.error || error);
       } finally {
-        updating[cm.address] = false;
+        updating.value[cm.address] = false;
       }
     };
 
@@ -284,7 +284,7 @@ export default defineComponent({
     const revoking = ref({});
     const revoke = async cm => {
       try {
-        updating[cm.address] = true;
+        updating.value[cm.address] = true;
         const tx = await Moralis.executeFunction({
           contractAddress: ChangeMakers.address,
           abi: ChangeMakers.abi,
@@ -300,7 +300,7 @@ export default defineComponent({
       } catch (error) {
         notifyError(error.error || error);
       } finally {
-        updating[cm.address] = false;
+        updating.value[cm.address] = false;
       }
     };
 
