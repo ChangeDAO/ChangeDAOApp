@@ -1,18 +1,19 @@
 <template>
   <q-page padding>
     <div class="text-h4 q-mb-md">Changemaker Approval</div>
-    <q-list separator bordered>
-      <q-expansion-item v-for="cm in changemakers" :key="cm.address">
+    <q-linear-progress v-if="!changemakers.length" indeterminate />
+    <q-list v-else separator bordered>
+      <q-expansion-item v-for="cm in changemakers" :key="cm.walletAddress">
         <template v-slot:header>
           <q-item-section side>
-            <AddrAvatar :value="cm.address" />
+            <AddrAvatar :value="cm.walletAddress" />
           </q-item-section>
           <q-item-section>
             <q-item-label>
               {{ cm.firstName }} {{ cm.lastName }} ({{ cm.username }})
             </q-item-label>
             <q-item-label caption>
-              {{ shortAddr(cm.address) }}
+              {{ shortAddr(cm.walletAddress) }}
             </q-item-label>
           </q-item-section>
           <q-item-section side>
@@ -21,20 +22,20 @@
                 <q-btn
                   @click.stop="update(cm)"
                   icon="refresh"
-                  :loading="updating[cm.address]"
+                  :loading="updating[cm.walletAddress]"
                   flat
                 />
                 <q-btn
                   @click.stop="approve(cm)"
                   :label="$t('Approve')"
-                  :loading="approving[cm.address]"
+                  :loading="approving[cm.walletAddress]"
                   color="positive"
                   flat
                 />
                 <q-btn
                   @click.stop="deny(cm)"
                   :label="$t('Deny')"
-                  :loading="denying[cm.address]"
+                  :loading="denying[cm.walletAddress]"
                   color="negative"
                   flat
                 />
@@ -75,13 +76,13 @@
                 <q-btn
                   @click.stop="update(cm)"
                   icon="refresh"
-                  :loading="updating[cm.address]"
+                  :loading="updating[cm.walletAddress]"
                   flat
                 />
                 <q-btn
                   @click.stop="revoke(cm)"
                   :label="$t('Revoke')"
-                  :loading="revoking[cm.address]"
+                  :loading="revoking[cm.walletAddress]"
                   color="negative"
                   flat
                 />
@@ -150,7 +151,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Twitter") }}</q-item-label>
               <q-item-label>
-                {{ cm.twitter }}
+                {{ cm.social.twitter }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -160,7 +161,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Discord") }}</q-item-label>
               <q-item-label>
-                {{ cm.discord }}
+                {{ cm.social.discord }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -170,7 +171,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Instagram") }}</q-item-label>
               <q-item-label>
-                {{ cm.instagram }}
+                {{ cm.social.instagram }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -180,7 +181,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("TikTok") }}</q-item-label>
               <q-item-label>
-                {{ cm.tiktok }}
+                {{ cm.social.tiktok }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -190,7 +191,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("YouTube") }}</q-item-label>
               <q-item-label>
-                {{ cm.youtube }}
+                {{ cm.social.youtube }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -200,7 +201,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Website URL") }}</q-item-label>
               <q-item-label>
-                {{ cm.website }}
+                {{ cm.social.website }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -231,22 +232,24 @@ export default defineComponent({
       Moralis.web3Library.utils.isAddress(address);
 
     const changemakers = ref([]);
-    // Temporarily populate from LocalStorage
-    const data = LocalStorage.getItem("changemakerSignup");
-    if (data) {
-      changemakers.value.push(data);
+    try {
+      Moralis.Cloud.run("getAllChangemakers").then(response => {
+        changemakers.value = response.changemakers;
+      });
+    } catch (error) {
+      notifyError(error.error || error);
     }
 
     const approving = ref({});
     const approve = async cm => {
       try {
-        approving.value[cm.address] = true;
+        approving.value[cm.walletAddress] = true;
         const tx = await Moralis.executeFunction({
           contractAddress: ChangeMakers.address,
           abi: ChangeMakers.abi,
           functionName: "approveChangeMaker",
           params: {
-            _changeMaker: cm.address
+            _changeMaker: cm.walletAddress
           }
         });
         const response = await tx.wait();
@@ -255,26 +258,26 @@ export default defineComponent({
       } catch (error) {
         notifyError(error.error || error);
       } finally {
-        approving.value[cm.address] = false;
+        approving.value[cm.walletAddress] = false;
       }
     };
 
     const updating = ref({});
     const update = async cm => {
       try {
-        updating.value[cm.address] = true;
+        updating.value[cm.walletAddress] = true;
         cm.isApproved = await Moralis.executeFunction({
           contractAddress: ChangeMakers.address,
           abi: ChangeMakers.abi,
           functionName: "approvedChangeMakers",
           params: {
-            "": cm.address
+            "": cm.walletAddress
           }
         });
       } catch (error) {
         notifyError(error.error || error);
       } finally {
-        updating.value[cm.address] = false;
+        updating.value[cm.walletAddress] = false;
       }
     };
 
@@ -284,13 +287,13 @@ export default defineComponent({
     const revoking = ref({});
     const revoke = async cm => {
       try {
-        updating.value[cm.address] = true;
+        updating.value[cm.walletAddress] = true;
         const tx = await Moralis.executeFunction({
           contractAddress: ChangeMakers.address,
           abi: ChangeMakers.abi,
           functionName: "revokeChangeMaker",
           params: {
-            _changeMaker: cm.address
+            _changeMaker: cm.walletAddress
           }
         });
         const response = await tx.wait();
@@ -300,7 +303,7 @@ export default defineComponent({
       } catch (error) {
         notifyError(error.error || error);
       } finally {
-        updating.value[cm.address] = false;
+        updating.value[cm.walletAddress] = false;
       }
     };
 
