@@ -50,6 +50,7 @@ export default {
   "Project Split": "Project Split",
   Purchase: "Purchase",
   "Ready to support?": "Ready to support this project?",
+  Revoke: "Revoke",
   "Secondary Sales": "Secondary Sales",
   "Secondary Split": "Secondary Split",
   "Secondary Split Caption":
@@ -67,6 +68,7 @@ export default {
   "Total Minted": "Total Minted",
   "Transaction Summary": "Transaction Summary",
   Twitter: "Twitter",
+  Update: "Update",
   User: "User",
   Username: "Username",
   "via [PaymentMethods]": "via DAI / USDC / ETH",

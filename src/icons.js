@@ -8,6 +8,8 @@ export default {
   keyboard_arrow_down: "mdi-chevron-down",
   lock: "mdi-lock",
   lock_open: "mdi-lock-open",
+  menu_dots: "mdi-dots-vertical",
+  refresh: "mdi-refresh",
   slack: "mdi-slack",
   success: "mdi-check-circle",
   twitter: "mdi-twitter",
