@@ -98,16 +98,19 @@
       </div>
 
       <!-- Submit -->
-      <q-item>
+      <q-item class="q-my-xl">
         <q-item-section>
-          <q-item-label class="text-center">
-            <q-btn
-              @click="submit"
-              :label="$t('Submit')"
-              :loading="isSubmitting"
-              :disable="!isValid"
-              color="primary"
-            />
+          <q-item-label>
+            <div class="row q-gutter-md flex-center">
+              <q-btn
+                @click="submit"
+                :label="$t('Submit')"
+                :loading="isSubmitting"
+                :disable="!isValid"
+                color="primary"
+              />
+              <q-btn @click="clear" :label="$t('Reset')" color="secondary" />
+            </div>
           </q-item-label>
         </q-item-section>
       </q-item>
@@ -144,6 +147,7 @@
 import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
+import { isEqual } from "lodash";
 import Moralis from "moralis";
 
 import { notifyError, notifySuccess } from "../util/notify";
@@ -152,6 +156,21 @@ import AddrAvatar from "../components/AddrAvatar";
 import LogIn from "../components/LogIn";
 
 const LOCALSTORAGE_KEY = "changemakerSignup";
+
+const REQUEST = {
+  firstName: "",
+  lastName: "",
+  username: "",
+  shortBio: "",
+  longBio: "",
+  creatingChangeBy: "",
+  twitter: "",
+  discord: "",
+  instagram: "",
+  tiktok: "",
+  youtube: "",
+  website: ""
+};
 
 export default {
   name: "PageChangemakerSignup",
@@ -163,22 +182,7 @@ export default {
 
     const address = computed(() => store.state.web3.userAddress);
 
-    const data = ref(
-      LocalStorage.getItem(LOCALSTORAGE_KEY) || {
-        firstName: "",
-        lastName: "",
-        username: "",
-        shortBio: "",
-        longBio: "",
-        creatingChangeBy: "",
-        twitter: "",
-        discord: "",
-        instagram: "",
-        tiktok: "",
-        youtube: "",
-        website: ""
-      }
-    );
+    const data = ref(LocalStorage.getItem(LOCALSTORAGE_KEY) || { ...REQUEST });
 
     const isValid = computed(
       () =>
@@ -191,10 +195,14 @@ export default {
     watch(
       data,
       value => {
-        LocalStorage.set(LOCALSTORAGE_KEY, {
-          ...value,
-          address: address.value
-        });
+        if (isEqual(value, REQUEST)) {
+          LocalStorage.remove(LOCALSTORAGE_KEY);
+        } else {
+          LocalStorage.set(LOCALSTORAGE_KEY, {
+            ...value,
+            address: address.value
+          });
+        }
       },
       { deep: true }
     );
@@ -213,11 +221,16 @@ export default {
       }
     };
 
+    const clear = () => {
+      data.value = { ...REQUEST };
+    };
+
     return {
       shortAddr,
       address,
       data,
       submit,
+      clear,
       isSubmitting,
       isValid
     };
