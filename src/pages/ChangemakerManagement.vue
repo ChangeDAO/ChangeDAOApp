@@ -263,28 +263,6 @@ export default defineComponent({
       notifyError(error.error || error);
     }
 
-    const approving = ref({});
-    const approve = async cm => {
-      try {
-        approving.value[cm.walletAddress] = true;
-        const tx = await Moralis.executeFunction({
-          contractAddress: ChangeMakers.address,
-          abi: ChangeMakers.abi,
-          functionName: "approveChangeMaker",
-          params: {
-            _changeMaker: cm.walletAddress
-          }
-        });
-        const response = await tx.wait();
-        update(cm);
-        notifySuccess("Success");
-      } catch (error) {
-        notifyError(error.error || error);
-      } finally {
-        approving.value[cm.walletAddress] = false;
-      }
-    };
-
     const updating = ref({});
     const update = async cm => {
       try {
@@ -304,6 +282,32 @@ export default defineComponent({
       }
     };
 
+    const approving = ref({});
+    const approve = async cm => {
+      try {
+        approving.value[cm.walletAddress] = true;
+        const tx = await Moralis.executeFunction({
+          contractAddress: ChangeMakers.address,
+          abi: ChangeMakers.abi,
+          functionName: "approveChangeMaker",
+          params: {
+            _changeMaker: cm.walletAddress
+          }
+        });
+        Moralis.Cloud.run("approveChangemakerRequest", {
+          changemakerId: cm.walletAddress,
+          transactionHash: tx.hash
+        });
+        const response = await tx.wait();
+        update(cm);
+        notifySuccess("Success");
+      } catch (error) {
+        notifyError(error.error || error);
+      } finally {
+        approving.value[cm.walletAddress] = false;
+      }
+    };
+
     const denying = ref({});
     const deny = async cm => {};
 
@@ -318,6 +322,10 @@ export default defineComponent({
           params: {
             _changeMaker: cm.walletAddress
           }
+        });
+        Moralis.Cloud.run("revokeChangemaker", {
+          changemakerId: cm.walletAddress,
+          transactionHash: tx.hash
         });
         const response = await tx.wait();
         cm.isApproved = false;
