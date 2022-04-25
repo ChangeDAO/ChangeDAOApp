@@ -28,20 +28,20 @@
                 <q-btn
                   @click.stop="update(cm)"
                   icon="refresh"
-                  :loading="updating[cm.walletAddress]"
+                  :loading="updating[cm.id]"
                   flat
                 />
                 <q-btn
                   @click.stop="approve(cm)"
                   :label="$t('Approve')"
-                  :loading="approving[cm.walletAddress]"
+                  :loading="approving[cm.id]"
                   color="positive"
                   flat
                 />
                 <q-btn
                   @click.stop="deny(cm)"
                   :label="$t('Deny')"
-                  :loading="denying[cm.walletAddress]"
+                  :loading="denying[cm.id]"
                   color="negative"
                   flat
                 />
@@ -51,7 +51,7 @@
                   <q-list>
                     <q-item @click="update(cm)" clickable v-ripple>
                       <q-item-section avatar>
-                        <q-spinner v-if="updating[cm.walletAddress]" />
+                        <q-spinner v-if="updating[cm.id]" />
                         <q-icon v-else name="refresh" />
                       </q-item-section>
                       <q-item-section>
@@ -60,7 +60,7 @@
                     </q-item>
                     <q-item @click="approve(cm)" clickable v-ripple>
                       <q-item-section avatar>
-                        <q-spinner v-if="approving[cm.walletAddress]" />
+                        <q-spinner v-if="approving[cm.id]" />
                         <q-icon v-else name="success" color="positive" />
                       </q-item-section>
                       <q-item-section>
@@ -69,7 +69,7 @@
                     </q-item>
                     <q-item @click="deny(cm)" clickable v-ripple>
                       <q-item-section avatar>
-                        <q-spinner v-if="denying[cm.walletAddress]" />
+                        <q-spinner v-if="denying[cm.id]" />
                         <q-icon v-else name="close" color="negative" />
                       </q-item-section>
                       <q-item-section>
@@ -85,13 +85,13 @@
                 <q-btn
                   @click.stop="update(cm)"
                   icon="refresh"
-                  :loading="updating[cm.walletAddress]"
+                  :loading="updating[cm.id]"
                   flat
                 />
                 <q-btn
                   @click.stop="revoke(cm)"
                   :label="$t('Revoke')"
-                  :loading="revoking[cm.walletAddress]"
+                  :loading="revoking[cm.id]"
                   color="negative"
                   flat
                 />
@@ -258,6 +258,16 @@ export default defineComponent({
     try {
       Moralis.Cloud.run("getAllChangemakers").then(response => {
         changemakers.value = response.changemakers;
+        response.pending.forEach(pending => {
+          switch (pending.eventName) {
+            case "ChangeMakerApproved":
+              approving.value[pending.changemakerId] = true;
+              break;
+            case "ChangeMakerRevoked":
+              revoking.value[pending.changemakerId] = true;
+              break;
+          }
+        });
       });
     } catch (error) {
       notifyError(error.error || error);
@@ -266,7 +276,7 @@ export default defineComponent({
     const updating = ref({});
     const update = async cm => {
       try {
-        updating.value[cm.walletAddress] = true;
+        updating.value[cm.id] = true;
         cm.isApproved = await Moralis.executeFunction({
           contractAddress: ChangeMakers.address,
           abi: ChangeMakers.abi,
@@ -278,14 +288,14 @@ export default defineComponent({
       } catch (error) {
         notifyError(error.error || error);
       } finally {
-        updating.value[cm.walletAddress] = false;
+        updating.value[cm.id] = false;
       }
     };
 
     const approving = ref({});
     const approve = async cm => {
       try {
-        approving.value[cm.walletAddress] = true;
+        approving.value[cm.id] = true;
         const tx = await Moralis.executeFunction({
           contractAddress: ChangeMakers.address,
           abi: ChangeMakers.abi,
@@ -295,7 +305,7 @@ export default defineComponent({
           }
         });
         Moralis.Cloud.run("approveChangemakerRequest", {
-          changemakerId: cm.walletAddress,
+          changemakerId: cm.id,
           transactionHash: tx.hash
         });
         const response = await tx.wait();
@@ -304,7 +314,7 @@ export default defineComponent({
       } catch (error) {
         notifyError(error.error || error);
       } finally {
-        approving.value[cm.walletAddress] = false;
+        approving.value[cm.id] = false;
       }
     };
 
@@ -314,7 +324,7 @@ export default defineComponent({
     const revoking = ref({});
     const revoke = async cm => {
       try {
-        updating.value[cm.walletAddress] = true;
+        updating.value[cm.id] = true;
         const tx = await Moralis.executeFunction({
           contractAddress: ChangeMakers.address,
           abi: ChangeMakers.abi,
@@ -324,7 +334,7 @@ export default defineComponent({
           }
         });
         Moralis.Cloud.run("revokeChangemaker", {
-          changemakerId: cm.walletAddress,
+          changemakerId: cm.id,
           transactionHash: tx.hash
         });
         const response = await tx.wait();
@@ -334,7 +344,7 @@ export default defineComponent({
       } catch (error) {
         notifyError(error.error || error);
       } finally {
-        updating.value[cm.walletAddress] = false;
+        updating.value[cm.id] = false;
       }
     };
 
