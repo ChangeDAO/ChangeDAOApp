@@ -6,14 +6,20 @@
       <q-expansion-item v-for="cm in changemakers" :key="cm.walletAddress">
         <template v-slot:header>
           <q-item-section side>
-            <AddrAvatar :value="cm.walletAddress" />
+            <AddrAvatar :value="cm.walletAddress">
+              <Tooltip>{{ cm.walletAddress }}</Tooltip>
+            </AddrAvatar>
           </q-item-section>
           <q-item-section>
             <q-item-label>
               {{ cm.firstName }} {{ cm.lastName }} ({{ cm.username }})
             </q-item-label>
             <q-item-label caption>
-              {{ shortAddr(cm.walletAddress) }}
+              <RelativeTime
+                :before="$t('Created')"
+                :value="cm.createdAt"
+                class="text-caption"
+              />
             </q-item-label>
           </q-item-section>
           <q-item-section side>
@@ -45,7 +51,8 @@
                   <q-list>
                     <q-item @click="update(cm)" clickable v-ripple>
                       <q-item-section avatar>
-                        <q-icon name="refresh" />
+                        <q-spinner v-if="updating[cm.walletAddress]" />
+                        <q-icon v-else name="refresh" />
                       </q-item-section>
                       <q-item-section>
                         <q-item-label>{{ $t("Update") }}</q-item-label>
@@ -53,7 +60,8 @@
                     </q-item>
                     <q-item @click="approve(cm)" clickable v-ripple>
                       <q-item-section avatar>
-                        <q-icon name="success" color="positive" />
+                        <q-spinner v-if="approving[cm.walletAddress]" />
+                        <q-icon v-else name="success" color="positive" />
                       </q-item-section>
                       <q-item-section>
                         <q-item-label>{{ $t("Approve") }}</q-item-label>
@@ -61,7 +69,8 @@
                     </q-item>
                     <q-item @click="deny(cm)" clickable v-ripple>
                       <q-item-section avatar>
-                        <q-icon name="close" color="negative" />
+                        <q-spinner v-if="denying[cm.walletAddress]" />
+                        <q-icon v-else name="close" color="negative" />
                       </q-item-section>
                       <q-item-section>
                         <q-item-label>{{ $t("Deny") }}</q-item-label>
@@ -92,6 +101,18 @@
         </template>
 
         <q-list>
+          <!-- Wallet Address -->
+          <q-item>
+            <q-item-section>
+              <q-item-label caption>{{ $t("Wallet Address") }}</q-item-label>
+              <q-item-label>
+                <q-item-label>
+                  {{ cm.walletAddress }}
+                </q-item-label>
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+
           <!-- Name -->
           <q-item>
             <q-item-section>
@@ -220,11 +241,13 @@ import ChangeMakers from "../../../changedao_production/deployments/rinkeby/Chan
 import { notifyError, notifySuccess } from "../util/notify";
 import { shortAddr } from "../util/formatting";
 import AddrAvatar from "../components/AddrAvatar";
+import RelativeTime from "../components/RelativeTime";
+import Tooltip from "../components/Tooltip";
 
 export default defineComponent({
   name: "PageChangemakerManagement",
 
-  components: { AddrAvatar },
+  components: { AddrAvatar, RelativeTime, Tooltip },
 
   setup() {
     // Validation rules

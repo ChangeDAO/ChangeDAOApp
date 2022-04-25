@@ -1,5 +1,8 @@
 <template>
-  <q-avatar v-html="avatar" size="sm" class="overflow-hidden" v-bind="$attrs" />
+  <q-avatar size="sm" v-bind="$attrs">
+    <div v-html="avatar" />
+    <slot />
+  </q-avatar>
 </template>
 
 <script>

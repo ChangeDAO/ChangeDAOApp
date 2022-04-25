@@ -21,19 +21,16 @@
           </q-item>
           <LogIn v-else />
 
-          <!-- First Name -->
-          <q-input
-            v-model="data.firstName"
-            :label="$t('First Name')"
-            item-aligned
-          />
-
-          <!-- Last Name -->
-          <q-input
-            v-model="data.lastName"
-            :label="$t('Last Name')"
-            item-aligned
-          />
+          <q-item>
+            <q-item-section>
+              <!-- First Name -->
+              <q-input v-model="data.firstName" :label="$t('First Name')" />
+            </q-item-section>
+            <q-item-section>
+              <!-- Last Name -->
+              <q-input v-model="data.lastName" :label="$t('Last Name')" />
+            </q-item-section>
+          </q-item>
 
           <!-- Username -->
           <q-input

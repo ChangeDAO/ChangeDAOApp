@@ -10,6 +10,7 @@ export default {
   "Connect Wallet": "Connect Wallet",
   Copyright: "© Copyright 2022 ChangeDAO LLC. All rights reserved.",
   "Cost per Mint": "Cost per Mint",
+  Created: "Created",
   "Creating Change By": "Creating Change By...",
   Currency: "Currency",
   Custom: "Custom",
@@ -82,6 +83,24 @@ export default {
     "energy-environment": "Energy & Environment",
     "financial-inclusion": "Financial Inclusion",
     "identity-vulnerable": "Identity & Vulnerable Population"
+  },
+
+  mask: {
+    "date-standard": "YYYY/MM/DD",
+    "date-time-standard": "YYYY/MM/DD HH:mm",
+    "date-short": "M/D/YYYY",
+    "date-time-short": "M/D/YYYY h:mma",
+    "date-full": "dddd, MMMM D, YYYY",
+    "date-time-full": "dddd, MMMM D, YYYY h:mma"
+  },
+
+  format: {
+    "date-standard": "yyyy/MM/dd",
+    "date-time-standard": "yyyy/MM/dd HH:mm",
+    "date-short": "E, M/d/yyyy",
+    "date-time-short": "E, M/d/yyyy–h:mma",
+    "date-full": "E, MMM d, yyyy",
+    "date-time-full": "E, MMM d, yyyy–h:mma"
   },
 
   error: {
