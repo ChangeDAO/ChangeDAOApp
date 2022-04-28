@@ -9,6 +9,18 @@ const routes = [
         component: () => import("pages/Home.vue")
       },
       {
+        name: "project-new",
+        path: "project/new",
+        props: true,
+        component: () => import("pages/ProjectEdit.vue")
+      },
+      {
+        name: "project-edit",
+        path: "project/:projectID/edit",
+        props: true,
+        component: () => import("pages/ProjectEdit.vue")
+      },
+      {
         name: "mint",
         path: "project/:projectID/mint",
         props: true,

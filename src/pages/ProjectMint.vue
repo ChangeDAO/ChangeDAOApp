@@ -6,12 +6,10 @@
       <div class="page-col col q-col-6">
         <div class="sticky header-top">
           <!-- Connect Wallet -->
-          <q-btn
+          <LogIn
             v-if="!user"
-            @click="connectWallet"
             class="full-width q-mb-lg"
             :label="$t('Connect Wallet')"
-            color="primary"
           />
 
           <!-- Mint NFT -->
@@ -94,12 +92,7 @@
             :label="$t('Mint NFT')"
             color="primary"
           />
-          <q-btn
-            v-else
-            @click="connectWallet"
-            :label="$t('Connect Wallet')"
-            color="primary"
-          />
+          <LogIn v-else :label="$t('Connect Wallet')" />
         </div>
       </div>
     </div>
@@ -160,6 +153,7 @@ import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 
+import LogIn from "../components/LogIn";
 import ProjectInfo from "../components/ProjectInfo";
 import ProjectSplit from "../components/ProjectSplit";
 import SecondarySplit from "../components/SecondarySplit";
@@ -170,6 +164,7 @@ export default defineComponent({
   props: ["projectID"],
 
   components: {
+    LogIn,
     ProjectInfo,
     ProjectSplit,
     SecondarySplit
@@ -202,10 +197,6 @@ export default defineComponent({
     // Web3
     const user = computed(() => store.state.web3.user);
 
-    const connectWallet = () => {
-      store.dispatch("logIn");
-    };
-
     const mint = () => {
       router.push({ name: "mint-checkout" });
     };
@@ -214,7 +205,6 @@ export default defineComponent({
       doubleColumn,
       project,
       backgroundImage,
-      connectWallet,
       user,
       mint
     };

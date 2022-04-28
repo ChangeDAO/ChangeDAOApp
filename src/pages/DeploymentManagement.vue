@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="text-h4 q-mb-md">Deployed contracts</div>
+    <div class="text-h4 q-mx-md q-mb-lg">{{ $t("Deployed Contracts") }}</div>
 
     <q-list separator bordered>
       <!-- Addresses -->
