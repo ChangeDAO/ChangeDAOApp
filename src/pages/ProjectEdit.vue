@@ -22,7 +22,9 @@
               </q-item-label>
             </q-item-section>
           </q-item>
-          <LogIn v-else />
+          <q-item v-else>
+            <LogIn />
+          </q-item>
 
           <!-- Name -->
           <q-input
