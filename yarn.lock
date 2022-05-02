@@ -8684,10 +8684,10 @@ moralis-admin-cli@^2.1.16:
     rimraf "^3.0.2"
     syntax-error "^1.4.0"
 
-moralis@^1.5.10:
-  version "1.5.10"
-  resolved "https://registry.yarnpkg.com/moralis/-/moralis-1.5.10.tgz#9a07d173b0a42af3639d9567bca6404e0a36f3ea"
-  integrity sha512-TswFDwWLUGYvxN8dL3xzvLlEjnVnQWN+5oV2H4jB1WaxNeaoYx+xlXz4E1rSsvJqU1oQMOYZcXuu+no0++RSrQ==
+moralis@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/moralis/-/moralis-1.6.0.tgz#f86f303255ff7e39e9f13a49a76377bc0c2646d6"
+  integrity sha512-NMRJqtrtK7znND/IEro0EYsGVDahpFHxaCGGy/L3VnEyMURzB0OzvRrXshk6TZxG01mCOwrtO/h8L/t0OEOr3g==
   dependencies:
     "@babel/runtime" "7.16.7"
     "@babel/runtime-corejs3" "7.16.8"
