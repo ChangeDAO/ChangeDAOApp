@@ -30,13 +30,13 @@ export function setUserENS(state, ens) {
 }
 
 export function setUserNFTs(state, nfts) {
-  state.userNFTs = deepFreeze(nfts);
+  // state.userNFTs = deepFreeze(nfts);
 }
 
 export function setUserBalances(state, balances) {
-  state.userBalances = deepFreeze(balances);
+  // state.userBalances = deepFreeze(balances);
 }
 
 export function setOffers(state, nfts) {
-  state.offers = deepFreeze(nfts);
+  // state.offers = deepFreeze(nfts);
 }

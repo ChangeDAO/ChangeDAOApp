@@ -47,6 +47,15 @@
             :label="$t('Movement')"
             item-aligned
           />
+
+          <!-- Creator Addresses -->
+          <AddrInputs v-model="data._creators" :label="$t('Wallet Address')">
+            <template v-slot:before>
+              <q-item-label class="q-pb-xs" header>
+                {{ $tc("Creator", data._creators.length) }}
+              </q-item-label>
+            </template>
+          </AddrInputs>
         </q-list>
 
         <!-- Second Column -->
@@ -118,12 +127,13 @@ import Moralis from "moralis";
 import { notifyError, notifySuccess } from "../util/notify";
 import { shortAddr } from "../util/formatting";
 import AddrAvatar from "../components/AddrAvatar";
+import AddrInputs from "../components/AddrInputs";
 import LogIn from "../components/LogIn";
 
 const PARAMS = {
   _movementName: "",
   _projectName: "",
-  _creators: "",
+  _creators: [""],
   _baseURI: "",
   _royaltiesPayees: "",
   _royaltiesShares: "",
@@ -141,7 +151,7 @@ const LOCALSTORAGE_KEY = "projectEdit";
 export default {
   name: "PageChangemakerSignup",
 
-  components: { AddrAvatar, LogIn },
+  components: { AddrAvatar, AddrInputs, LogIn },
 
   setup() {
     const router = useRouter();
