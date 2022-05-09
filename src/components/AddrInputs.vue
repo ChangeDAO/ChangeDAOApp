@@ -2,7 +2,7 @@
   <q-list>
     <slot name="before" />
     <SmoothReflow>
-      <q-item v-for="(item, i) in model" :key="i">
+      <q-item v-for="(item, i) in model" :key="i + 1">
         <q-item-section class="q-pr-sm" side>
           <q-btn icon="menu_dots" dense flat>
             <q-menu auto-close>
@@ -19,14 +19,17 @@
             </q-menu>
           </q-btn>
         </q-item-section>
-        <AddrInput
+        <q-input
           class="col"
-          :modelValue="item"
-          @update:modelValue="set(i, $event)"
-          :key="i"
+          v-model="model[i]"
+          :rules="[isValid]"
+          hide-bottom-space
           v-bind="$attrs"
-        />
-        {{ JSON.stringify(model) }}
+        >
+          <template v-slot:prepend>
+            <AddrAvatar v-if="isValid(model[i])" :address="model[i]" />
+          </template>
+        </q-input>
       </q-item>
     </SmoothReflow>
 
@@ -44,22 +47,23 @@
 </template>
 
 <script>
-import AddrInput from "./AddrInput";
+import AddrAvatar from "./AddrAvatar";
 import SmoothReflow from "./SmoothReflow";
 
+import Moralis from "moralis";
 import { computed } from "vue";
 
 export default {
   name: "AddrInputs",
-  components: { AddrInput, SmoothReflow },
-  props: ["modelValue"],
+  components: { AddrAvatar, SmoothReflow },
+  props: ["addresses"],
   setup(props, { emit }) {
     const model = computed({
       get() {
-        return props.modelValue;
+        return props.addresses;
       },
       set(value) {
-        emit("update:modelValue", value);
+        emit("update:addresses", value);
       }
     });
 
@@ -71,11 +75,9 @@ export default {
       model.value.splice(index, 1);
     };
 
-    const set = (index, value) => {
-      model.value[index] = value;
-    };
+    const isValid = addr => Moralis.web3Library.utils.isAddress(addr);
 
-    return { model, add, remove, set };
+    return { model, add, remove, isValid };
   }
 };
 </script>

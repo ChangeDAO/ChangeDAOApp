@@ -7,7 +7,7 @@
       <q-expansion-item label="Contract Addresses" header-class="text-bold">
         <q-item v-for="(contract, name) in contracts" :key="name">
           <q-item-section avatar>
-            <AddrAvatar :value="contract.address" />
+            <AddrAvatar :address="contract.address" />
           </q-item-section>
           <q-item-section>
             <q-item-label class="ellipsis" caption>{{ name }}:</q-item-label>
@@ -24,7 +24,7 @@
           <q-expansion-item @show="changeDaoNFT.get" expand-separator>
             <template v-slot:header>
               <q-item-section avatar>
-                <AddrAvatar :value="contracts.ChangeDaoNFT.address" />
+                <AddrAvatar :address="contracts.ChangeDaoNFT.address" />
               </q-item-section>
               <q-item-section>
                 ChangeDaoNFT
@@ -132,7 +132,7 @@
           <q-expansion-item @show="changeDaoNFTFactory.get" expand-separator>
             <template v-slot:header>
               <q-item-section avatar>
-                <AddrAvatar :value="contracts.ChangeDaoNFTFactory.address" />
+                <AddrAvatar :address="contracts.ChangeDaoNFTFactory.address" />
               </q-item-section>
               <q-item-section>
                 ChangeDaoNFTFactory
@@ -203,7 +203,9 @@
           <q-expansion-item @show="paymentSplitterFactory.get" expand-separator>
             <template v-slot:header>
               <q-item-section avatar>
-                <AddrAvatar :value="contracts.PaymentSplitterFactory.address" />
+                <AddrAvatar
+                  :address="contracts.PaymentSplitterFactory.address"
+                />
               </q-item-section>
               <q-item-section>
                 PaymentSplitterFactory
@@ -321,7 +323,7 @@
           <q-expansion-item @show="sharedFundingFactory.get" expand-separator>
             <template v-slot:header>
               <q-item-section avatar>
-                <AddrAvatar :value="contracts.SharedFundingFactory.address" />
+                <AddrAvatar :address="contracts.SharedFundingFactory.address" />
               </q-item-section>
               <q-item-section>
                 SharedFundingFactory
@@ -426,7 +428,7 @@
           <q-expansion-item @show="fundingA9s.get" expand-separator>
             <template v-slot:header>
               <q-item-section avatar>
-                <AddrAvatar :value="contracts.FundingAllocations.address" />
+                <AddrAvatar :address="contracts.FundingAllocations.address" />
               </q-item-section>
               <q-item-section>
                 FundingAllocations
@@ -512,7 +514,7 @@
           <q-expansion-item expand-separator>
             <template v-slot:header>
               <q-item-section avatar>
-                <AddrAvatar :value="contracts.PaymentSplitter.address" />
+                <AddrAvatar :address="contracts.PaymentSplitter.address" />
               </q-item-section>
               <q-item-section>
                 PaymentSplitter

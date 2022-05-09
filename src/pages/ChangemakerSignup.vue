@@ -8,7 +8,7 @@
           <!-- Wallet Address -->
           <q-item v-if="address">
             <q-item-section side>
-              <AddrAvatar :value="address" />
+              <AddrAvatar :address="address" />
             </q-item-section>
             <q-item-section>
               <q-item-label caption>

@@ -11,7 +11,7 @@
           <!-- Wallet Address -->
           <q-item v-if="address">
             <q-item-section side>
-              <AddrAvatar :value="address" />
+              <AddrAvatar :address="address" />
             </q-item-section>
             <q-item-section>
               <q-item-label caption>
@@ -49,7 +49,7 @@
           />
 
           <!-- Creator Addresses -->
-          <AddrInputs v-model="data._creators" :label="$t('Wallet Address')">
+          <AddrInputs :addresses="data._creators" :label="$t('Wallet Address')">
             <template v-slot:before>
               <q-item-label class="q-pb-xs" header>
                 {{ $tc("Creator", data._creators.length) }}

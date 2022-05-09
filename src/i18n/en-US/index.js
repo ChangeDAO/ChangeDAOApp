@@ -60,6 +60,7 @@ export default {
   "Project Split": "Project Split",
   Purchase: "Purchase",
   "Ready to support?": "Ready to support this project?",
+  "Reapprove": "Reapprove",
   Reset: "Reset",
   Revoke: "Revoke",
   "Secondary Sales": "Secondary Sales",

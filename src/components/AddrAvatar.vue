@@ -10,10 +10,10 @@ import jazzicon from "@metamask/jazzicon";
 
 export default {
   name: "AddrAvatar",
-  props: ["value"],
+  props: ["address"],
   computed: {
     avatar() {
-      const addr = this.value.slice(2, 10);
+      const addr = this.address.slice(2, 10);
       const seed = parseInt(addr, 16);
       const avatar = jazzicon(24, seed);
       return avatar.innerHTML;

@@ -1,7 +1,7 @@
 <template>
   <q-input v-model="model" :rules="[isValid]" hide-bottom-space v-bind="$attrs">
     <template v-slot:prepend>
-      <AddrAvatar v-if="isValid(model.value)" :modelValue="model" />
+      <AddrAvatar v-if="isValid(model.value)" :address="model" />
     </template>
     <template v-for="(_, name) in $slots" v-slot:[name]="slotData"
       ><slot :name="name" v-bind="slotData"
@@ -10,8 +10,9 @@
 </template>
 
 <script>
-import Moralis from "moralis";
 import AddrAvatar from "./AddrAvatar";
+
+import Moralis from "moralis";
 import { computed } from "vue";
 
 export default {

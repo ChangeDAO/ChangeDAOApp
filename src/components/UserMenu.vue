@@ -1,6 +1,6 @@
 <template>
   <q-btn v-if="user" color="primary" class="q-pl-sm" no-caps rounded>
-    <AddrAvatar :value="address" class="q-mr-md" />
+    <AddrAvatar :address="address" class="q-mr-md" />
     {{ ens || shortAddr(address) }}
     <q-menu auto-close>
       <q-list class="text-no-wrap">
