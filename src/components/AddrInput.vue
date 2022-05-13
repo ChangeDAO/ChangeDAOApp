@@ -2,6 +2,7 @@
   <q-input v-model="model" :rules="[isValid]" hide-bottom-space v-bind="$attrs">
     <template v-slot:prepend>
       <AddrAvatar v-if="isValid(model.value)" :address="model" />
+      <q-avatar v-else color="primary" size="sm" />
     </template>
     <template v-for="(_, name) in $slots" v-slot:[name]="slotData"
       ><slot :name="name" v-bind="slotData"

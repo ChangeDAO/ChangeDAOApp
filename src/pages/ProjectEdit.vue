@@ -1,86 +1,112 @@
 <template>
   <q-page class="page-project-edit">
-    <div class="q-layout-padding">
+    <div class="q-layout-padding page-col col">
       <!-- Title -->
       <div class="text-h4 q-ma-md">
         {{ $t(isNew ? "New Project" : "Edit Project") }}
       </div>
 
-      <div class="row q-my-xl">
-        <q-list class="page-col col">
-          <!-- Wallet Address -->
-          <q-item v-if="address">
-            <q-item-section side>
-              <AddrAvatar :address="address" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label caption>
-                {{ $t("Wallet Address") }}
-              </q-item-label>
-              <q-item-label>
-                {{ shortAddr(address) }}
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item v-else>
-            <LogIn />
-          </q-item>
+      <q-list>
+        <!-- Name -->
+        <q-input
+          v-model="data._projectName"
+          :label="$t('Project Name')"
+          item-aligned
+        />
 
-          <!-- Name -->
-          <q-input
-            v-model="data._projectName"
-            :label="$t('Project Name')"
-            item-aligned
-          />
+        <!-- Description -->
+        <q-input
+          v-model="data.description"
+          :label="$t('Description')"
+          item-aligned
+          autogrow
+        />
 
-          <!-- Description -->
-          <q-input
-            v-model="data.description"
-            :label="$t('Description')"
-            item-aligned
-            autogrow
-          />
+        <!-- Movement -->
+        <q-input
+          v-model="data._movementName"
+          :label="$t('Movement')"
+          item-aligned
+        />
 
-          <!-- Movement -->
-          <q-input
-            v-model="data._movementName"
-            :label="$t('Movement')"
-            item-aligned
-          />
+        <!-- Area of Change -->
+        <q-select
+          v-model="data.areaOfChange"
+          :label="$t('Area of Change')"
+          :options="areasOfChange"
+          emit-value
+          :display-value="
+            data.areaOfChange ? $t('areasOfChange.' + data.areaOfChange) : ''
+          "
+          item-aligned
+        />
 
-          <!-- Creator Addresses -->
-          <AddrInputs :addresses="data._creators" :label="$t('Wallet Address')">
-            <template v-slot:before>
-              <q-item-label class="q-pb-xs" header>
-                {{ $tc("Creator", data._creators.length) }}
-              </q-item-label>
-            </template>
-          </AddrInputs>
-        </q-list>
+        <!-- Base URI -->
+        <q-input
+          v-model="data._baseURI"
+          :label="$t('Base URI')"
+          :rules="[Boolean]"
+          item-aligned
+        />
 
-        <!-- Second Column -->
-        <q-list class="page-col col">
-          <!-- Project Hero -->
-        </q-list>
-      </div>
+        <q-separator spaced />
 
-      <!-- Payment Splitting -->
+        <!-- Creator Addresses -->
+        <AddrInputs :addresses="data._creators" :label="$t('Wallet Address')">
+          <template v-slot:before>
+            <q-item-label class="q-pb-xs" header>
+              {{ $tc("Creator", data._creators.length + 1) }}
+            </q-item-label>
 
-      <!-- Gallery -->
+            <!-- Wallet Address -->
+            <q-item v-if="address">
+              <q-item-section side>
+                <AddrAvatar :address="address" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label caption>
+                  {{ $t("Wallet Address") }}
+                </q-item-label>
+                <q-item-label class="ellipsis">
+                  {{ address }}
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-else>
+              <LogIn />
+            </q-item>
+          </template>
+        </AddrInputs>
 
-      <div class="row q-my-xl">
-        <q-list class="page-col col">
-          <!-- Images -->
+        <q-separator spaced />
 
-          <!-- Video URL -->
-          <q-input v-model="data.video" :label="$t('Video URL')" item-aligned />
-        </q-list>
+        <!-- Funding Splitting -->
+        <PaymentSplitInput
+          :payees="data._fundingPayees"
+          :shares="data._fundingShares"
+        >
+          <template v-slot:before>
+            <q-item-label class="q-pb-xs" header>
+              {{ $tc("Funding Split") }}
+            </q-item-label>
+          </template>
+        </PaymentSplitInput>
 
-        <!-- Second Column -->
-        <q-list class="page-col col">
-          <!-- Gallery Preview -->
-        </q-list>
-      </div>
+        <q-separator spaced />
+
+        <!-- Royalties Splitting -->
+        <PaymentSplitInput
+          :payees="data._royaltiesPayees"
+          :shares="data._royaltiesShares"
+          :total-shares="1000"
+        >
+          <template v-slot:before>
+            <q-item-label class="q-pb-xs" header>
+              {{ $tc("Royalties Split") }}
+            </q-item-label>
+          </template>
+        </PaymentSplitInput>
+      </q-list>
 
       <!-- Submit -->
       <q-item class="q-my-xl">
@@ -117,6 +143,7 @@
 
 <script>
 import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
@@ -125,37 +152,39 @@ import Controller from "../../../changedao_production/deployments/rinkeby/Contro
 import Moralis from "moralis";
 
 import { notifyError, notifySuccess } from "../util/notify";
-import { shortAddr } from "../util/formatting";
+import { AREAS_OF_CHANGE } from "../util/constants";
 import AddrAvatar from "../components/AddrAvatar";
 import AddrInputs from "../components/AddrInputs";
+import PaymentSplitInput from "../components/PaymentSplitInput";
 import LogIn from "../components/LogIn";
 
 const PARAMS = {
   _movementName: "",
   _projectName: "",
-  _creators: [""],
+  _creators: [],
   _baseURI: "",
-  _royaltiesPayees: "",
-  _royaltiesShares: "",
-  _fundingPayees: "",
-  _fundingShares: ""
+  _royaltiesPayees: [],
+  _royaltiesShares: [],
+  _fundingPayees: [],
+  _fundingShares: []
 };
 
 const REQUEST = {
   ...PARAMS,
-  description: ""
+  description: "",
+  areaOfChange: ""
 };
 
 const LOCALSTORAGE_KEY = "projectEdit";
 
 export default {
-  name: "PageChangemakerSignup",
+  name: "PageProjectEdit",
 
-  components: { AddrAvatar, AddrInputs, LogIn },
+  components: { AddrAvatar, AddrInputs, PaymentSplitInput, LogIn },
 
   setup() {
+    const { t } = useI18n({ useScope: "global" });
     const router = useRouter();
-
     const store = useStore();
 
     const address = computed(() => store.state.web3.userAddress);
@@ -167,6 +196,13 @@ export default {
     );
 
     const isValid = computed(() => address.value && data.value._projectName);
+
+    const areasOfChange = computed(() =>
+      AREAS_OF_CHANGE.map(value => ({
+        value,
+        label: t("areasOfChange." + value)
+      }))
+    );
 
     watch(
       data,
@@ -209,14 +245,14 @@ export default {
     };
 
     return {
-      shortAddr,
       address,
       data,
       submit,
       clear,
       isSubmitting,
       isNew,
-      isValid
+      isValid,
+      areasOfChange
     };
   }
 };

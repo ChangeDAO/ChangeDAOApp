@@ -5,6 +5,7 @@ export default {
   Approve: "Approve",
   "Area of Change": "Area of Change",
   "Artwork Description": "Artwork Description",
+  "Base URI": "Base URI",
   Cancel: "Cancel",
   Checkout: "Checkout",
   Collection: "Collection",
@@ -29,6 +30,7 @@ export default {
   "From Collaborators": "From Collaborators",
   "From Creator": "From Creator",
   "From Sponsors": "From Sponsors",
+  "Funding Split": "Funding Split",
   "Fundraising Goal": "Fundraising Goal",
   "Get Email Updates": "Get Email Updates",
   Help: "Help",
@@ -60,14 +62,16 @@ export default {
   "Project Split": "Project Split",
   Purchase: "Purchase",
   "Ready to support?": "Ready to support this project?",
-  "Reapprove": "Reapprove",
+  Reapprove: "Reapprove",
   Reset: "Reset",
   Revoke: "Revoke",
+  "Royalties Split": "Royalties Split",
   "Secondary Sales": "Secondary Sales",
   "Secondary Split": "Secondary Split",
   "Secondary Split Caption":
     "10% of all secondary sales will be split as follows:",
   "Select Currency": "Select Currency",
+  Shares: "Shares",
   "Short Bio": "Short Bio",
   Submit: "Submit",
   Subtotal: "Subtotal",
@@ -84,16 +88,19 @@ export default {
   User: "User",
   Username: "Username",
   "via [PaymentMethods]": "via DAI / USDC / ETH",
-  "Video URL": "Video URL",
   "View on Etherscan": "View on Etherscan",
   "Wallet Address": "Wallet Address",
   "Website URL": "Website URL",
   YouTube: "YouTube",
 
   areasOfChange: {
-    "energy-environment": "Energy & Environment",
-    "financial-inclusion": "Financial Inclusion",
-    "identity-vulnerable": "Identity & Vulnerable Population"
+    education: "Education",
+    energyAndEnvironment: "Energy & Environment",
+    financialInclusion: "Financial Inclusion",
+    healthAndWellness: "Health & Wellness",
+    humanRights: "Human Rights",
+    identityAndVulnerablePopulations: "Identity & Vulnerable Populations",
+    supplyChain: "Supply Chain"
   },
 
   mask: {

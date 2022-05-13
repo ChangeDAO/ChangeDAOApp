@@ -3,33 +3,26 @@
     <slot name="before" />
     <SmoothReflow>
       <q-item v-for="(item, i) in model" :key="i + 1">
-        <q-item-section class="q-pr-sm" side>
-          <q-btn icon="menu_dots" dense flat>
-            <q-menu auto-close>
-              <q-list>
-                <q-item @click="remove(i)" clickable>
-                  <q-item-section avatar>
-                    <q-icon name="delete" />
-                  </q-item-section>
-                  <q-item-section>
-                    {{ $t("Delete") }}
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
+        <q-item-section>
+          <q-item-label>
+            <q-input
+              class="col"
+              v-model="model[i]"
+              :rules="[isValid]"
+              :autofocus="!item"
+              hide-bottom-space
+              v-bind="$attrs"
+            >
+              <template v-slot:prepend>
+                <AddrAvatar v-if="isValid(model[i])" :address="model[i]" />
+                <q-avatar v-else color="primary" size="sm" />
+              </template>
+            </q-input>
+          </q-item-label>
         </q-item-section>
-        <q-input
-          class="col"
-          v-model="model[i]"
-          :rules="[isValid]"
-          hide-bottom-space
-          v-bind="$attrs"
-        >
-          <template v-slot:prepend>
-            <AddrAvatar v-if="isValid(model[i])" :address="model[i]" />
-          </template>
-        </q-input>
+        <q-item-section side>
+          <q-btn @click="remove(i)" icon="delete" round flat />
+        </q-item-section>
       </q-item>
     </SmoothReflow>
 

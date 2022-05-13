@@ -7,3 +7,13 @@ export const NETWORKS = {
   "4447": "Truffle Develop Network",
   "5777": "Ganache Blockchain"
 };
+
+export const AREAS_OF_CHANGE = [
+  "education",
+  "energyAndEnvironment",
+  "financialInclusion",
+  "healthAndWellness",
+  "humanRights",
+  "identityAndVulnerablePopulations",
+  "supplyChain"
+];
