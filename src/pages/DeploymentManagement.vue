@@ -435,33 +435,6 @@
               </q-item-section>
             </template>
 
-            <!-- FundingAllocations.changeDaoRoyalties Value -->
-            <q-item>
-              <q-item-section>
-                <q-input
-                  label="FundingAllocations.changeDaoRoyalties"
-                  type="number"
-                  v-model.number="fundingA9s.changeDaoRoyalties.model.value"
-                  :loading="fundingA9s.changeDaoRoyalties.loading.value"
-                  :rules="[isValidShare]"
-                  hide-bottom-space
-                  min="0"
-                  max="10000"
-                />
-              </q-item-section>
-              <q-item-section side>
-                <q-btn
-                  @click="fundingA9s.changeDaoRoyalties.set"
-                  label="Set"
-                  color="primary"
-                  :loading="fundingA9s.changeDaoRoyalties.setting.value"
-                  :disable="
-                    !isValidShare(fundingA9s.changeDaoRoyalties.model.value)
-                  "
-                />
-              </q-item-section>
-            </q-item>
-
             <!-- FundingAllocations.changeDaoFunding Value -->
             <q-item>
               <q-item-section>
@@ -484,6 +457,33 @@
                   :loading="fundingA9s.changeDaoFunding.setting.value"
                   :disable="
                     !isValidShare(fundingA9s.changeDaoFunding.model.value)
+                  "
+                />
+              </q-item-section>
+            </q-item>
+
+            <!-- FundingAllocations.changeDaoRoyalties Value -->
+            <q-item>
+              <q-item-section>
+                <q-input
+                  label="FundingAllocations.changeDaoRoyalties"
+                  type="number"
+                  v-model.number="fundingA9s.changeDaoRoyalties.model.value"
+                  :loading="fundingA9s.changeDaoRoyalties.loading.value"
+                  :rules="[isValidShare]"
+                  hide-bottom-space
+                  min="0"
+                  max="10000"
+                />
+              </q-item-section>
+              <q-item-section side>
+                <q-btn
+                  @click="fundingA9s.changeDaoRoyalties.set"
+                  label="Set"
+                  color="primary"
+                  :loading="fundingA9s.changeDaoRoyalties.setting.value"
+                  :disable="
+                    !isValidShare(fundingA9s.changeDaoRoyalties.model.value)
                   "
                 />
               </q-item-section>
@@ -1114,48 +1114,6 @@ export default defineComponent({
           fundingA9s.changeDaoFunding.get(),
           fundingA9s.changeDaoWallet.get()
         ]),
-      changeDaoRoyalties: {
-        model: ref(0),
-        loading: ref(false),
-        setting: ref(false),
-        get: async () => {
-          try {
-            fundingA9s.changeDaoRoyalties.loading.value = true;
-            fundingA9s.changeDaoRoyalties.model.value = await Moralis.executeFunction(
-              {
-                contractAddress: FundingAllocations.address,
-                abi: FundingAllocations.abi,
-                functionName: "changeDaoRoyalties"
-              }
-            );
-          } catch (error) {
-            notifyError(error.error || error);
-          } finally {
-            fundingA9s.changeDaoRoyalties.loading.value = false;
-          }
-        },
-        set: async () => {
-          try {
-            fundingA9s.changeDaoRoyalties.setting.value = true;
-            const request = await Moralis.executeFunction({
-              contractAddress: FundingAllocations.address,
-              abi: FundingAllocations.abi,
-              functionName: "setChangeDaoRoyalties",
-              params: {
-                _royaltiesShares: Moralis.web3Library.BigNumber.from(
-                  fundingA9s.changeDaoRoyalties.model.value
-                )
-              }
-            });
-            const response = await request.wait();
-            await fundingA9s.changeDaoRoyalties.get();
-          } catch (error) {
-            notifyError(error.error || error);
-          } finally {
-            fundingA9s.changeDaoRoyalties.setting.value = false;
-          }
-        }
-      },
       changeDaoFunding: {
         model: ref(0),
         loading: ref(false),
@@ -1195,6 +1153,48 @@ export default defineComponent({
             notifyError(error.error || error);
           } finally {
             fundingA9s.changeDaoFunding.setting.value = false;
+          }
+        }
+      },
+      changeDaoRoyalties: {
+        model: ref(0),
+        loading: ref(false),
+        setting: ref(false),
+        get: async () => {
+          try {
+            fundingA9s.changeDaoRoyalties.loading.value = true;
+            fundingA9s.changeDaoRoyalties.model.value = await Moralis.executeFunction(
+              {
+                contractAddress: FundingAllocations.address,
+                abi: FundingAllocations.abi,
+                functionName: "changeDaoRoyalties"
+              }
+            );
+          } catch (error) {
+            notifyError(error.error || error);
+          } finally {
+            fundingA9s.changeDaoRoyalties.loading.value = false;
+          }
+        },
+        set: async () => {
+          try {
+            fundingA9s.changeDaoRoyalties.setting.value = true;
+            const request = await Moralis.executeFunction({
+              contractAddress: FundingAllocations.address,
+              abi: FundingAllocations.abi,
+              functionName: "setChangeDaoRoyalties",
+              params: {
+                _royaltiesShares: Moralis.web3Library.BigNumber.from(
+                  fundingA9s.changeDaoRoyalties.model.value
+                )
+              }
+            });
+            const response = await request.wait();
+            await fundingA9s.changeDaoRoyalties.get();
+          } catch (error) {
+            notifyError(error.error || error);
+          } finally {
+            fundingA9s.changeDaoRoyalties.setting.value = false;
           }
         }
       },

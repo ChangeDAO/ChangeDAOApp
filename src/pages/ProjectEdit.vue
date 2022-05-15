@@ -84,6 +84,7 @@
         <PaymentSplitInput
           :payees="data._fundingPayees"
           :shares="data._fundingShares"
+          :total-shares="fundingShares"
         >
           <template v-slot:before>
             <q-item-label class="q-pb-xs" header>
@@ -98,7 +99,7 @@
         <PaymentSplitInput
           :payees="data._royaltiesPayees"
           :shares="data._royaltiesShares"
-          :total-shares="1000"
+          :total-shares="royaltiesShares"
         >
           <template v-slot:before>
             <q-item-label class="q-pb-xs" header>
@@ -142,13 +143,14 @@
 </style>
 
 <script>
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
 import { isEqual, pick } from "lodash";
 import Controller from "../../../changedao_production/deployments/rinkeby/Controller.json";
+import FundingAllocations from "../../../changedao_production/deployments/rinkeby/FundingAllocations.json";
 import Moralis from "moralis";
 
 import { notifyError, notifySuccess } from "../util/notify";
@@ -189,6 +191,35 @@ export default {
 
     const address = computed(() => store.state.web3.userAddress);
 
+    watch(address, (newAddr, oldAddr) => {
+      if (data.value._royaltiesPayees.indexOf(newAddr) < 0) {
+        let i = data.value._royaltiesPayees.indexOf(oldAddr);
+        if (i >= 0) {
+          data.value._royaltiesPayees.splice(i, 1, newAddr);
+        } else {
+          data.value._royaltiesPayees.push(newAddr);
+          data.value._royaltiesShares.push(
+            Math.round(
+              royaltiesShares.value / (data.value._royaltiesShares.length + 1)
+            )
+          );
+        }
+      }
+      if (data.value._fundingPayees.indexOf(newAddr) < 0) {
+        let i = data.value._fundingPayees.indexOf(oldAddr);
+        if (i >= 0) {
+          data.value._fundingPayees.splice(i, 1, newAddr);
+        } else {
+          data.value._fundingPayees.push(newAddr);
+          data.value._fundingShares.push(
+            Math.round(
+              fundingShares.value / (data.value._fundingShares.length + 1)
+            )
+          );
+        }
+      }
+    });
+
     const data = ref(LocalStorage.getItem(LOCALSTORAGE_KEY) || { ...REQUEST });
 
     const isNew = computed(
@@ -204,6 +235,27 @@ export default {
       }))
     );
 
+    // Get ChangeDAO shares
+    const fundingShares = ref(1e4 - 200);
+    const royaltiesShares = ref(1e4 - 2000);
+    onMounted(() => {
+      Moralis.executeFunction({
+        contractAddress: FundingAllocations.address,
+        abi: FundingAllocations.abi,
+        functionName: "changeDaoFunding"
+      }).then(result => {
+        fundingShares.value = 1e4 - result;
+      });
+      Moralis.executeFunction({
+        contractAddress: FundingAllocations.address,
+        abi: FundingAllocations.abi,
+        functionName: "changeDaoRoyalties"
+      }).then(result => {
+        royaltiesShares.value = 1e4 - result;
+      });
+    });
+
+    // Backup unsaved form data
     watch(
       data,
       value => {
@@ -219,6 +271,7 @@ export default {
       { deep: true }
     );
 
+    // Submit
     const isSubmitting = ref(false);
     const submit = async () => {
       try {
@@ -252,7 +305,9 @@ export default {
       isSubmitting,
       isNew,
       isValid,
-      areasOfChange
+      areasOfChange,
+      fundingShares,
+      royaltiesShares
     };
   }
 };

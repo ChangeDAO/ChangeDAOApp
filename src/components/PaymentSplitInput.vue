@@ -25,7 +25,7 @@
               v-model.number="sharesModel[i]"
               type="number"
               :min="1"
-              :max="totalShares - sharesModel.length"
+              :max="max"
               :label="$t('Shares')"
               @change="balanceShares(i)"
             />
@@ -36,7 +36,7 @@
             <q-slider
               v-model="sharesModel[i]"
               :min="1"
-              :max="totalShares - sharesModel.length"
+              :max="max"
               @change="balanceShares(i)"
             />
           </q-item-label>
@@ -55,9 +55,6 @@
       </q-item-section>
       <q-item-section>
         {{ $t("Add") }}
-      </q-item-section>
-      <q-item-section side>
-        {{ sum }}
       </q-item-section>
     </q-item>
 
@@ -80,7 +77,7 @@ export default {
     shares: Array,
     totalShares: {
       type: Number,
-      default: 10000
+      default: 1e4
     }
   },
   setup(props, { emit }) {
@@ -101,6 +98,10 @@ export default {
         emit("update:shares", value);
       }
     });
+
+    const max = computed(
+      () => props.totalShares - sharesModel.value.length + 1
+    );
 
     const add = () => {
       sharesModel.value.push(
@@ -164,18 +165,16 @@ export default {
       }
     };
 
-    const sum = computed(() => sharesModel.value.reduce((a, b) => a + b, 0));
-
     const isValid = addr => Moralis.web3Library.utils.isAddress(addr);
 
     return {
       payeesModel,
       sharesModel,
+      max,
       add,
       remove,
       isValid,
-      balanceShares,
-      sum
+      balanceShares
     };
   }
 };

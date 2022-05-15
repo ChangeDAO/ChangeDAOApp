@@ -135,6 +135,10 @@ a:not(.q-btn) {
   padding-bottom: 11px;
 }
 
+.q-field__bottom {
+  display: none;
+}
+
 body.desktop {
   &::-webkit-scrollbar-corner,
   ::-webkit-scrollbar-corner {
