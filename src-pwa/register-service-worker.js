@@ -1,4 +1,6 @@
-import { register } from 'register-service-worker'
+import { register } from "register-service-worker";
+import { i18n } from "../src/boot/i18n";
+const { t } = i18n.global;
 
 // The ready(), registered(), cached(), updatefound() and updated()
 // events passes a ServiceWorkerRegistration instance in their arguments.
@@ -11,31 +13,54 @@ register(process.env.SERVICE_WORKER_FILE, {
 
   // registrationOptions: { scope: './' },
 
-  ready (/* registration */) {
+  ready(/* registration */) {
     // console.log('Service worker is active.')
   },
 
-  registered (/* registration */) {
+  registered(/* registration */) {
     // console.log('Service worker has been registered.')
   },
 
-  cached (/* registration */) {
+  cached(/* registration */) {
     // console.log('Content has been cached for offline use.')
   },
 
-  updatefound (/* registration */) {
+  updatefound(/* registration */) {
     // console.log('New content is downloading.')
   },
 
-  updated (/* registration */) {
-    // console.log('New content is available; please refresh.')
+  updated(/* registration */) {
+    if (!process.env.DEV) {
+      Notify.create({
+        message: t("success.updateAvailable"),
+        icon: "update",
+        color: "grey-1",
+        textColor: "grey-10",
+        position: "top",
+        timeout: 0,
+        actions: [
+          {
+            label: t("Update"),
+            color: "primary",
+            handler: () => {
+              window.location.reload();
+            }
+          },
+          {
+            label: t("Dismiss"),
+            color: "primary",
+            handler: () => {}
+          }
+        ]
+      });
+    }
   },
 
-  offline () {
+  offline() {
     // console.log('No internet connection found. App is running in offline mode.')
   },
 
-  error (/* err */) {
+  error(/* err */) {
     // console.error('Error during service worker registration:', err)
   }
-})
+});

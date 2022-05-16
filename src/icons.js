@@ -15,6 +15,7 @@ export default {
   slack: "mdi-slack",
   success: "mdi-check-circle",
   twitter: "mdi-twitter",
+  update: "mdi-cached",
   wallet: "mdi-wallet",
   warning: "mdi-alert"
 };

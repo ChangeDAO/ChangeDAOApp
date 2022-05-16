@@ -21,6 +21,7 @@ export default {
   Delete: "Delete",
   Description: "Description",
   Discord: "Discord",
+  Dismiss: "Dismiss",
   Deny: "Deny",
   "Edit Project": "Edit Project",
   "Email Address": "Email Address",
@@ -126,7 +127,8 @@ export default {
   },
 
   success: {
-    Success: "Success!"
+    Success: "Success!",
+    updateAvailable: "A new version is available"
   },
 
   warning: {},
