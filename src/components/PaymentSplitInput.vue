@@ -22,11 +22,12 @@
             </q-input>
 
             <q-input
-              v-model.number="sharesModel[i]"
+              v-model.number="sharesPercent[i]"
               type="number"
               :min="1"
-              :max="max"
-              :label="$t('Shares')"
+              :max="max / 100"
+              :step="0.01"
+              suffix="%"
               @change="balanceShares(i)"
             />
           </q-item-label>
@@ -96,6 +97,18 @@ export default {
       },
       set(value) {
         emit("update:shares", value);
+      }
+    });
+
+    const sharesPercent = computed({
+      get() {
+        return props.shares.map(s => s / 100);
+      },
+      set(value) {
+        emit(
+          "update:shares",
+          value.map(s => s * 100)
+        );
       }
     });
 
@@ -170,6 +183,7 @@ export default {
     return {
       payeesModel,
       sharesModel,
+      sharesPercent,
       max,
       add,
       remove,

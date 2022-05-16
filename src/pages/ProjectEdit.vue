@@ -90,6 +90,21 @@
             <q-item-label class="q-pb-xs" header>
               {{ $tc("Funding Split") }}
             </q-item-label>
+
+            <!-- ChangeDAO Funding -->
+            <q-item>
+              <q-item-section side>
+                <q-avatar color="primary" size="sm" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>
+                  ChangeDAO
+                </q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{ changeDaoFunding / 100 }}%
+              </q-item-section>
+            </q-item>
           </template>
         </PaymentSplitInput>
 
@@ -105,6 +120,21 @@
             <q-item-label class="q-pb-xs" header>
               {{ $tc("Royalties Split") }}
             </q-item-label>
+
+            <!-- ChangeDAO Royalties -->
+            <q-item>
+              <q-item-section side>
+                <q-avatar color="primary" size="sm" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>
+                  ChangeDAO
+                </q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{ changeDaoRoyalties / 100 }}%
+              </q-item-section>
+            </q-item>
           </template>
         </PaymentSplitInput>
       </q-list>
@@ -236,22 +266,24 @@ export default {
     );
 
     // Get ChangeDAO shares
-    const fundingShares = ref(1e4 - 200);
-    const royaltiesShares = ref(1e4 - 2000);
+    const changeDaoFunding = ref(200);
+    const changeDaoRoyalties = ref(2000);
+    const fundingShares = computed(() => 1e4 - changeDaoFunding.value);
+    const royaltiesShares = computed(() => 1e4 - changeDaoRoyalties.value);
     onMounted(() => {
       Moralis.executeFunction({
         contractAddress: FundingAllocations.address,
         abi: FundingAllocations.abi,
         functionName: "changeDaoFunding"
       }).then(result => {
-        fundingShares.value = 1e4 - result;
+        changeDaoFunding.value = result;
       });
       Moralis.executeFunction({
         contractAddress: FundingAllocations.address,
         abi: FundingAllocations.abi,
         functionName: "changeDaoRoyalties"
       }).then(result => {
-        royaltiesShares.value = 1e4 - result;
+        changeDaoRoyalties.value = result;
       });
     });
 
@@ -306,6 +338,8 @@ export default {
       isNew,
       isValid,
       areasOfChange,
+      changeDaoFunding,
+      changeDaoRoyalties,
       fundingShares,
       royaltiesShares
     };
