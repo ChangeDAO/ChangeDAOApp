@@ -179,6 +179,7 @@ import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
 import { cloneDeep, isEqual, pick } from "lodash";
 import Controller from "../../../changedao_production/deployments/rinkeby/Controller.json";
+import ChangeDaoNFTFactory from "../../../changedao_production/deployments/rinkeby/ChangeDaoNFTFactory.json";
 import FundingAllocations from "../../../changedao_production/deployments/rinkeby/FundingAllocations.json";
 import Moralis from "moralis";
 
@@ -276,17 +277,62 @@ export default {
     const submit = async () => {
       try {
         isSubmitting.value = true;
+
+        // Create Transaction
         const tx = await Moralis.executeFunction({
           contractAddress: Controller.address,
           abi: Controller.abi,
           functionName: "createNFTAndPSClones",
           params: pick(data.value, Object.keys(PARAMS))
         });
-        // await Moralis.Cloud.run("createNFTAndPSClones", data.value);
+        console.log("receipt", tx);
+
+        // Call Cloud Function
+        // await Moralis.Cloud.run("createNFTAndPSClones", {
+        //   movementName: data.value._movementName,
+        //   movementAreaOfChange: data.value.areaOfChange,
+        //   transactionHash: tx.hash,
+        //   projectName: _projectName,
+        //   description: data.value.description,
+        //   creators: data.value._creators,
+        //   baseURI: data.value._baseURI,
+        //
+        //   royalties: [{ address, shares }],
+        //   funding: [{ address, shares }],
+        //
+        //   _royaltiesPayees
+        //   _royaltiesShares
+        //   _fundingPayees
+        //   _fundingShares
+        // });
+
+        // Transaction Complete
         const response = await tx.wait();
-        LocalStorage.remove(LOCALSTORAGE_KEY);
+        console.log("response", response);
+
+        // Get NFT Clone Address
+        const ethers = Moralis.web3Library;
+        const provider = ethers.providers.getDefaultProvider(process.env.chain);
+        const changeDaoNFTFactory = new ethers.Contract(
+          ChangeDaoNFTFactory.address,
+          ChangeDaoNFTFactory.abi,
+          provider
+        );
+        console.log("changeDaoNFTFactory", changeDaoNFTFactory);
+        const event = changeDaoNFTFactory.filters.ChangeDaoNFTCloneCreated();
+        console.log("event", event);
+        const events = await changeDaoNFTFactory.queryFilter(
+          event,
+          response.blockHash
+        );
+        console.log("events", events);
+        const nftCloneAddress = events[0].args.changeDaoNFTClone;
+        console.log("nftCloneAddress", nftCloneAddress);
+
+        // reset(true);
         notifySuccess("Success");
       } catch (error) {
+        console.error(error);
         notifyError(error.error || error);
       } finally {
         isSubmitting.value = false;
