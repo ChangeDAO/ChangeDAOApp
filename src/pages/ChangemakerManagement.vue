@@ -277,7 +277,8 @@ export default defineComponent({
           transactionHash: tx.hash
         });
         const response = await tx.wait();
-        update(cm);
+        cm.isApproved = true;
+        cm.isReviewed = true;
         notifySuccess("Success");
       } catch (error) {
         notifyError(error.error || error);
@@ -307,7 +308,6 @@ export default defineComponent({
         });
         const response = await tx.wait();
         cm.isApproved = false;
-        update(cm);
         notifySuccess("Success");
       } catch (error) {
         notifyError(error.error || error);

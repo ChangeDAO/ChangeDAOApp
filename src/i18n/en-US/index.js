@@ -72,7 +72,7 @@ export default {
   "Secondary Split Caption":
     "10% of all secondary sales will be split as follows:",
   "Select Currency": "Select Currency",
-  Shares: "Shares",
+  Share: "Share | Shares",
   "Short Bio": "Short Bio",
   Submit: "Submit",
   Subtotal: "Subtotal",

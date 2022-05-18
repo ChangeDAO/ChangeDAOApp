@@ -26,7 +26,7 @@
       </q-item>
     </SmoothReflow>
 
-    <q-item @click="add" class="non-selectable" clickable v-ripple>
+    <q-item @click="add()" class="non-selectable" clickable v-ripple>
       <q-item-section side>
         <q-icon name="add" />
       </q-item-section>
@@ -60,8 +60,8 @@ export default {
       }
     });
 
-    const add = () => {
-      model.value.push("");
+    const add = (addr = "") => {
+      model.value.push(addr);
     };
 
     const remove = index => {

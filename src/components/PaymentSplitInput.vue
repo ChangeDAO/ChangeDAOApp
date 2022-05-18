@@ -23,12 +23,13 @@
 
             <q-input
               v-model.number="sharesPercent[i]"
+              @update:modelValue="setPercent(i, $event)"
               type="number"
+              :label="$tc('Share')"
               :min="1"
               :max="max / 100"
               :step="0.01"
               suffix="%"
-              @change="balanceShares(i)"
             />
           </q-item-label>
 
@@ -50,7 +51,7 @@
       </q-item>
     </SmoothReflow>
 
-    <q-item @click="add" class="non-selectable" clickable v-ripple>
+    <q-item @click="add()" class="non-selectable" clickable v-ripple>
       <q-item-section side>
         <q-icon name="add" />
       </q-item-section>
@@ -100,27 +101,22 @@ export default {
       }
     });
 
-    const sharesPercent = computed({
-      get() {
-        return props.shares.map(s => s / 100);
-      },
-      set(value) {
-        emit(
-          "update:shares",
-          value.map(s => s * 100)
-        );
-      }
-    });
+    const sharesPercent = computed(() => props.shares.map(s => s / 100));
+
+    const setPercent = (i, value) => {
+      sharesModel.value[i] = 100 * value;
+      balanceShares(i);
+    };
 
     const max = computed(
       () => props.totalShares - sharesModel.value.length + 1
     );
 
-    const add = () => {
+    const add = (payee = "") => {
       sharesModel.value.push(
         Math.round(props.totalShares / (sharesModel.value.length + 1))
       );
-      payeesModel.value.push("");
+      payeesModel.value.push(payee);
       balanceShares(sharesModel.value.length - 1);
     };
 
@@ -184,6 +180,7 @@ export default {
       payeesModel,
       sharesModel,
       sharesPercent,
+      setPercent,
       max,
       add,
       remove,

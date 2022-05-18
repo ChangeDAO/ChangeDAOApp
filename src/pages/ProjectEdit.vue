@@ -1,6 +1,6 @@
 <template>
   <q-page class="page-project-edit">
-    <div class="q-layout-padding page-col col">
+    <div v-if="address" class="q-layout-padding page-col col">
       <!-- Title -->
       <div class="text-h4 q-ma-md">
         {{ $t(isNew ? "New Project" : "Edit Project") }}
@@ -11,6 +11,7 @@
         <q-input
           v-model="data._projectName"
           :label="$t('Project Name')"
+          :rules="[Boolean]"
           item-aligned
         />
 
@@ -18,6 +19,7 @@
         <q-input
           v-model="data.description"
           :label="$t('Description')"
+          :rules="[Boolean]"
           item-aligned
           autogrow
         />
@@ -26,6 +28,7 @@
         <q-input
           v-model="data._movementName"
           :label="$t('Movement')"
+          :rules="[Boolean]"
           item-aligned
         />
 
@@ -34,6 +37,7 @@
           v-model="data.areaOfChange"
           :label="$t('Area of Change')"
           :options="areasOfChange"
+          :rules="[Boolean]"
           emit-value
           :display-value="
             data.areaOfChange ? $t('areasOfChange.' + data.areaOfChange) : ''
@@ -55,26 +59,8 @@
         <AddrInputs :addresses="data._creators" :label="$t('Wallet Address')">
           <template v-slot:before>
             <q-item-label class="q-pb-xs" header>
-              {{ $tc("Creator", data._creators.length + 1) }}
+              {{ $tc("Creator", data._creators.length) }}
             </q-item-label>
-
-            <!-- Wallet Address -->
-            <q-item v-if="address">
-              <q-item-section side>
-                <AddrAvatar :address="address" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label caption>
-                  {{ $t("Wallet Address") }}
-                </q-item-label>
-                <q-item-label class="ellipsis">
-                  {{ address }}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item v-else>
-              <LogIn />
-            </q-item>
           </template>
         </AddrInputs>
 
@@ -82,6 +68,7 @@
 
         <!-- Funding Splitting -->
         <PaymentSplitInput
+          ref="fundingSplitter"
           :payees="data._fundingPayees"
           :shares="data._fundingShares"
           :total-shares="fundingShares"
@@ -112,6 +99,7 @@
 
         <!-- Royalties Splitting -->
         <PaymentSplitInput
+          ref="royaltiesSplitter"
           :payees="data._royaltiesPayees"
           :shares="data._royaltiesShares"
           :total-shares="royaltiesShares"
@@ -139,11 +127,20 @@
         </PaymentSplitInput>
       </q-list>
 
-      <!-- Submit -->
+      <q-separator spaced />
+
       <q-item class="q-my-xl">
         <q-item-section>
           <q-item-label>
             <div class="row q-gutter-md flex-center">
+              <!-- Reset -->
+              <q-btn
+                @click="reset(true)"
+                :label="$t('Reset')"
+                color="secondary"
+              />
+
+              <!-- Submit -->
               <q-btn
                 @click="submit"
                 :label="$t('Submit')"
@@ -151,11 +148,13 @@
                 :disable="!isValid"
                 color="primary"
               />
-              <q-btn @click="clear" :label="$t('Reset')" color="secondary" />
             </div>
           </q-item-label>
         </q-item-section>
       </q-item>
+    </div>
+    <div v-else class="q-layout-padding">
+      <LogIn />
     </div>
   </q-page>
 </template>
@@ -178,14 +177,13 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
-import { isEqual, pick } from "lodash";
+import { cloneDeep, isEqual, pick } from "lodash";
 import Controller from "../../../changedao_production/deployments/rinkeby/Controller.json";
 import FundingAllocations from "../../../changedao_production/deployments/rinkeby/FundingAllocations.json";
 import Moralis from "moralis";
 
 import { notifyError, notifySuccess } from "../util/notify";
 import { AREAS_OF_CHANGE } from "../util/constants";
-import AddrAvatar from "../components/AddrAvatar";
 import AddrInputs from "../components/AddrInputs";
 import PaymentSplitInput from "../components/PaymentSplitInput";
 import LogIn from "../components/LogIn";
@@ -212,7 +210,7 @@ const LOCALSTORAGE_KEY = "projectEdit";
 export default {
   name: "PageProjectEdit",
 
-  components: { AddrAvatar, AddrInputs, PaymentSplitInput, LogIn },
+  components: { AddrInputs, PaymentSplitInput, LogIn },
 
   setup() {
     const { t } = useI18n({ useScope: "global" });
@@ -221,42 +219,27 @@ export default {
 
     const address = computed(() => store.state.web3.userAddress);
 
-    watch(address, (newAddr, oldAddr) => {
-      if (data.value._royaltiesPayees.indexOf(newAddr) < 0) {
-        let i = data.value._royaltiesPayees.indexOf(oldAddr);
-        if (i >= 0) {
-          data.value._royaltiesPayees.splice(i, 1, newAddr);
-        } else {
-          data.value._royaltiesPayees.push(newAddr);
-          data.value._royaltiesShares.push(
-            Math.round(
-              royaltiesShares.value / (data.value._royaltiesShares.length + 1)
-            )
-          );
-        }
-      }
-      if (data.value._fundingPayees.indexOf(newAddr) < 0) {
-        let i = data.value._fundingPayees.indexOf(oldAddr);
-        if (i >= 0) {
-          data.value._fundingPayees.splice(i, 1, newAddr);
-        } else {
-          data.value._fundingPayees.push(newAddr);
-          data.value._fundingShares.push(
-            Math.round(
-              fundingShares.value / (data.value._fundingShares.length + 1)
-            )
-          );
-        }
-      }
-    });
-
-    const data = ref(LocalStorage.getItem(LOCALSTORAGE_KEY) || { ...REQUEST });
+    const data = ref(null);
 
     const isNew = computed(
       () => router.currentRoute.value.name === "project-new"
     );
 
-    const isValid = computed(() => address.value && data.value._projectName);
+    const isValid = computed(
+      () =>
+        address.value &&
+        data.value._projectName &&
+        data.value._movementName &&
+        data.value.areaOfChange &&
+        data.value._creators.length &&
+        data.value._royaltiesPayees.length &&
+        data.value._royaltiesPayees.length ==
+          data.value._royaltiesShares.length &&
+        data.value._royaltiesShares.length &&
+        data.value._royaltiesShares.length ==
+          data.value._royaltiesShares.length &&
+        data.value._baseURI
+    );
 
     const areasOfChange = computed(() =>
       AREAS_OF_CHANGE.map(value => ({
@@ -265,43 +248,28 @@ export default {
       }))
     );
 
-    // Get ChangeDAO shares
-    const changeDaoFunding = ref(200);
-    const changeDaoRoyalties = ref(2000);
-    const fundingShares = computed(() => 1e4 - changeDaoFunding.value);
-    const royaltiesShares = computed(() => 1e4 - changeDaoRoyalties.value);
-    onMounted(() => {
-      Moralis.executeFunction({
-        contractAddress: FundingAllocations.address,
-        abi: FundingAllocations.abi,
-        functionName: "changeDaoFunding"
-      }).then(result => {
-        changeDaoFunding.value = result;
-      });
-      Moralis.executeFunction({
-        contractAddress: FundingAllocations.address,
-        abi: FundingAllocations.abi,
-        functionName: "changeDaoRoyalties"
-      }).then(result => {
-        changeDaoRoyalties.value = result;
-      });
+    // Reset
+    const defaultModel = computed(() => {
+      const data = cloneDeep(REQUEST);
+      if (address.value) {
+        data._creators[0] = address.value;
+        data._fundingPayees[0] = address.value;
+        data._royaltiesPayees[0] = address.value;
+        data._fundingShares[0] = fundingShares.value;
+        data._royaltiesShares[0] = royaltiesShares.value;
+      }
+      return data;
     });
 
-    // Backup unsaved form data
-    watch(
-      data,
-      value => {
-        if (isEqual(value, REQUEST)) {
-          LocalStorage.remove(LOCALSTORAGE_KEY);
-        } else {
-          LocalStorage.set(LOCALSTORAGE_KEY, {
-            ...value,
-            address: address.value
-          });
-        }
-      },
-      { deep: true }
-    );
+    const reset = (clear = false) => {
+      if (clear) {
+        data.value = cloneDeep(defaultModel.value);
+      } else {
+        data.value =
+          LocalStorage.getItem(LOCALSTORAGE_KEY) || cloneDeep(REQUEST);
+      }
+    };
+    reset();
 
     // Submit
     const isSubmitting = ref(false);
@@ -325,15 +293,57 @@ export default {
       }
     };
 
-    const clear = () => {
-      data.value = { ...REQUEST };
-    };
+    // Get ChangeDAO shares
+    const changeDaoFunding = ref(200);
+    const changeDaoRoyalties = ref(2000);
+    const fundingShares = computed(() => 1e4 - changeDaoFunding.value);
+    const royaltiesShares = computed(() => 1e4 - changeDaoRoyalties.value);
+    onMounted(() => {
+      if (address.value) {
+        Moralis.executeFunction({
+          contractAddress: FundingAllocations.address,
+          abi: FundingAllocations.abi,
+          functionName: "changeDaoFunding"
+        }).then(result => {
+          changeDaoFunding.value = result;
+        });
+        Moralis.executeFunction({
+          contractAddress: FundingAllocations.address,
+          abi: FundingAllocations.abi,
+          functionName: "changeDaoRoyalties"
+        }).then(result => {
+          changeDaoRoyalties.value = result;
+        });
+
+        reset();
+      }
+    });
+
+    // Backup unsaved form data
+    watch(
+      data,
+      (value, oldValue) => {
+        if (isEqual(value, defaultModel.value)) {
+          // Remove if default
+          LocalStorage.remove(LOCALSTORAGE_KEY);
+        } else {
+          LocalStorage.set(LOCALSTORAGE_KEY, {
+            ...value,
+            address: address.value
+          });
+        }
+      },
+      { deep: true }
+    );
+
+    // Reset on user address change
+    watch(address, () => reset());
 
     return {
       address,
       data,
       submit,
-      clear,
+      reset,
       isSubmitting,
       isNew,
       isValid,
