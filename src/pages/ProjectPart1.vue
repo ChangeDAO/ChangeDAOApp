@@ -1,0 +1,276 @@
+<template>
+  <q-list v-if="data">
+    <!-- Name -->
+    <q-input
+      v-model="data._projectName"
+      :label="$t('Project Name')"
+      :rules="[Boolean]"
+      item-aligned
+    />
+
+    <!-- Description -->
+    <q-input
+      v-model="data.description"
+      :label="$t('Description')"
+      :rules="[Boolean]"
+      item-aligned
+      autogrow
+    />
+
+    <!-- Movement -->
+    <q-input
+      v-model="data._movementName"
+      :label="$t('Movement')"
+      :rules="[Boolean]"
+      item-aligned
+    />
+
+    <!-- Area of Change -->
+    <q-select
+      v-model="data.areaOfChange"
+      :label="$t('Area of Change')"
+      :options="areasOfChange"
+      :rules="[Boolean]"
+      emit-value
+      :display-value="
+        data.areaOfChange ? $t('areasOfChange.' + data.areaOfChange) : ''
+      "
+      item-aligned
+    />
+
+    <!-- Base URI -->
+    <q-input
+      v-model="data._baseURI"
+      :label="$t('Base URI')"
+      :rules="[Boolean]"
+      item-aligned
+    />
+
+    <q-separator spaced />
+
+    <!-- Creator Addresses -->
+    <AddrInputs :addresses="data._creators" :label="$t('Wallet Address')">
+      <template v-slot:before>
+        <q-item-label class="q-pb-xs" header>
+          {{ $tc("Creator", data._creators.length) }}
+        </q-item-label>
+      </template>
+    </AddrInputs>
+
+    <q-separator spaced />
+
+    <!-- Funding Splitting -->
+    <PaymentSplitInput
+      ref="fundingSplitter"
+      :payees="data._fundingPayees"
+      :shares="data._fundingShares"
+      :total-shares="fundingShares"
+    >
+      <template v-slot:before>
+        <q-item-label class="q-pb-xs" header>
+          {{ $tc("Funding Split") }}
+        </q-item-label>
+
+        <!-- ChangeDAO Funding -->
+        <q-item>
+          <q-item-section side>
+            <q-avatar color="primary" size="sm" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>
+              ChangeDAO
+            </q-item-label>
+          </q-item-section>
+          <q-item-section side> {{ changeDaoFunding / 100 }}% </q-item-section>
+        </q-item>
+      </template>
+    </PaymentSplitInput>
+
+    <q-separator spaced />
+
+    <!-- Royalties Splitting -->
+    <PaymentSplitInput
+      ref="royaltiesSplitter"
+      :payees="data._royaltiesPayees"
+      :shares="data._royaltiesShares"
+      :total-shares="royaltiesShares"
+    >
+      <template v-slot:before>
+        <q-item-label class="q-pb-xs" header>
+          {{ $tc("Royalties Split") }}
+        </q-item-label>
+
+        <!-- ChangeDAO Royalties -->
+        <q-item>
+          <q-item-section side>
+            <q-avatar color="primary" size="sm" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>
+              ChangeDAO
+            </q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            {{ changeDaoRoyalties / 100 }}%
+          </q-item-section>
+        </q-item>
+      </template>
+    </PaymentSplitInput>
+  </q-list>
+</template>
+
+<script>
+import { computed, onMounted, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import { useStore } from "vuex";
+import { LocalStorage } from "quasar";
+import { cloneDeep, isEqual } from "lodash";
+import FundingAllocations from "../../../changedao_production/deployments/rinkeby/FundingAllocations.json";
+import Moralis from "moralis";
+
+import { AREAS_OF_CHANGE } from "../util/constants";
+import AddrInputs from "../components/AddrInputs";
+import PaymentSplitInput from "../components/PaymentSplitInput";
+
+const REQUEST = {
+  _movementName: "",
+  _projectName: "",
+  _creators: [],
+  _baseURI: "",
+  _royaltiesPayees: [],
+  _royaltiesShares: [],
+  _fundingPayees: [],
+  _fundingShares: [],
+  transactionHash: "",
+  description: "",
+  areaOfChange: ""
+};
+
+const LOCALSTORAGE_KEY = "projectPart1";
+
+export default {
+  name: "PageProjectPart1",
+
+  components: { AddrInputs, PaymentSplitInput },
+
+  props: ["modelValue"],
+  setup(props, { emit }) {
+    const { t } = useI18n({ useScope: "global" });
+    const store = useStore();
+
+    const address = computed(() => store.state.web3.userAddress);
+
+    const data = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(value) {
+        emit("update:modelValue", value);
+      }
+    });
+
+    const isValid = computed(
+      () =>
+        address.value &&
+        data.value._projectName &&
+        data.value._movementName &&
+        data.value.areaOfChange &&
+        data.value._creators.length &&
+        data.value._royaltiesPayees.length &&
+        data.value._royaltiesPayees.length ==
+          data.value._royaltiesShares.length &&
+        data.value._royaltiesShares.length &&
+        data.value._royaltiesShares.length ==
+          data.value._royaltiesShares.length &&
+        data.value._baseURI
+    );
+
+    const areasOfChange = computed(() =>
+      AREAS_OF_CHANGE.map(value => ({
+        value,
+        label: t("areasOfChange." + value)
+      }))
+    );
+
+    // Reset
+    const defaultModel = computed(() => {
+      const data = cloneDeep(REQUEST);
+      if (address.value) {
+        data._creators[0] = address.value;
+        data._fundingPayees[0] = address.value;
+        data._royaltiesPayees[0] = address.value;
+        data._fundingShares[0] = fundingShares.value;
+        data._royaltiesShares[0] = royaltiesShares.value;
+      }
+      return data;
+    });
+
+    const reset = (clear = false) => {
+      if (clear) {
+        data.value = cloneDeep(defaultModel.value);
+      } else {
+        data.value =
+          LocalStorage.getItem(LOCALSTORAGE_KEY) ||
+          cloneDeep(defaultModel.value);
+      }
+    };
+
+    // Get ChangeDAO shares
+    const changeDaoFunding = ref(200);
+    const changeDaoRoyalties = ref(2000);
+    const fundingShares = computed(() => 1e4 - changeDaoFunding.value);
+    const royaltiesShares = computed(() => 1e4 - changeDaoRoyalties.value);
+    onMounted(() => {
+      if (address.value) {
+        Moralis.executeFunction({
+          contractAddress: FundingAllocations.address,
+          abi: FundingAllocations.abi,
+          functionName: "changeDaoFunding"
+        }).then(result => {
+          changeDaoFunding.value = result;
+        });
+        Moralis.executeFunction({
+          contractAddress: FundingAllocations.address,
+          abi: FundingAllocations.abi,
+          functionName: "changeDaoRoyalties"
+        }).then(result => {
+          changeDaoRoyalties.value = result;
+        });
+      }
+      reset();
+    });
+
+    // Backup unsaved form data
+    watch(
+      data,
+      (value, oldValue) => {
+        if (isEqual(value, defaultModel.value)) {
+          // Remove if default
+          LocalStorage.remove(LOCALSTORAGE_KEY);
+        } else {
+          LocalStorage.set(LOCALSTORAGE_KEY, {
+            ...value,
+            address: address.value
+          });
+        }
+      },
+      { deep: true }
+    );
+
+    // Reset on user address change
+    watch(address, () => reset());
+
+    return {
+      address,
+      data,
+      reset,
+      isValid,
+      areasOfChange,
+      changeDaoFunding,
+      changeDaoRoyalties,
+      fundingShares,
+      royaltiesShares
+    };
+  }
+};
+</script>

@@ -6,126 +6,8 @@
         {{ $t(isNew ? "New Project" : "Edit Project") }}
       </div>
 
-      <q-list>
-        <!-- Name -->
-        <q-input
-          v-model="data._projectName"
-          :label="$t('Project Name')"
-          :rules="[Boolean]"
-          item-aligned
-        />
-
-        <!-- Description -->
-        <q-input
-          v-model="data.description"
-          :label="$t('Description')"
-          :rules="[Boolean]"
-          item-aligned
-          autogrow
-        />
-
-        <!-- Movement -->
-        <q-input
-          v-model="data._movementName"
-          :label="$t('Movement')"
-          :rules="[Boolean]"
-          item-aligned
-        />
-
-        <!-- Area of Change -->
-        <q-select
-          v-model="data.areaOfChange"
-          :label="$t('Area of Change')"
-          :options="areasOfChange"
-          :rules="[Boolean]"
-          emit-value
-          :display-value="
-            data.areaOfChange ? $t('areasOfChange.' + data.areaOfChange) : ''
-          "
-          item-aligned
-        />
-
-        <!-- Base URI -->
-        <q-input
-          v-model="data._baseURI"
-          :label="$t('Base URI')"
-          :rules="[Boolean]"
-          item-aligned
-        />
-
-        <q-separator spaced />
-
-        <!-- Creator Addresses -->
-        <AddrInputs :addresses="data._creators" :label="$t('Wallet Address')">
-          <template v-slot:before>
-            <q-item-label class="q-pb-xs" header>
-              {{ $tc("Creator", data._creators.length) }}
-            </q-item-label>
-          </template>
-        </AddrInputs>
-
-        <q-separator spaced />
-
-        <!-- Funding Splitting -->
-        <PaymentSplitInput
-          ref="fundingSplitter"
-          :payees="data._fundingPayees"
-          :shares="data._fundingShares"
-          :total-shares="fundingShares"
-        >
-          <template v-slot:before>
-            <q-item-label class="q-pb-xs" header>
-              {{ $tc("Funding Split") }}
-            </q-item-label>
-
-            <!-- ChangeDAO Funding -->
-            <q-item>
-              <q-item-section side>
-                <q-avatar color="primary" size="sm" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>
-                  ChangeDAO
-                </q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                {{ changeDaoFunding / 100 }}%
-              </q-item-section>
-            </q-item>
-          </template>
-        </PaymentSplitInput>
-
-        <q-separator spaced />
-
-        <!-- Royalties Splitting -->
-        <PaymentSplitInput
-          ref="royaltiesSplitter"
-          :payees="data._royaltiesPayees"
-          :shares="data._royaltiesShares"
-          :total-shares="royaltiesShares"
-        >
-          <template v-slot:before>
-            <q-item-label class="q-pb-xs" header>
-              {{ $tc("Royalties Split") }}
-            </q-item-label>
-
-            <!-- ChangeDAO Royalties -->
-            <q-item>
-              <q-item-section side>
-                <q-avatar color="primary" size="sm" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>
-                  ChangeDAO
-                </q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                {{ changeDaoRoyalties / 100 }}%
-              </q-item-section>
-            </q-item>
-          </template>
-        </PaymentSplitInput>
-      </q-list>
+      <ProjectPart1 ref="part1" v-show="!isPart1Complete" v-model="data1" />
+      <ProjectPart2 ref="part2" v-show="isPart1Complete" v-model="data2" />
 
       <q-separator spaced />
 
@@ -159,59 +41,31 @@
   </q-page>
 </template>
 
-<style lang="scss">
-.page-project-edit {
-  .banner {
-    background-color: $separator-dark-color;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    height: 288px;
-  }
-}
-</style>
-
 <script>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
-import { cloneDeep, isEqual, pick } from "lodash";
+import { cloneDeep, isEqual, pickBy } from "lodash";
 import Controller from "../../../changedao_production/deployments/rinkeby/Controller.json";
 import ChangeDaoNFTFactory from "../../../changedao_production/deployments/rinkeby/ChangeDaoNFTFactory.json";
-import FundingAllocations from "../../../changedao_production/deployments/rinkeby/FundingAllocations.json";
+import PaymentSplitterFactory from "../../../changedao_production/deployments/rinkeby/PaymentSplitterFactory.json";
+import SharedFundingFactory from "../../../changedao_production/deployments/rinkeby/SharedFundingFactory.json";
 import Moralis from "moralis";
 
+import ProjectPart1 from "./ProjectPart1";
+import ProjectPart2 from "./ProjectPart2";
 import { notifyError, notifySuccess } from "../util/notify";
-import { AREAS_OF_CHANGE } from "../util/constants";
-import AddrInputs from "../components/AddrInputs";
-import PaymentSplitInput from "../components/PaymentSplitInput";
 import LogIn from "../components/LogIn";
 
-const PARAMS = {
-  _movementName: "",
-  _projectName: "",
-  _creators: [],
-  _baseURI: "",
-  _royaltiesPayees: [],
-  _royaltiesShares: [],
-  _fundingPayees: [],
-  _fundingShares: []
-};
-
-const REQUEST = {
-  ...PARAMS,
-  description: "",
-  areaOfChange: ""
-};
-
-const LOCALSTORAGE_KEY = "projectEdit";
+const LOCALSTORAGE_KEY1 = "projectPart1";
+const LOCALSTORAGE_KEY2 = "projectPart2";
 
 export default {
   name: "PageProjectEdit",
 
-  components: { AddrInputs, PaymentSplitInput, LogIn },
+  components: { ProjectPart1, ProjectPart2, LogIn },
 
   setup() {
     const { t } = useI18n({ useScope: "global" });
@@ -220,26 +74,26 @@ export default {
 
     const address = computed(() => store.state.web3.userAddress);
 
-    const data = ref(null);
+    // Form references
+    const part1 = ref(null);
+    const part2 = ref(null);
+
+    // Form data
+    const data1 = ref(null);
+    const data2 = ref(null);
 
     const isNew = computed(
       () => router.currentRoute.value.name === "project-new"
     );
 
-    const isValid = computed(
-      () =>
-        address.value &&
-        data.value._projectName &&
-        data.value._movementName &&
-        data.value.areaOfChange &&
-        data.value._creators.length &&
-        data.value._royaltiesPayees.length &&
-        data.value._royaltiesPayees.length ==
-          data.value._royaltiesShares.length &&
-        data.value._royaltiesShares.length &&
-        data.value._royaltiesShares.length ==
-          data.value._royaltiesShares.length &&
-        data.value._baseURI
+    const isPart1Complete = computed(() =>
+      Boolean(data2.value && data2.value._changeDaoNFTClone)
+    );
+
+    const isValid = computed(() =>
+      isPart1Complete.value
+        ? part2.value && part2.value.isValid
+        : part1.value && part1.value.isValid
     );
 
     const areasOfChange = computed(() =>
@@ -250,27 +104,21 @@ export default {
     );
 
     // Reset
-    const defaultModel = computed(() => {
-      const data = cloneDeep(REQUEST);
-      if (address.value) {
-        data._creators[0] = address.value;
-        data._fundingPayees[0] = address.value;
-        data._royaltiesPayees[0] = address.value;
-        data._fundingShares[0] = fundingShares.value;
-        data._royaltiesShares[0] = royaltiesShares.value;
-      }
-      return data;
-    });
+    const defaultModel1 = computed(() =>
+      part1.value ? part1.value.defaultModel : {}
+    );
+    const defaultModel2 = computed(() =>
+      part2.value ? part2.value.defaultModel : {}
+    );
 
     const reset = (clear = false) => {
-      if (clear) {
-        data.value = cloneDeep(defaultModel.value);
+      if (!isPart1Complete.value) {
+        part1.value.reset(clear);
+        part2.value.reset(true);
       } else {
-        data.value =
-          LocalStorage.getItem(LOCALSTORAGE_KEY) || cloneDeep(REQUEST);
+        part2.value.reset(clear);
       }
     };
-    reset();
 
     // Submit
     const isSubmitting = ref(false);
@@ -278,56 +126,108 @@ export default {
       try {
         isSubmitting.value = true;
 
-        // Create Transaction
-        const tx = await Moralis.executeFunction({
-          contractAddress: Controller.address,
-          abi: Controller.abi,
-          functionName: "createNFTAndPSClones",
-          params: pick(data.value, Object.keys(PARAMS))
-        });
-        console.log("receipt", tx);
-
-        // Call Cloud Function
-        // await Moralis.Cloud.run("createNFTAndPSClones", {
-        //   movementName: data.value._movementName,
-        //   movementAreaOfChange: data.value.areaOfChange,
-        //   transactionHash: tx.hash,
-        //   projectName: _projectName,
-        //   description: data.value.description,
-        //   creators: data.value._creators,
-        //   baseURI: data.value._baseURI,
-        //
-        //   royalties: [{ address, shares }],
-        //   funding: [{ address, shares }],
-        //
-        //   _royaltiesPayees
-        //   _royaltiesShares
-        //   _fundingPayees
-        //   _fundingShares
-        // });
-
-        // Transaction Complete
-        const response = await tx.wait();
-        console.log("response", response);
-
-        // Get NFT Clone Address
         const ethers = Moralis.web3Library;
         const provider = ethers.providers.getDefaultProvider(process.env.chain);
-        const changeDaoNFTFactory = new ethers.Contract(
-          ChangeDaoNFTFactory.address,
-          ChangeDaoNFTFactory.abi,
-          provider
-        );
-        console.log("changeDaoNFTFactory", changeDaoNFTFactory);
-        const event = changeDaoNFTFactory.filters.ChangeDaoNFTCloneCreated();
-        console.log("event", event);
-        const events = await changeDaoNFTFactory.queryFilter(
-          event,
-          response.blockHash
-        );
-        console.log("events", events);
-        const nftCloneAddress = events[0].args.changeDaoNFTClone;
-        console.log("nftCloneAddress", nftCloneAddress);
+
+        if (!isPart1Complete.value) {
+          // Part 1
+
+          // Create Transaction
+          const tx = await Moralis.executeFunction({
+            contractAddress: Controller.address,
+            abi: Controller.abi,
+            functionName: "createNFTAndPSClones",
+            params: pickBy(data1.value, (value, key) => key.startsWith("_"))
+          });
+          data1.value.transactionHash = tx.hash;
+
+          // Call Cloud Function
+          // data1.value.projectId = await Moralis.Cloud.run(
+          //   "createProjectPartOne",
+          //   data1.value
+          // );
+
+          // Transaction Complete
+          const response = await tx.wait();
+
+          // Get NFT Clone Address
+          const changeDaoNFTFactory = new ethers.Contract(
+            ChangeDaoNFTFactory.address,
+            ChangeDaoNFTFactory.abi,
+            provider
+          );
+          data2.value._changeDaoNFTClone = (
+            await changeDaoNFTFactory.queryFilter(
+              changeDaoNFTFactory.filters.ChangeDaoNFTCloneCreated(),
+              response.blockHash
+            )
+          )[0].args.changeDaoNFTClone;
+
+          // Get Payment Splitter Address
+          const paymentSplitterFactory = new ethers.Contract(
+            PaymentSplitterFactory.address,
+            PaymentSplitterFactory.abi,
+            provider
+          );
+          data2.value._fundingPSClone = (
+            await paymentSplitterFactory.queryFilter(
+              paymentSplitterFactory.filters.FundingPSCloneDeployed(),
+              response.blockHash
+            )
+          )[0].args.fundingPSClone;
+        } else {
+          // Part 2
+
+          // Create Transaction
+          const tx = await Moralis.executeFunction({
+            contractAddress: Controller.address,
+            abi: Controller.abi,
+            functionName: "callSharedFundingFactory",
+            params: {
+              _changeDaoNFTClone: data2.value._changeDaoNFTClone,
+              _fundingPSClone: data2.value._fundingPSClone,
+              _mintPrice: ethers.utils.parseEther(data2.value._mintPrice),
+              _totalMints: ethers.BigNumber.from(data2.value._totalMints),
+              _maxMintAmountRainbow: ethers.BigNumber.from(
+                data2.value._maxMintAmountRainbow
+              ),
+              _maxMintAmountPublic: ethers.BigNumber.from(
+                data2.value._maxMintAmountPublic
+              ),
+              _rainbowDuration: ethers.BigNumber.from(
+                data2.value._rainbowDuration
+              ),
+              _rainbowMerkleRoot: ethers.utils.hexZeroPad(
+                ethers.utils.toUtf8Bytes(data2.value._rainbowMerkleRoot),
+                32
+              ),
+              _rainbowCID: data2.value._rainbowCID
+            }
+          });
+          data2.value.transactionHash = tx.hash;
+
+          // Call Cloud Function
+          // data2.value.projectId = await Moralis.Cloud.run(
+          //   "createProjectPartTwo",
+          //   data2.value
+          // );
+
+          // Transaction Complete
+          const response = await tx.wait();
+
+          // Get Shared Funding Clone Address
+          const sharedFundingFactory = new ethers.Contract(
+            SharedFundingFactory.address,
+            SharedFundingFactory.abi,
+            provider
+          );
+          data2.value.sharedFundingClone = (
+            await sharedFundingFactory.queryFilter(
+              sharedFundingFactory.filters.SharedFundingCreated(),
+              response.blockHash
+            )
+          )[0].args.sharedFundingClone;
+        }
 
         // reset(true);
         notifySuccess("Success");
@@ -339,65 +239,18 @@ export default {
       }
     };
 
-    // Get ChangeDAO shares
-    const changeDaoFunding = ref(200);
-    const changeDaoRoyalties = ref(2000);
-    const fundingShares = computed(() => 1e4 - changeDaoFunding.value);
-    const royaltiesShares = computed(() => 1e4 - changeDaoRoyalties.value);
-    onMounted(() => {
-      if (address.value) {
-        Moralis.executeFunction({
-          contractAddress: FundingAllocations.address,
-          abi: FundingAllocations.abi,
-          functionName: "changeDaoFunding"
-        }).then(result => {
-          changeDaoFunding.value = result;
-        });
-        Moralis.executeFunction({
-          contractAddress: FundingAllocations.address,
-          abi: FundingAllocations.abi,
-          functionName: "changeDaoRoyalties"
-        }).then(result => {
-          changeDaoRoyalties.value = result;
-        });
-
-        reset();
-      }
-    });
-
-    // Backup unsaved form data
-    watch(
-      data,
-      (value, oldValue) => {
-        if (isEqual(value, defaultModel.value)) {
-          // Remove if default
-          LocalStorage.remove(LOCALSTORAGE_KEY);
-        } else {
-          LocalStorage.set(LOCALSTORAGE_KEY, {
-            ...value,
-            address: address.value
-          });
-        }
-      },
-      { deep: true }
-    );
-
-    // Reset on user address change
-    watch(address, () => reset());
-
     return {
+      part1,
+      part2,
+      isPart1Complete,
       address,
-      data,
+      data1,
+      data2,
       submit,
       reset,
       isSubmitting,
       isNew,
-      isValid,
-      areasOfChange,
-      changeDaoFunding,
-      changeDaoRoyalties,
-      fundingShares,
-      royaltiesShares
+      isValid
     };
   }
 };
