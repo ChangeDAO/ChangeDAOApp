@@ -562,7 +562,8 @@ import Controller from "../../../changedao_production/deployments/rinkeby/Contro
 import FundingAllocations from "../../../changedao_production/deployments/rinkeby/FundingAllocations.json";
 import PaymentSplitter from "../../../changedao_production/deployments/rinkeby/PaymentSplitter.json";
 import PaymentSplitterFactory from "../../../changedao_production/deployments/rinkeby/PaymentSplitterFactory.json";
-import SharedFunding from "../../../changedao_production/deployments/rinkeby/SharedFunding.json";
+// import SharedFunding from "../../../changedao_production/deployments/rinkeby/SharedFunding.json";
+import SharedFunding from "../../../changedao_production/deployments/rinkeby/SharedFundingRinkeby.json";
 import SharedFundingFactory from "../../../changedao_production/deployments/rinkeby/SharedFundingFactory.json";
 
 export default defineComponent({
