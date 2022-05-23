@@ -188,20 +188,21 @@ export default {
               _fundingPSClone: data2.value._fundingPSClone,
               _mintPrice: ethers.utils.parseEther(data2.value._mintPrice),
               _totalMints: ethers.BigNumber.from(data2.value._totalMints),
-              _maxMintAmountRainbow: ethers.BigNumber.from(
-                data2.value._maxMintAmountRainbow
-              ),
               _maxMintAmountPublic: ethers.BigNumber.from(
                 data2.value._maxMintAmountPublic
               ),
+              _maxMintAmountRainbow: ethers.BigNumber.from(
+                data2.value.hasRainbow ? data2.value._maxMintAmountRainbow : 10
+              ),
               _rainbowDuration: ethers.BigNumber.from(
-                data2.value._rainbowDuration
+                data2.value.hasRainbow ? data2.value._rainbowDuration : 0
               ),
-              _rainbowMerkleRoot: ethers.utils.hexZeroPad(
-                ethers.utils.toUtf8Bytes(data2.value._rainbowMerkleRoot),
-                32
-              ),
-              _rainbowCID: data2.value._rainbowCID
+              _rainbowMerkleRoot: data2.value.hasRainbow
+                ? data2.value._rainbowMerkleRoot
+                : ethers.utils.formatBytes32String("0"),
+              _rainbowCID: data2.value.hasRainbow
+                ? data2.value._rainbowCID
+                : "n/a"
             }
           });
           data2.value.transactionHash = tx.hash;

@@ -49,7 +49,11 @@
     <q-separator spaced />
 
     <!-- Creator Addresses -->
-    <AddrInputs :addresses="data._creators" :label="$t('Wallet Address')">
+    <AddrInputs
+      :addresses="data._creators"
+      :label="$t('Wallet Address')"
+      :limit="maxPayees"
+    >
       <template v-slot:before>
         <q-item-label class="q-pb-xs" header>
           {{ $tc("Creator", data._creators.length) }}
@@ -62,6 +66,7 @@
     <!-- Funding Splitting -->
     <PaymentSplitInput
       ref="fundingSplitter"
+      :limit="maxPayees"
       :payees="data._fundingPayees"
       :shares="data._fundingShares"
       :total-shares="fundingShares"
@@ -91,6 +96,7 @@
     <!-- Royalties Splitting -->
     <PaymentSplitInput
       ref="royaltiesSplitter"
+      :limit="maxPayees"
       :payees="data._royaltiesPayees"
       :shares="data._royaltiesShares"
       :total-shares="royaltiesShares"
@@ -157,6 +163,8 @@ export default {
   setup(props, { emit }) {
     const { t } = useI18n({ useScope: "global" });
     const store = useStore();
+
+    const maxPayees = 35;
 
     const address = computed(() => store.state.web3.userAddress);
 
@@ -269,7 +277,8 @@ export default {
       changeDaoFunding,
       changeDaoRoyalties,
       fundingShares,
-      royaltiesShares
+      royaltiesShares,
+      maxPayees
     };
   }
 };

@@ -51,7 +51,13 @@
       </q-item>
     </SmoothReflow>
 
-    <q-item @click="add()" class="non-selectable" clickable v-ripple>
+    <q-item
+      v-show="payeesModel.length < limit"
+      @click="add()"
+      class="non-selectable"
+      clickable
+      v-ripple
+    >
       <q-item-section side>
         <q-icon name="add" />
       </q-item-section>
@@ -77,6 +83,10 @@ export default {
   props: {
     payees: Array,
     shares: Array,
+    limit: {
+      type: Number,
+      default: Infinity
+    },
     totalShares: {
       type: Number,
       default: 1e4
@@ -113,6 +123,9 @@ export default {
     );
 
     const add = (payee = "") => {
+      if (payeesModel.value.length >= props.limit) {
+        return;
+      }
       sharesModel.value.push(
         Math.round(props.totalShares / (sharesModel.value.length + 1))
       );

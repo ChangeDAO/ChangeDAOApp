@@ -26,7 +26,13 @@
       </q-item>
     </SmoothReflow>
 
-    <q-item @click="add()" class="non-selectable" clickable v-ripple>
+    <q-item
+      v-show="model.length < limit"
+      @click="add()"
+      class="non-selectable"
+      clickable
+      v-ripple
+    >
       <q-item-section side>
         <q-icon name="add" />
       </q-item-section>
@@ -49,7 +55,13 @@ import { computed } from "vue";
 export default {
   name: "AddrInputs",
   components: { AddrAvatar, SmoothReflow },
-  props: ["addresses"],
+  props: {
+    addresses: Array,
+    limit: {
+      type: Number,
+      default: Infinity
+    }
+  },
   setup(props, { emit }) {
     const model = computed({
       get() {
@@ -61,6 +73,8 @@ export default {
     });
 
     const add = (addr = "") => {
+      if (model.value.length < props.limit) {
+      }
       model.value.push(addr);
     };
 

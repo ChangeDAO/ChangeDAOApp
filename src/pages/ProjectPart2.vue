@@ -3,8 +3,9 @@
     <!-- Mint Price -->
     <q-input
       v-model="data._mintPrice"
-      :label="'Mint Price'"
+      :label="'Mint Price (USD)'"
       :rules="[Boolean]"
+      prefix="$"
       item-aligned
     />
 
@@ -16,45 +17,59 @@
       item-aligned
     />
 
-    <!-- Max Mint Amount Rainbow -->
-    <q-input
-      v-model="data._maxMintAmountRainbow"
-      :label="'Max Mint Amount Rainbow'"
-      :rules="[Boolean]"
-      item-aligned
-    />
-
     <!-- Max Mint Amount Public -->
     <q-input
       v-model="data._maxMintAmountPublic"
-      :label="'Max Mint Amount Public'"
+      :label="'Max Mints per Transaction'"
       :rules="[Boolean]"
       item-aligned
     />
 
-    <!-- Rainbow Duration -->
-    <q-input
-      v-model="data._rainbowDuration"
-      :label="'Rainbow Duration'"
-      :rules="[Boolean]"
-      item-aligned
-    />
+    <!-- Use Rainbow List? -->
+    <q-item tag="label" clickable v-ripple>
+      <q-item-section>
+        <q-item-label>Use Rainbow List?</q-item-label>
+      </q-item-section>
+      <q-item-section side>
+        <q-toggle v-model="data.hasRainbow" />
+      </q-item-section>
+    </q-item>
 
-    <!-- Rainbow Merkle Root -->
-    <q-input
-      v-model="data._rainbowMerkleRoot"
-      :label="'Rainbow Merkle Root'"
-      :rules="[Boolean]"
-      item-aligned
-    />
+    <SmoothReflow>
+      <div v-if="data.hasRainbow">
+        <!-- Max Mint Amount Rainbow -->
+        <q-input
+          v-model="data._maxMintAmountRainbow"
+          :label="'Max Mints per Transaction for Rainbow List'"
+          :rules="[Boolean]"
+          item-aligned
+        />
 
-    <!-- Rainbow CID -->
-    <q-input
-      v-model="data._rainbowCID"
-      :label="'Rainbow CID'"
-      :rules="[Boolean]"
-      item-aligned
-    />
+        <!-- Rainbow Duration -->
+        <q-input
+          v-model="data._rainbowDuration"
+          :label="'Rainbow Period Duration'"
+          :rules="[Boolean]"
+          item-aligned
+        />
+
+        <!-- Rainbow Merkle Root -->
+        <q-input
+          v-model="data._rainbowMerkleRoot"
+          :label="'Rainbow Merkle Root'"
+          :rules="[Boolean]"
+          item-aligned
+        />
+
+        <!-- Rainbow CID -->
+        <q-input
+          v-model="data._rainbowCID"
+          :label="'Rainbow List CID'"
+          :rules="[Boolean]"
+          item-aligned
+        />
+      </div>
+    </SmoothReflow>
   </q-list>
 </template>
 
@@ -65,6 +80,8 @@ import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
 import { cloneDeep, isEqual } from "lodash";
 import Moralis from "moralis";
+
+import SmoothReflow from "../components/SmoothReflow";
 
 const REQUEST = {
   _changeDaoNFTClone: "", // From Part 1 event
@@ -77,13 +94,16 @@ const REQUEST = {
   _rainbowMerkleRoot: "",
   _rainbowCID: "",
   projectId: "",
-  transactionHash: ""
+  transactionHash: "",
+  hasRainbow: false
 };
 
 const LOCALSTORAGE_KEY = "projectPart2";
 
 export default {
   name: "PageProjectPart2",
+
+  components: { SmoothReflow },
 
   props: ["modelValue"],
   setup(props, { emit }) {
@@ -108,11 +128,12 @@ export default {
         data.value._fundingPSClone &&
         data.value._mintPrice &&
         data.value._totalMints &&
-        data.value._maxMintAmountRainbow &&
         data.value._maxMintAmountPublic &&
-        data.value._rainbowDuration &&
-        data.value._rainbowMerkleRoot &&
-        data.value._rainbowCID
+        (!data.value.hasRainbow ||
+          (data.value._maxMintAmountRainbow &&
+            data.value._rainbowDuration &&
+            data.value._rainbowMerkleRoot &&
+            data.value._rainbowCID))
     );
 
     // Reset
