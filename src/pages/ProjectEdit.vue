@@ -48,10 +48,10 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
 import { cloneDeep, isEqual, pickBy } from "lodash";
-import Controller from "../../../changedao_production/deployments/rinkeby/Controller.json";
-import ChangeDaoNFTFactory from "../../../changedao_production/deployments/rinkeby/ChangeDaoNFTFactory.json";
-import PaymentSplitterFactory from "../../../changedao_production/deployments/rinkeby/PaymentSplitterFactory.json";
-import SharedFundingFactory from "../../../changedao_production/deployments/rinkeby/SharedFundingFactory.json";
+import Controller from "../../contracts/deployments/rinkeby/Controller.json";
+import ChangeDaoNFTFactory from "../../contracts/deployments/rinkeby/ChangeDaoNFTFactory.json";
+import PaymentSplitterFactory from "../../contracts/deployments/rinkeby/PaymentSplitterFactory.json";
+import SharedFundingFactory from "../../contracts/deployments/rinkeby/SharedFundingFactory.json";
 import Moralis from "moralis";
 
 import ProjectPart1 from "./ProjectPart1";

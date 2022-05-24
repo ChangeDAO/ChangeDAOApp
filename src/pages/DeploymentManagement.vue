@@ -555,16 +555,16 @@ import { useQuasar } from "quasar";
 import { notifyError } from "../util/notify";
 import AddrAvatar from "../components/AddrAvatar";
 
-import ChangeDaoNFT from "../../../changedao_production/deployments/rinkeby/ChangeDaoNFT.json";
-import ChangeDaoNFTFactory from "../../../changedao_production/deployments/rinkeby/ChangeDaoNFTFactory.json";
-import ChangeMakers from "../../../changedao_production/deployments/rinkeby/ChangeMakers.json";
-import Controller from "../../../changedao_production/deployments/rinkeby/Controller.json";
-import FundingAllocations from "../../../changedao_production/deployments/rinkeby/FundingAllocations.json";
-import PaymentSplitter from "../../../changedao_production/deployments/rinkeby/PaymentSplitter.json";
-import PaymentSplitterFactory from "../../../changedao_production/deployments/rinkeby/PaymentSplitterFactory.json";
-// import SharedFunding from "../../../changedao_production/deployments/rinkeby/SharedFunding.json";
-import SharedFunding from "../../../changedao_production/deployments/rinkeby/SharedFundingRinkeby.json";
-import SharedFundingFactory from "../../../changedao_production/deployments/rinkeby/SharedFundingFactory.json";
+import ChangeDaoNFT from "../../contracts/deployments/rinkeby/ChangeDaoNFT.json";
+import ChangeDaoNFTFactory from "../../contracts/deployments/rinkeby/ChangeDaoNFTFactory.json";
+import ChangeMakers from "../../contracts/deployments/rinkeby/ChangeMakers.json";
+import Controller from "../../contracts/deployments/rinkeby/Controller.json";
+import FundingAllocations from "../../contracts/deployments/rinkeby/FundingAllocations.json";
+import PaymentSplitter from "../../contracts/deployments/rinkeby/PaymentSplitter.json";
+import PaymentSplitterFactory from "../../contracts/deployments/rinkeby/PaymentSplitterFactory.json";
+// import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
+import SharedFunding from "../../contracts/deployments/rinkeby/SharedFundingRinkeby.json";
+import SharedFundingFactory from "../../contracts/deployments/rinkeby/SharedFundingFactory.json";
 
 export default defineComponent({
   name: "PageDeploymentManagement",
