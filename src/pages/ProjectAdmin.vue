@@ -1,13 +1,12 @@
 <template>
-  <q-page class="page-project-edit">
+  <q-page class="page-project-admin">
     <div v-if="address" class="q-layout-padding page-col col">
       <!-- Title -->
       <div class="text-h4 q-ma-md">
-        {{ $t(isNew ? "New Project" : "Edit Project") }}
+        {{ $t("Project Administration") }}
       </div>
 
-      <ProjectPart1 ref="part1" v-show="!isPart1Complete" v-model="data1" />
-      <ProjectPart2 ref="part2" v-show="isPart1Complete" v-model="data2" />
+      <!-- Admin -->
 
       <q-separator spaced />
 
@@ -42,7 +41,7 @@
 </template>
 
 <script>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -54,8 +53,6 @@ import PaymentSplitterFactory from "../../contracts/deployments/rinkeby/PaymentS
 import SharedFundingFactory from "../../contracts/deployments/rinkeby/SharedFundingFactory.json";
 import Moralis from "moralis";
 
-import ProjectPart1 from "./ProjectPart1";
-import ProjectPart2 from "./ProjectPart2";
 import { notifyError, notifySuccess } from "../util/notify";
 import LogIn from "../components/LogIn";
 
@@ -63,9 +60,9 @@ const LOCALSTORAGE_KEY1 = "projectPart1";
 const LOCALSTORAGE_KEY2 = "projectPart2";
 
 export default {
-  name: "PageProjectEdit",
+  name: "PageProjectAdmin",
 
-  components: { ProjectPart1, ProjectPart2, LogIn },
+  components: { LogIn },
 
   setup() {
     const { t } = useI18n({ useScope: "global" });
@@ -228,14 +225,7 @@ export default {
               response.blockHash
             )
           )[0].args.sharedFundingClone;
-
-          goToAdmin();
         }
-
-        onMounted(() => {
-          debugger;
-          goToAdmin();
-        });
 
         // reset(true);
         notifySuccess("Success");
@@ -244,15 +234,6 @@ export default {
         notifyError(error.error || error);
       } finally {
         isSubmitting.value = false;
-      }
-    };
-
-    const goToAdmin = () => {
-      if (data2.value.sharedFundingClone) {
-        router.replace({
-          name: "project-admin",
-          params: { projectID: data2.value.sharedFundingClone }
-        });
       }
     };
 

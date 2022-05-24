@@ -21,6 +21,12 @@ const routes = [
         component: () => import("pages/ProjectEdit.vue")
       },
       {
+        name: "project-admin",
+        path: "project/:projectID/admin",
+        props: true,
+        component: () => import("pages/ProjectAdmin.vue")
+      },
+      {
         name: "mint",
         path: "project/:projectID/mint",
         props: true,

@@ -59,6 +59,7 @@ export default {
     "100% of all primary sales will be split as follows:",
   Privacy: "Privacy",
   "Processing Transaction": "Processing Transaction",
+  "Project Administration": "Project Administration",
   "Project Name": "Project Name",
   "Project Split": "Project Split",
   Purchase: "Purchase",
