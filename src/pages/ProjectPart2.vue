@@ -48,7 +48,7 @@
         <!-- Rainbow Duration -->
         <q-input
           v-model="data._rainbowDuration"
-          :label="'Rainbow Period Duration'"
+          :label="'Rainbow Period Duration (seconds)'"
           :rules="[Boolean]"
           item-aligned
         />
@@ -65,6 +65,15 @@
         <q-input
           v-model="data._rainbowCID"
           :label="'Rainbow List CID'"
+          :rules="[Boolean]"
+          item-aligned
+        />
+      </div>
+      <div v-else>
+        <!-- Courtesy Mint Duration -->
+        <q-input
+          v-model="data._rainbowDuration"
+          :label="'Courtesy Mint Duration (seconds)'"
           :rules="[Boolean]"
           item-aligned
         />
@@ -129,9 +138,9 @@ export default {
         data.value._mintPrice &&
         data.value._totalMints &&
         data.value._maxMintAmountPublic &&
+        data.value._rainbowDuration &&
         (!data.value.hasRainbow ||
           (data.value._maxMintAmountRainbow &&
-            data.value._rainbowDuration &&
             data.value._rainbowMerkleRoot &&
             data.value._rainbowCID))
     );
