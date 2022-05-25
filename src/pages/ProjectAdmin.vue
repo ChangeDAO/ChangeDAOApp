@@ -1,38 +1,82 @@
 <template>
   <q-page class="page-project-admin">
-    <div v-if="address" class="q-layout-padding page-col col">
+    <div v-if="userAddress" class="q-layout-padding page-col col">
       <!-- Title -->
       <div class="text-h4 q-ma-md">
         {{ $t("Project Administration") }}
       </div>
 
-      <!-- Admin -->
+      <q-list>
+        <!-- Zero Mint -->
+        <q-item-label header>Zero Mint</q-item-label>
+        <q-item v-if="hasZeroMinted">
+          <q-item-section>
+            <q-item-label>
+              Zero Mint has already been made
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <AddrInput
+          v-else
+          v-model="zeroMintAddress"
+          label="Recipient Address"
+          item-aligned
+        >
+          <template v-slot:after>
+            <q-btn
+              @click="zeroMint"
+              :label="$t('Mint')"
+              color="primary"
+              :loading="isMintingZero"
+            />
+          </template>
+        </AddrInput>
 
-      <q-separator spaced />
+        <!-- Courtesy Mint -->
+        <q-item-label header>Courtesy Mint</q-item-label>
+        <q-item v-if="!isRainbowPeriod">
+          <q-item-section>
+            <q-item-label>
+              The Rainbow Period has ended
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item v-else>
+          <q-item-section>
+            <AddrInput v-model="address" label="Recipient Address" />
+          </q-item-section>
+          <q-item-section side>
+            <q-input
+              v-model="courtesyMintAmount"
+              :label="'Qty'"
+              :rules="[Boolean]"
+              type="number"
+              :min="1"
+              :max="20"
+              hide-bottom-space
+            />
+          </q-item-section>
+          <q-item-section side>
+            <q-btn
+              @click="courtesyMint"
+              :label="$t('Mint')"
+              color="primary"
+              :loading="isMintingCourtesy"
+            />
+          </q-item-section>
+        </q-item>
 
-      <q-item class="q-my-xl">
-        <q-item-section>
-          <q-item-label>
-            <div class="row q-gutter-md flex-center">
-              <!-- Reset -->
-              <q-btn
-                @click="reset(true)"
-                :label="$t('Reset')"
-                color="secondary"
-              />
-
-              <!-- Submit -->
-              <q-btn
-                @click="submit"
-                :label="$t('Submit')"
-                :loading="isSubmitting"
-                :disable="!isValid"
-                color="primary"
-              />
-            </div>
-          </q-item-label>
-        </q-item-section>
-      </q-item>
+        <!-- Pause/Unpause -->
+        <q-item-label header>Pause/Unpause Minting</q-item-label>
+        <q-item>
+          <q-btn
+            @click="togglePause"
+            :label="isPaused ? 'Unpause' : 'Pause'"
+            :loading="isPausing"
+            color="primary"
+          />
+        </q-item>
+      </q-list>
     </div>
     <div v-else class="q-layout-padding">
       <LogIn />
@@ -41,214 +85,147 @@
 </template>
 
 <script>
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
-import { cloneDeep, isEqual, pickBy } from "lodash";
-import Controller from "../../contracts/deployments/rinkeby/Controller.json";
-import ChangeDaoNFTFactory from "../../contracts/deployments/rinkeby/ChangeDaoNFTFactory.json";
-import PaymentSplitterFactory from "../../contracts/deployments/rinkeby/PaymentSplitterFactory.json";
-import SharedFundingFactory from "../../contracts/deployments/rinkeby/SharedFundingFactory.json";
-import Moralis from "moralis";
 
 import { notifyError, notifySuccess } from "../util/notify";
 import LogIn from "../components/LogIn";
+import AddrInput from "../components/AddrInput";
 
-const LOCALSTORAGE_KEY1 = "projectPart1";
-const LOCALSTORAGE_KEY2 = "projectPart2";
+import { pickBy } from "lodash";
+
+import Moralis from "moralis";
+import ChangeDaoNFT from "../../contracts/deployments/rinkeby/ChangeDaoNFT.json";
+import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
 
 export default {
   name: "PageProjectAdmin",
 
-  components: { LogIn },
+  components: { LogIn, AddrInput },
 
-  setup() {
+  props: ["projectID"],
+
+  setup(props) {
     const { t } = useI18n({ useScope: "global" });
     const router = useRouter();
     const store = useStore();
 
-    const address = computed(() => store.state.web3.userAddress);
+    const ethers = Moralis.web3Library;
+    window.ethers = ethers;
+    const provider = ethers.getDefaultProvider(process.env.chain);
 
-    // Form references
-    const part1 = ref(null);
-    const part2 = ref(null);
-
-    // Form data
-    const data1 = ref(null);
-    const data2 = ref(null);
-
-    const isNew = computed(
-      () => router.currentRoute.value.name === "project-new"
+    // Shared Funding Clone
+    const sharedFundingClone = new ethers.Contract(
+      props.projectID,
+      SharedFunding.abi,
+      provider
     );
 
-    const isPart1Complete = computed(() =>
-      Boolean(data2.value && data2.value._changeDaoNFTClone)
+    // ChangeDAO NFT
+    const data2 = LocalStorage.getItem("projectPart2");
+    const changeDaoNFTClone = new ethers.Contract(
+      data2._changeDaoNFTClone,
+      ChangeDaoNFT.abi,
+      provider
     );
 
-    const isValid = computed(() =>
-      isPart1Complete.value
-        ? part2.value && part2.value.isValid
-        : part1.value && part1.value.isValid
-    );
+    const userAddress = computed(() => store.state.web3.userAddress);
 
-    const areasOfChange = computed(() =>
-      AREAS_OF_CHANGE.map(value => ({
-        value,
-        label: t("areasOfChange." + value)
-      }))
-    );
-
-    // Reset
-    const defaultModel1 = computed(() =>
-      part1.value ? part1.value.defaultModel : {}
-    );
-    const defaultModel2 = computed(() =>
-      part2.value ? part2.value.defaultModel : {}
-    );
-
-    const reset = (clear = false) => {
-      if (!isPart1Complete.value) {
-        part1.value.reset(clear);
-        part2.value.reset(true);
-      } else {
-        part2.value.reset(clear);
-      }
-    };
-
-    // Submit
-    const isSubmitting = ref(false);
-    const submit = async () => {
+    const zeroMintAddress = ref(userAddress.value);
+    const isMintingZero = ref(false);
+    const zeroMint = async () => {
       try {
-        isSubmitting.value = true;
-
-        const ethers = Moralis.web3Library;
-        const provider = ethers.providers.getDefaultProvider(process.env.chain);
-
-        if (!isPart1Complete.value) {
-          // Part 1
-
-          // Create Transaction
-          const tx = await Moralis.executeFunction({
-            contractAddress: Controller.address,
-            abi: Controller.abi,
-            functionName: "createNFTAndPSClones",
-            params: pickBy(data1.value, (value, key) => key.startsWith("_"))
-          });
-          data1.value.transactionHash = tx.hash;
-
-          // Call Cloud Function
-          // data1.value.projectId = await Moralis.Cloud.run(
-          //   "createProjectPartOne",
-          //   data1.value
-          // );
-
-          // Transaction Complete
-          const response = await tx.wait();
-
-          // Get NFT Clone Address
-          const changeDaoNFTFactory = new ethers.Contract(
-            ChangeDaoNFTFactory.address,
-            ChangeDaoNFTFactory.abi,
-            provider
-          );
-          data2.value._changeDaoNFTClone = (
-            await changeDaoNFTFactory.queryFilter(
-              changeDaoNFTFactory.filters.ChangeDaoNFTCloneCreated(),
-              response.blockHash
-            )
-          )[0].args.changeDaoNFTClone;
-
-          // Get Payment Splitter Address
-          const paymentSplitterFactory = new ethers.Contract(
-            PaymentSplitterFactory.address,
-            PaymentSplitterFactory.abi,
-            provider
-          );
-          data2.value._fundingPSClone = (
-            await paymentSplitterFactory.queryFilter(
-              paymentSplitterFactory.filters.FundingPSCloneDeployed(),
-              response.blockHash
-            )
-          )[0].args.fundingPSClone;
-        } else {
-          // Part 2
-
-          // Create Transaction
-          const tx = await Moralis.executeFunction({
-            contractAddress: Controller.address,
-            abi: Controller.abi,
-            functionName: "callSharedFundingFactory",
-            params: {
-              _changeDaoNFTClone: data2.value._changeDaoNFTClone,
-              _fundingPSClone: data2.value._fundingPSClone,
-              _mintPrice: ethers.utils.parseEther(data2.value._mintPrice),
-              _totalMints: ethers.BigNumber.from(data2.value._totalMints),
-              _maxMintAmountPublic: ethers.BigNumber.from(
-                data2.value._maxMintAmountPublic
-              ),
-              _maxMintAmountRainbow: ethers.BigNumber.from(
-                data2.value.hasRainbow ? data2.value._maxMintAmountRainbow : 10
-              ),
-              _rainbowDuration: ethers.BigNumber.from(
-                data2.value.hasRainbow ? data2.value._rainbowDuration : 0
-              ),
-              _rainbowMerkleRoot: data2.value.hasRainbow
-                ? data2.value._rainbowMerkleRoot
-                : ethers.utils.formatBytes32String("0"),
-              _rainbowCID: data2.value.hasRainbow
-                ? data2.value._rainbowCID
-                : "n/a"
-            }
-          });
-          data2.value.transactionHash = tx.hash;
-
-          // Call Cloud Function
-          // data2.value.projectId = await Moralis.Cloud.run(
-          //   "createProjectPartTwo",
-          //   data2.value
-          // );
-
-          // Transaction Complete
-          const response = await tx.wait();
-
-          // Get Shared Funding Clone Address
-          const sharedFundingFactory = new ethers.Contract(
-            SharedFundingFactory.address,
-            SharedFundingFactory.abi,
-            provider
-          );
-          data2.value.sharedFundingClone = (
-            await sharedFundingFactory.queryFilter(
-              sharedFundingFactory.filters.SharedFundingCreated(),
-              response.blockHash
-            )
-          )[0].args.sharedFundingClone;
-        }
-
-        // reset(true);
-        notifySuccess("Success");
+        isMintingZero.value = true;
+        const tx = await Moralis.executeFunction({
+          contractAddress: sharedFundingClone.address,
+          abi: SharedFunding.abi,
+          functionName: "zeroMint",
+          params: { _recipient: zeroMintAddress.value }
+        });
+        const response = await tx.wait();
+        hasZeroMinted.value = true;
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
       } finally {
-        isSubmitting.value = false;
+        isMintingZero.value = false;
       }
     };
 
+    const courtesyMintAddress = ref("");
+    const courtesyMintAmount = ref(1);
+    const isMintingCourtesy = ref(false);
+    const courtesyMint = async () => {
+      try {
+        isMintingCourtesy.value = true;
+        const tx = await Moralis.executeFunction({
+          contractAddress: sharedFundingClone.address,
+          abi: SharedFunding.abi,
+          functionName: "courtesyMint",
+          params: {
+            _recipient: zeroMintAddress.value,
+            _mintAmount: courtesyMintAmount.value
+          }
+        });
+        const response = await tx.wait();
+        hasZeroMinted.value = true;
+      } catch (error) {
+        console.error(error);
+        notifyError(error.error || error);
+      } finally {
+        isMintingCourtesy.value = false;
+      }
+    };
+
+    const isPausing = ref(false);
+    const togglePause = async () => {
+      try {
+        isPausing.value = true;
+        const tx = await Moralis.executeFunction({
+          contractAddress: sharedFundingClone.address,
+          abi: SharedFunding.abi,
+          functionName: isPaused.value ? "unPause" : "pause"
+        });
+        const response = await tx.wait();
+        isPaused.value = !isPaused.value;
+      } catch (error) {
+        console.error(error);
+        notifyError(error.error || error);
+      } finally {
+        isPausing.value = false;
+      }
+    };
+
+    const hasZeroMinted = ref(false);
+    const isRainbowPeriod = ref(false);
+    const isPaused = ref(false);
+    onMounted(async () => {
+      hasZeroMinted.value = await sharedFundingClone.callStatic.hasZeroMinted();
+
+      const mintedOn = await sharedFundingClone.callStatic.deployTime();
+      const rainbowDuration = await sharedFundingClone.callStatic.rainbowDuration();
+      isRainbowPeriod.value = mintedOn + rainbowDuration < new Date() / 1000;
+
+      isPaused.value = await sharedFundingClone.callStatic.paused();
+    });
+
     return {
-      part1,
-      part2,
-      isPart1Complete,
-      address,
-      data1,
-      data2,
-      submit,
-      reset,
-      isSubmitting,
-      isNew,
-      isValid
+      userAddress,
+      hasZeroMinted,
+      zeroMintAddress,
+      zeroMint,
+      isMintingZero,
+      courtesyMintAddress,
+      courtesyMintAmount,
+      isRainbowPeriod,
+      courtesyMint,
+      isMintingCourtesy,
+      isPaused,
+      isPausing,
+      togglePause
     };
   }
 };

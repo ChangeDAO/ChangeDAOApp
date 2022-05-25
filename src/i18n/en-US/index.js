@@ -42,6 +42,7 @@ export default {
   "Log Out": "Log Out",
   "Long Bio": "Long Bio",
   "Making Change By": "Making Change By",
+  "Mint": "Mint",
   "Mint NFT": "Mint NFT",
   Movement: "Movement",
   Name: "Name",

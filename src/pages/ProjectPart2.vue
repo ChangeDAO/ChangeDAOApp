@@ -14,6 +14,8 @@
       v-model="data._totalMints"
       :label="'Total Mints'"
       :rules="[Boolean]"
+      type="number"
+      :min="1"
       item-aligned
     />
 
@@ -22,6 +24,9 @@
       v-model="data._maxMintAmountPublic"
       :label="'Max Mints per Transaction'"
       :rules="[Boolean]"
+      type="number"
+      :min="1"
+      :max="20"
       item-aligned
     />
 
@@ -42,6 +47,9 @@
           v-model="data._maxMintAmountRainbow"
           :label="'Max Mints per Transaction for Rainbow List'"
           :rules="[Boolean]"
+          type="number"
+          :min="1"
+          :max="20"
           item-aligned
         />
 

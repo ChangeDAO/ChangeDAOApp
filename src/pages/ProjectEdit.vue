@@ -232,11 +232,6 @@ export default {
           goToAdmin();
         }
 
-        onMounted(() => {
-          debugger;
-          goToAdmin();
-        });
-
         // reset(true);
         notifySuccess("Success");
       } catch (error) {
@@ -247,8 +242,12 @@ export default {
       }
     };
 
+    onMounted(() => {
+      goToAdmin();
+    });
+
     const goToAdmin = () => {
-      if (data2.value.sharedFundingClone) {
+      if (data2.value && data2.value.sharedFundingClone) {
         router.replace({
           name: "project-admin",
           params: { projectID: data2.value.sharedFundingClone }

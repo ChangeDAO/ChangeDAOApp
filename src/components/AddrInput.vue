@@ -1,12 +1,12 @@
 <template>
   <q-input v-model="model" :rules="[isValid]" hide-bottom-space v-bind="$attrs">
     <template v-slot:prepend>
-      <AddrAvatar v-if="isValid(model.value)" :address="model" />
+      <AddrAvatar v-if="isValid(model)" :address="model" />
       <q-avatar v-else color="primary" size="sm" />
     </template>
-    <template v-for="(_, name) in $slots" v-slot:[name]="slotData"
-      ><slot :name="name" v-bind="slotData"
-    /></template>
+    <template v-for="(_, slot) in $slots" v-slot:[slot]="scope">
+      <slot :name="slot" v-bind="scope || {}" />
+    </template>
   </q-input>
 </template>
 
