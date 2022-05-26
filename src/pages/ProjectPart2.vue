@@ -70,6 +70,14 @@
           :rules="[Boolean]"
           item-aligned
         />
+
+        <!-- Rainbow CID -->
+        <q-input
+          v-model="data._rainbowCID"
+          :label="'Rainbow List CID'"
+          :rules="[Boolean]"
+          item-aligned
+        />
       </div>
       <div v-else>
         <!-- Courtesy Mint Duration -->
@@ -104,6 +112,7 @@ const REQUEST = {
   _maxMintAmountPublic: null, // 1-20
   _rainbowDuration: null, // Seconds
   _rainbowMerkleRoot: "",
+  _rainbowCID: "",
   projectId: "",
   transactionHash: "",
   hasRainbow: false
@@ -142,7 +151,9 @@ export default {
         data.value._maxMintAmountPublic &&
         data.value._rainbowDuration &&
         (!data.value.hasRainbow ||
-          (data.value._maxMintAmountRainbow && data.value._rainbowMerkleRoot))
+          (data.value._maxMintAmountRainbow &&
+            data.value._rainbowMerkleRoot &&
+            data.value._rainbowCID))
     );
 
     // Reset

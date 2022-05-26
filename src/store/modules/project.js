@@ -44,6 +44,7 @@ export default {
           _mintPrice: 1,
           _rainbowDuration: 0,
           _rainbowMerkleRoot: "",
+          _rainbowCID: "",
           _totalMints: 100,
           minted: "?"
         });
