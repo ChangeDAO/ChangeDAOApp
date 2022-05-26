@@ -11,7 +11,7 @@
 
     <!-- Total Mints -->
     <q-input
-      v-model="data._totalMints"
+      v-model.number="data._totalMints"
       :label="'Total Mints'"
       :rules="[Boolean]"
       type="number"
@@ -21,7 +21,7 @@
 
     <!-- Max Mint Amount Public -->
     <q-input
-      v-model="data._maxMintAmountPublic"
+      v-model.number="data._maxMintAmountPublic"
       :label="'Max Mints per Transaction'"
       :rules="[Boolean]"
       type="number"
@@ -44,7 +44,7 @@
       <div v-if="data.hasRainbow">
         <!-- Max Mint Amount Rainbow -->
         <q-input
-          v-model="data._maxMintAmountRainbow"
+          v-model.number="data._maxMintAmountRainbow"
           :label="'Max Mints per Transaction for Rainbow List'"
           :rules="[Boolean]"
           type="number"
