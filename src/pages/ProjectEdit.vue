@@ -120,6 +120,8 @@ export default {
       }
     };
 
+    window.ethers = Moralis.web3Library;
+
     // Submit
     const isSubmitting = ref(false);
     const submit = async () => {

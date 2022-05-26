@@ -2,9 +2,10 @@
   <q-list v-if="data">
     <!-- Mint Price -->
     <q-input
-      v-model="data._mintPrice"
+      v-model.number="data._mintPrice"
       :label="'Mint Price (USD)'"
       :rules="[Boolean]"
+      :min="0"
       prefix="$"
       item-aligned
     />
@@ -55,9 +56,10 @@
 
         <!-- Rainbow Duration -->
         <q-input
-          v-model="data._rainbowDuration"
+          v-model.number="data._rainbowDuration"
           :label="'Rainbow Period Duration (seconds)'"
           :rules="[Boolean]"
+          :min="0"
           item-aligned
         />
 
@@ -72,9 +74,10 @@
       <div v-else>
         <!-- Courtesy Mint Duration -->
         <q-input
-          v-model="data._rainbowDuration"
+          v-model.number="data._rainbowDuration"
           :label="'Courtesy Mint Duration (seconds)'"
           :rules="[Boolean]"
+          :min="0"
           item-aligned
         />
       </div>

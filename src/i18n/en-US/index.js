@@ -8,7 +8,6 @@ export default {
   "Base URI": "Base URI",
   Cancel: "Cancel",
   Checkout: "Checkout",
-  Collection: "Collection",
   "Connect Wallet": "Connect Wallet",
   Copyright: "© Copyright 2022 ChangeDAO LLC. All rights reserved.",
   "Cost per Mint": "Cost per Mint",

@@ -2,12 +2,12 @@
   <div>
     <!-- Project Name -->
     <p class="text-h3">
-      {{ project.name }}<br />
+      {{ project._projectName }}<br />
 
       <!-- Changemaker Name -->
       <span class="text-accent text-h4">
         <q-avatar size="sm" color="grey-5" class="q-my-sm q-mr-sm" square />{{
-          project.creator.name
+          shortAddr(project._creators[0])
         }}
       </span>
       <!-- <router-link
@@ -21,24 +21,19 @@
     </p>
 
     <p>
-      <!-- Collection -->
-      <span>{{ $t("Collection") }}</span>
+      <!-- Movement -->
+      <span>{{ $t("Movement") }}</span>
       <br />
       <span class="text-accent">
-        {{ project.collection.name }}
+        {{ project._movementName }}
       </span>
-      <!-- <router-link
-        :to="{ name: 'collection', params: { id: project.collection.id } }"
-      >
-        {{ project.collection.name }}
-      </router-link> -->
 
       <br />
     </p>
 
     <template v-if="!minimal">
       <!-- Supported Causes -->
-      <p>
+      <!-- <p>
         <span>{{ $t("Supported Causes") }}</span>
         <template v-for="(cause, i) in project.supportedCauses" :key="i">
           <br />
@@ -51,7 +46,7 @@
             />{{ cause }}
           </span>
         </template>
-      </p>
+      </p> -->
 
       <!-- Area of Change -->
       <p>{{ $t("Area of Change") }}</p>
@@ -69,10 +64,15 @@
 </template>
 
 <script>
+import { shortAddr } from "../util/formatting";
+
 export default {
   props: {
     project: Object,
     minimal: Boolean
+  },
+  methods: {
+    shortAddr
   }
 };
 </script>

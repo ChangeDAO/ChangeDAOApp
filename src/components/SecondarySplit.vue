@@ -16,6 +16,8 @@ import { useI18n } from "vue-i18n";
 
 import Chart from "./Chart";
 
+import { shortAddr } from "../util/formatting";
+
 export default defineComponent({
   name: "SecondarySplit",
 
@@ -30,20 +32,21 @@ export default defineComponent({
 
   setup(props, context) {
     const { t } = useI18n({ useScope: "global" });
+
     const names = {
-      creator: props.project.creator.name,
-      collaborator1: props.project.collaborators.find(
-        c => c.id === "collaborator1"
-      ).name,
-      collaborator2: props.project.collaborators.find(
-        c => c.id === "collaborator2"
-      ).name,
-      changeDaoCommunityTreasury: "ChangeDAO CommunityTreasury.eth",
-      changeDaoOperationsTreasury: "ChangeDAO OperationsTreasury.eth"
+      changeDao: "ChangeDAO"
     };
+    props.project._creators.forEach((addr, i) => {
+      names[i] = shortAddr(addr);
+    });
+
+    const splitData = { changeDao: 2000 };
+    props.project._royaltiesPayees.forEach((addr, i) => {
+      splitData[i] = props.project._royaltiesShares[i];
+    });
 
     for (let id in names) {
-      names[id] = `${props.project.secondarySplit[id]}% – ${names[id]}`;
+      names[id] = `${splitData[id] / 100}% – ${names[id]}`;
     }
 
     const options = {
@@ -56,14 +59,13 @@ export default defineComponent({
       },
       data: {
         type: "donut",
-        json: props.project.secondarySplit,
+        json: splitData,
         names,
         colors: {
-          creator: "#2EBAD3",
-          collaborator1: "#137C8E",
-          collaborator2: "#005A6A",
-          changeDaoCommunityTreasury: "#8001FB",
-          changeDaoOperationsTreasury: "#4F009C"
+          changeDao: "#8001FB",
+          0: "#2EBAD3",
+          1: "#137C8E",
+          2: "#005A6A"
         }
       },
       tooltip: {

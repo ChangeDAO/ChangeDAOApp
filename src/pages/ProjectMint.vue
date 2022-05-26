@@ -39,10 +39,10 @@
         <p>{{ project.description }}</p>
         <br />
 
-        <p class="text-subtitle">
+        <!-- <p class="text-subtitle">
           {{ $t("Making Change By") }}
         </p>
-        <p>{{ project.how }}</p>
+        <p>{{ project.how }}</p> -->
 
         <q-separator class="q-my-lg" />
 
@@ -54,16 +54,16 @@
             <p class="text-subtitle">
               {{ $t("Total Minted") }}
             </p>
-            <p>{{ project.minted }} {{ $t("of") }} {{ project.mintable }}</p>
+            <p>{{ project.minted }} {{ $t("of") }} {{ project._totalMints }}</p>
           </div>
 
           <!-- Goal -->
-          <div class="col-6 q-mb-lg">
+          <!-- <div class="col-6 q-mb-lg">
             <p class="text-subtitle">
               {{ $t("Fundraising Goal") }}
             </p>
             <p>{{ $n(project.goalUSD, "compactUSD") }} USD</p>
-          </div>
+          </div> -->
         </div>
 
         <!-- Price -->
@@ -72,7 +72,7 @@
             {{ $t("Price per Token") }}
           </p>
           <p>
-            {{ $n(project.tokenPriceUSD, "compactUSD") }} USD
+            {{ $n(project._mintPrice, "compactUSD") }} USD
             {{ $t("via [PaymentMethods]") }}
           </p>
         </div>
