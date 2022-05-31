@@ -562,8 +562,7 @@ import Controller from "../../contracts/deployments/rinkeby/Controller.json";
 import FundingAllocations from "../../contracts/deployments/rinkeby/FundingAllocations.json";
 import PaymentSplitter from "../../contracts/deployments/rinkeby/PaymentSplitter.json";
 import PaymentSplitterFactory from "../../contracts/deployments/rinkeby/PaymentSplitterFactory.json";
-// import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
-import SharedFunding from "../../contracts/deployments/rinkeby/SharedFundingRinkeby.json";
+import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
 import SharedFundingFactory from "../../contracts/deployments/rinkeby/SharedFundingFactory.json";
 
 export default defineComponent({

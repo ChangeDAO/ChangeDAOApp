@@ -2,7 +2,7 @@
   <q-list v-if="data">
     <!-- Mint Price -->
     <q-input
-      v-model.number="data._mintPrice"
+      v-model="data._mintPrice"
       :label="'Mint Price (USD)'"
       :rules="[Boolean]"
       :min="0"
@@ -12,7 +12,7 @@
 
     <!-- Total Mints -->
     <q-input
-      v-model.number="data._totalMints"
+      v-model="data._totalMints"
       :label="'Total Mints'"
       :rules="[Boolean]"
       type="number"
@@ -22,7 +22,7 @@
 
     <!-- Max Mint Amount Public -->
     <q-input
-      v-model.number="data._maxMintAmountPublic"
+      v-model="data._maxMintAmountPublic"
       :label="'Max Mints per Transaction'"
       :rules="[Boolean]"
       type="number"
@@ -45,7 +45,7 @@
       <div v-if="data.hasRainbow">
         <!-- Max Mint Amount Rainbow -->
         <q-input
-          v-model.number="data._maxMintAmountRainbow"
+          v-model="data._maxMintAmountRainbow"
           :label="'Max Mints per Transaction for Rainbow List'"
           :rules="[Boolean]"
           type="number"
@@ -56,9 +56,9 @@
 
         <!-- Rainbow Duration -->
         <q-input
-          v-model.number="data._rainbowDuration"
+          v-model="data._rainbowDuration"
           :label="'Rainbow Period Duration (seconds)'"
-          :rules="[Boolean]"
+          :rules="[a => a >= 0]"
           :min="0"
           item-aligned
         />
@@ -82,9 +82,9 @@
       <div v-else>
         <!-- Courtesy Mint Duration -->
         <q-input
-          v-model.number="data._rainbowDuration"
+          v-model="data._rainbowDuration"
           :label="'Courtesy Mint Duration (seconds)'"
-          :rules="[Boolean]"
+          :rules="[a => a >= 0]"
           :min="0"
           item-aligned
         />
@@ -149,7 +149,7 @@ export default {
         data.value._mintPrice &&
         data.value._totalMints &&
         data.value._maxMintAmountPublic &&
-        data.value._rainbowDuration &&
+        data.value._rainbowDuration >= 0 &&
         (!data.value.hasRainbow ||
           (data.value._maxMintAmountRainbow &&
             data.value._rainbowMerkleRoot &&
