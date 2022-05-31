@@ -30,14 +30,14 @@ const routes = [
         name: "mint",
         path: "project/:projectID/mint",
         props: true,
-        component: () => import("pages/ProjectMint.vue"),
-        children: [
-          {
-            name: "mint-checkout",
-            path: "checkout",
-            component: () => import("pages/MintCheckout.vue")
-          }
-        ]
+        component: () => import("pages/ProjectMintMVP.vue")
+        // children: [
+        //   {
+        //     name: "mint-checkout",
+        //     path: "checkout",
+        //     component: () => import("pages/MintCheckout.vue")
+        //   }
+        // ]
       },
       {
         name: "mintTx",
