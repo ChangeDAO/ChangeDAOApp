@@ -145,6 +145,44 @@
     background-repeat: no-repeat;
     background-size: cover;
   }
+
+  @media (max-width: $breakpoint-sm-max) {
+    .text-h1 {
+      font-size: 9vw;
+      line-height: 10.9vw;
+    }
+    .text-h2 {
+      font-size: 5.5vw;
+      line-height: 6.6vw;
+    }
+    .text-h3 {
+      font-size: 3.125vw;
+      line-height: 3.8vw;
+    }
+    .text-h4 {
+      font-size: 2.34vw;
+      line-height: 2.84vw;
+    }
+  }
+
+  @media (max-width: $breakpoint-xs-max) {
+    .text-h1 {
+      font-size: 54px;
+      line-height: 65.4px;
+    }
+    .text-h2 {
+      font-size: 33px;
+      line-height: 39.6px;
+    }
+    .text-h3 {
+      font-size: 18.8px;
+      line-height: 22.8px;
+    }
+    .text-h4 {
+      font-size: 14px;
+      line-height: 17px;
+    }
+  }
 }
 </style>
 
