@@ -14,13 +14,24 @@
         </div>
 
         <!-- Number of Mints -->
-        <div>
-          <div class="text-subtitle q-mb-sm">{{ $t("Number of Mints") }}</div>
+        <div class="row">
+          <div class="q-mb-sm col-grow">
+            <div class="text-subtitle">
+              {{ $t("Number of Mints") }}
+            </div>
+            <p class="text-caption">
+              <q-skeleton v-if="isLoading" type="text" width="10em" />
+              <template v-else>
+                {{ $tc("n Mints Remaining", mintable - minted) }}
+              </template>
+            </p>
+          </div>
           <q-input
             v-model.number="quantity"
             type="number"
             :min="1"
             :max="maxQuantity"
+            :rules="[q => q > 0 && q <= maxQuantity]"
             dense
             outlined
           />
@@ -98,6 +109,7 @@
             :loading="isPurchasing"
             class="col-grow"
             :label="$t('Purchase')"
+            :disable="!isValid"
             color="primary"
           />
           <div class="col-grow text-caption q-mt-sm q-mr-sm">
@@ -113,7 +125,7 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -127,7 +139,14 @@ import { pickBy } from "lodash";
 import Moralis from "moralis";
 import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
 
-import { ETH_ADDRESS, DAI_ADDRESS, USDC_ADDRESS } from "../util/constants";
+import {
+  ETH_ADDRESS,
+  DAI_ADDRESS,
+  USDC_ADDRESS,
+  ERC20_ABI
+} from "../util/constants";
+
+const ETH_BUFFER = 0.01;
 
 export default {
   name: "PageProjectMint",
@@ -185,6 +204,14 @@ export default {
       ];
     });
     const currency = ref(ETH_ADDRESS);
+    watch(currency, value => {
+      if (value === DAI_ADDRESS) {
+        approveDAI();
+      } else if (value === USDC_ADDRESS) {
+        approveUSDC();
+      }
+    });
+
     const disabledCurrencies = computed(() => {
       const output = [];
       if (balanceETH.value <= 0) {
@@ -216,26 +243,71 @@ export default {
       SharedFunding.abi,
       provider
     );
+    window.sharedFundingClone = sharedFundingClone;
+
+    const isDAIApproved = ref(false);
+    const approveDAI = async () => {
+      const tx = await Moralis.executeFunction({
+        contractAddress: DAI_ADDRESS,
+        abi: ERC20_ABI,
+        functionName: "approve",
+        params: {
+          _spender: userAddress.value,
+          _value: ethers.BigNumber.from("0.1")
+        },
+        msgValue: ethers.utils.formatEther(ethTotal.toString())
+      });
+      const response = await tx.wait().then(() => (isDAIApproved.value = true));
+    };
+
+    const isUSDCApproved = ref(false);
+    const approveUSDC = async () => {
+      const tx = await Moralis.executeFunction({
+        contractAddress: USDC_ADDRESS,
+        abi: ERC20_ABI,
+        functionName: "approve",
+        params: {
+          _spender: userAddress.value,
+          _value: ethers.BigNumber.from("0.1")
+        },
+        msgValue: ethers.utils.formatEther(ethTotal.toString())
+      });
+      const response = await tx
+        .wait()
+        .then(() => (isUSDCApproved.value = true));
+    };
 
     const isPurchasing = ref(false);
     const purchase = async () => {
       try {
         isPurchasing.value = true;
+
+        // Get ETH price
+        const ethTotal = (
+          await sharedFundingClone.functions.convertUsdAmountToEth(
+            ethers.utils.parseEther(total.value.toString())
+          )
+        )[0].add(ethers.utils.parseEther(ETH_BUFFER.toString()));
+        console.log(ethers.utils.formatEther(ethTotal.toString()));
+
+        // Public Mint
         const tx = await Moralis.executeFunction({
           contractAddress: sharedFundingClone.address,
           abi: SharedFunding.abi,
           functionName: "fundPublic",
           params: {
             _token: currency.value,
-            _tipInUsd: ethers.BigNumber.from(tip.value),
+            _tipInUsd: ethers.utils.parseEther(tip.value),
             _mintAmount: ethers.BigNumber.from(quantity.value)
-          }
+          },
+          msgValue: ethers.utils.formatEther(ethTotal.toString())
         });
         const response = await tx.wait();
-        router.replace({
-          name: "mintTx",
-          params: { txID: tx.hash }
-        });
+
+        // router.replace({
+        //   name: "mintTx",
+        //   params: { txID: tx.hash }
+        // });
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -245,19 +317,25 @@ export default {
     };
 
     const cost = ref(0);
-    const minted = ref(0);
-    const mintable = ref(0);
+    const isLoading = ref(true);
+    const minted = ref(null);
+    const mintable = ref(null);
+    const isRainbowPeriod = ref(false);
     const maxMintAmountPublic = ref(0);
     const maxMintAmountRainbow = ref(0);
-    const isRainbowPeriod = ref(false);
     const maxQuantity = computed(() => {
-      return Math.min(
-        isRainbowPeriod.value
-          ? maxMintAmountRainbow.value
-          : maxMintAmountPublic.value,
-        mintable.value - minted.value
-      );
+      const remaining = mintable.value - minted.value;
+      const allowed = isRainbowPeriod.value
+        ? maxMintAmountRainbow.value
+        : maxMintAmountPublic.value;
+      return Math.min(remaining, allowed);
     });
+
+    const isValid = computed(
+      () => quantity.value > 0 && quantity.value <= maxQuantity.value
+    );
+
+    // Initialize
     onMounted(async () => {
       cost.value = parseInt(
         ethers.utils.formatEther(
@@ -280,15 +358,15 @@ export default {
         // Public Mint
         maxMintAmountPublic.value = await sharedFundingClone.callStatic.maxMintAmountPublic();
       }
+      isLoading.value = false;
     });
 
     return {
+      isLoading,
       userAddress,
       cost,
       minted,
       mintable,
-      maxMintAmountPublic,
-      maxMintAmountRainbow,
       isRainbowPeriod,
       maxQuantity,
       quantity,
@@ -302,7 +380,8 @@ export default {
       currency,
       disabledCurrencies,
       isPurchasing,
-      purchase
+      purchase,
+      isValid
     };
   }
 };
