@@ -204,13 +204,6 @@ export default {
       ];
     });
     const currency = ref(ETH_ADDRESS);
-    watch(currency, value => {
-      if (value === DAI_ADDRESS) {
-        approveDAI();
-      } else if (value === USDC_ADDRESS) {
-        approveUSDC();
-      }
-    });
 
     const disabledCurrencies = computed(() => {
       const output = [];
@@ -245,6 +238,17 @@ export default {
     );
     window.sharedFundingClone = sharedFundingClone;
 
+    const getDAIBalance = async () => {
+      return Moralis.executeFunction({
+        contractAddress: DAI_ADDRESS,
+        abi: ERC20_ABI,
+        functionName: "balanceOf",
+        params: {
+          _owner: userAddress.value
+        }
+      });
+    };
+
     const isDAIApproved = ref(false);
     const approveDAI = async () => {
       const tx = await Moralis.executeFunction({
@@ -252,10 +256,9 @@ export default {
         abi: ERC20_ABI,
         functionName: "approve",
         params: {
-          _spender: userAddress.value,
-          _value: ethers.BigNumber.from("0.1")
-        },
-        msgValue: ethers.utils.formatEther(ethTotal.toString())
+          _spender: sharedFundingClone.address,
+          _value: Moralis.Units.ETH(total.value.toString())
+        }
       });
       const response = await tx.wait().then(() => (isDAIApproved.value = true));
     };
@@ -267,10 +270,9 @@ export default {
         abi: ERC20_ABI,
         functionName: "approve",
         params: {
-          _spender: userAddress.value,
-          _value: ethers.BigNumber.from("0.1")
-        },
-        msgValue: ethers.utils.formatEther(ethTotal.toString())
+          _spender: sharedFundingClone.address,
+          _value: Moralis.Units.ETH(total.value.toString())
+        }
       });
       const response = await tx
         .wait()
@@ -282,13 +284,21 @@ export default {
       try {
         isPurchasing.value = true;
 
-        // Get ETH price
-        const ethTotal = (
-          await sharedFundingClone.functions.convertUsdAmountToEth(
-            ethers.utils.parseEther(total.value.toString())
-          )
-        )[0].add(ethers.utils.parseEther(ETH_BUFFER.toString()));
-        console.log(ethers.utils.formatEther(ethTotal.toString()));
+        let msgValue;
+        if (currency.value === DAI_ADDRESS) {
+          await approveDAI();
+        } else if (currency.value === USDC_ADDRESS) {
+          await approveUSDC();
+        } else if (currency.value === ETH_ADDRESS) {
+          // Get ETH price
+          msgValue = (
+            await sharedFundingClone.functions.convertUsdAmountToEth(
+              ethers.utils.parseEther(total.value.toString())
+            )
+          )[0]
+            .add(ethers.utils.parseEther(ETH_BUFFER.toString()))
+            .toString();
+        }
 
         // Public Mint
         const tx = await Moralis.executeFunction({
@@ -297,10 +307,10 @@ export default {
           functionName: "fundPublic",
           params: {
             _token: currency.value,
-            _tipInUsd: ethers.utils.parseEther(tip.value),
+            _tipInUsd: ethers.utils.parseEther(tipTotal.value.toString()),
             _mintAmount: ethers.BigNumber.from(quantity.value)
           },
-          msgValue: ethers.utils.formatEther(ethTotal.toString())
+          msgValue
         });
         const response = await tx.wait();
 

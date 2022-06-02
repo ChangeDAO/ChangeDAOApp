@@ -44,7 +44,7 @@ export default {
   Mint: "Mint",
   "Mint NFT": "Mint NFT",
   Movement: "Movement",
-  "n Mints Remaining": "{count} Mints Remaining | No Mints Remaining",
+  "n Mints Remaining": "{count} Mints Remaining",
   Name: "Name",
   "Need help?": "Need help?",
   "New Project": "New Project",
