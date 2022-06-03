@@ -7,6 +7,24 @@
       </div>
 
       <q-list>
+        <!-- Base URI -->
+        <q-input
+          v-model="baseURI"
+          label="Base URI"
+          :loading="isLoading"
+          item-aligned
+        >
+          <template v-slot:after>
+            <q-btn
+              @click="setBaseURI"
+              label="Set"
+              color="primary"
+              :disable="isLoading"
+              :loading="isSettingBaseURI"
+            />
+          </template>
+        </q-input>
+
         <!-- Zero Mint -->
         <q-item-label header>Zero Mint</q-item-label>
         <q-item v-if="hasZeroMinted">
@@ -140,6 +158,27 @@ export default {
 
     const userAddress = computed(() => store.state.web3.userAddress);
 
+    const baseURI = ref("");
+    const isSettingBaseURI = ref(false);
+    const setBaseURI = async () => {
+      try {
+        isSettingBaseURI.value = true;
+        const tx = await Moralis.executeFunction({
+          contractAddress: changeDaoNFTClone.address,
+          abi: ChangeDaoNFT.abi,
+          functionName: "setBaseURI",
+          params: { _newBaseURI: baseURI.value }
+        });
+        const response = await tx.wait();
+        notifySuccess("Success");
+      } catch (error) {
+        console.error(error);
+        notifyError(error.error || error);
+      } finally {
+        isSettingBaseURI.value = false;
+      }
+    };
+
     const zeroMintAddress = ref(userAddress.value);
     const isMintingZero = ref(false);
     const zeroMint = async () => {
@@ -212,6 +251,8 @@ export default {
     const isLoading = ref(true);
     const isPaused = ref(false);
     onMounted(async () => {
+      baseURI.value = await changeDaoNFTClone.callStatic.baseURI();
+
       hasZeroMinted.value = await sharedFundingClone.callStatic.hasZeroMinted();
 
       const rainbowExpiration = await sharedFundingClone.callStatic.getRainbowExpiration();
@@ -225,6 +266,9 @@ export default {
     return {
       isLoading,
       userAddress,
+      baseURI,
+      setBaseURI,
+      isSettingBaseURI,
       hasZeroMinted,
       zeroMintAddress,
       zeroMint,
