@@ -40,6 +40,12 @@ const routes = [
         // ]
       },
       {
+        name: "claims",
+        path: "project/:projectID/claims",
+        props: true,
+        component: () => import("pages/ProjectClaims.vue")
+      },
+      {
         name: "mintTx",
         path: "project/:projectID/mint/tx/:txID",
         props: true,

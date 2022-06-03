@@ -227,7 +227,6 @@ export default {
     const balanceDAI = computed(() => balances.value.DAI);
 
     const ethers = Moralis.web3Library;
-    window.ethers = ethers;
     const provider = ethers.getDefaultProvider(process.env.chain);
 
     // Shared Funding Clone
@@ -236,7 +235,6 @@ export default {
       SharedFunding.abi,
       provider
     );
-    window.sharedFundingClone = sharedFundingClone;
 
     const getDAIBalance = async () => {
       return Moralis.executeFunction({
@@ -313,6 +311,9 @@ export default {
           msgValue
         });
         const response = await tx.wait();
+        getMinted();
+
+        notifySuccess("Success");
 
         // router.replace({
         //   name: "mintTx",
@@ -345,6 +346,12 @@ export default {
       () => quantity.value > 0 && quantity.value <= maxQuantity.value
     );
 
+    const getMinted = async () => {
+      minted.value = (
+        await sharedFundingClone.callStatic.getMintedTokens()
+      ).toNumber();
+    };
+
     // Initialize
     onMounted(async () => {
       cost.value = parseInt(
@@ -352,9 +359,7 @@ export default {
           await sharedFundingClone.callStatic.mintPrice()
         )
       );
-      minted.value = (
-        await sharedFundingClone.callStatic.getMintedTokens()
-      ).toNumber();
+      await getMinted();
       mintable.value = (
         await sharedFundingClone.callStatic.totalMints()
       ).toNumber();

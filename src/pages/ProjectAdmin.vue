@@ -20,6 +20,7 @@
           v-else
           v-model="zeroMintAddress"
           label="Recipient Address"
+          :disable="isLoading"
           item-aligned
         >
           <template v-slot:after>
@@ -28,6 +29,7 @@
               :label="$t('Mint')"
               color="primary"
               :loading="isMintingZero"
+              :disable="isLoading"
             />
           </template>
         </AddrInput>
@@ -36,14 +38,18 @@
         <q-item-label header>Courtesy Mint</q-item-label>
         <q-item v-if="!isRainbowPeriod">
           <q-item-section>
-            <q-item-label>
+            <q-skeleton type="text" v-if="isLoading" width="15em" />
+            <q-item-label v-else>
               The Rainbow Period has ended
             </q-item-label>
           </q-item-section>
         </q-item>
         <q-item v-else>
           <q-item-section>
-            <AddrInput v-model="address" label="Recipient Address" />
+            <AddrInput
+              v-model="courtesyMintAddress"
+              label="Recipient Address"
+            />
           </q-item-section>
           <q-item-section side>
             <q-input
@@ -72,7 +78,7 @@
           <q-btn
             @click="togglePause"
             :label="isPaused ? 'Unpause' : 'Pause'"
-            :loading="isPausing"
+            :loading="isLoading || isPausing"
             color="primary"
           />
         </q-item>
@@ -147,6 +153,7 @@ export default {
         });
         const response = await tx.wait();
         hasZeroMinted.value = true;
+        notifySuccess("Success");
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -166,12 +173,12 @@ export default {
           abi: SharedFunding.abi,
           functionName: "courtesyMint",
           params: {
-            _recipient: zeroMintAddress.value,
+            _recipient: courtesyMintAddress.value,
             _mintAmount: courtesyMintAmount.value
           }
         });
         const response = await tx.wait();
-        hasZeroMinted.value = true;
+        notifySuccess("Success");
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -191,6 +198,7 @@ export default {
         });
         const response = await tx.wait();
         isPaused.value = !isPaused.value;
+        notifySuccess("Success");
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -201,18 +209,21 @@ export default {
 
     const hasZeroMinted = ref(false);
     const isRainbowPeriod = ref(false);
+    const isLoading = ref(true);
     const isPaused = ref(false);
     onMounted(async () => {
       hasZeroMinted.value = await sharedFundingClone.callStatic.hasZeroMinted();
 
-      const mintedOn = await sharedFundingClone.callStatic.deployTime();
-      const rainbowDuration = await sharedFundingClone.callStatic.rainbowDuration();
-      isRainbowPeriod.value = mintedOn + rainbowDuration < new Date() / 1000;
+      const rainbowExpiration = await sharedFundingClone.callStatic.getRainbowExpiration();
+      isRainbowPeriod.value =
+        parseInt(rainbowExpiration.toString(), 10) > new Date() / 1000;
 
       isPaused.value = await sharedFundingClone.callStatic.paused();
+      isLoading.value = false;
     });
 
     return {
+      isLoading,
       userAddress,
       hasZeroMinted,
       zeroMintAddress,

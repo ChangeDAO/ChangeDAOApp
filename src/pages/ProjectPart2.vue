@@ -65,23 +65,18 @@
 
         <!-- Rainbow Merkle Root -->
         <q-input
-          v-model="data._rainbowMerkleRoot"
-          :label="'Rainbow Merkle Root'"
+          v-model="rainbowAddresses"
+          :label="'Rainbow List Addresses'"
           :rules="[Boolean]"
+          hint="One address per line"
           item-aligned
-        />
-
-        <!-- Rainbow CID -->
-        <q-input
-          v-model="data._rainbowCID"
-          :label="'Rainbow List CID'"
-          :rules="[Boolean]"
-          item-aligned
+          autogrow
         />
       </div>
       <div v-else>
         <!-- Courtesy Mint Duration -->
         <q-input
+          type="textarea"
           v-model="data._rainbowDuration"
           :label="'Courtesy Mint Duration (seconds)'"
           :rules="[a => a >= 0]"
@@ -103,6 +98,8 @@ import Moralis from "moralis";
 
 import SmoothReflow from "../components/SmoothReflow";
 
+import { createMerkleRootRainbow } from "../util/merkle";
+
 const REQUEST = {
   _changeDaoNFTClone: "", // From Part 1 event
   _fundingPSClone: "", // From Part 1 event
@@ -112,7 +109,6 @@ const REQUEST = {
   _maxMintAmountPublic: null, // 1-20
   _rainbowDuration: null, // Seconds
   _rainbowMerkleRoot: "",
-  _rainbowCID: "",
   projectId: "",
   transactionHash: "",
   hasRainbow: false
@@ -141,6 +137,15 @@ export default {
       }
     });
 
+    const rainbowAddresses = ref("");
+
+    watch(rainbowAddresses, addresses => {
+      if (addresses) {
+        addresses = addresses.trim().split(/\s+/);
+        data.value._rainbowMerkleRoot = createMerkleRootRainbow(addresses);
+      }
+    });
+
     const isValid = computed(
       () =>
         address.value &&
@@ -151,9 +156,7 @@ export default {
         data.value._maxMintAmountPublic &&
         data.value._rainbowDuration >= 0 &&
         (!data.value.hasRainbow ||
-          (data.value._maxMintAmountRainbow &&
-            data.value._rainbowMerkleRoot &&
-            data.value._rainbowCID))
+          (data.value._maxMintAmountRainbow && data.value._rainbowMerkleRoot))
     );
 
     // Reset
@@ -207,6 +210,7 @@ export default {
     return {
       address,
       data,
+      rainbowAddresses,
       reset,
       isValid
     };

@@ -201,10 +201,7 @@ export default {
               ),
               _rainbowMerkleRoot: data2.value.hasRainbow
                 ? data2.value._rainbowMerkleRoot
-                : ethers.utils.formatBytes32String("0"),
-              _rainbowCID: data2.value.hasRainbow
-                ? data2.value._rainbowCID
-                : "n/a"
+                : ethers.utils.formatBytes32String("0")
             }
           });
           data2.value.transactionHash = tx.hash;
