@@ -11,25 +11,29 @@
         <q-item-label header>Available</q-item-label>
         <q-item>
           <q-item-section>
-            <q-item-label caption>ETH</q-item-label>
-            <q-item-label>
-              <q-skeleton v-if="isLoading" type="text" width="3em" />
-              <template v-else>{{ availableETH }}</template>
-            </q-item-label>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label caption>DAI</q-item-label>
-            <q-item-label>
-              <q-skeleton v-if="isLoading" type="text" width="3em" />
-              <template v-else>{{ $n(availableDAI, "USD") }}</template>
-            </q-item-label>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label caption>USDC</q-item-label>
-            <q-item-label>
-              <q-skeleton v-if="isLoading" type="text" width="3em" />
-              <template v-else>{{ $n(availableUSDC, "USD") }}</template>
-            </q-item-label>
+            <div class="row q-gutter-md">
+              <div>
+                <q-item-label caption>ETH</q-item-label>
+                <q-item-label>
+                  <q-skeleton v-if="isLoading" type="text" width="3em" />
+                  <template v-else>{{ availableETH }}</template>
+                </q-item-label>
+              </div>
+              <div>
+                <q-item-label caption>DAI</q-item-label>
+                <q-item-label>
+                  <q-skeleton v-if="isLoading" type="text" width="3em" />
+                  <template v-else>{{ $n(availableDAI, "USD") }}</template>
+                </q-item-label>
+              </div>
+              <div>
+                <q-item-label caption>USDC</q-item-label>
+                <q-item-label>
+                  <q-skeleton v-if="isLoading" type="text" width="3em" />
+                  <template v-else>{{ $n(availableUSDC, "USD") }}</template>
+                </q-item-label>
+              </div>
+            </div>
           </q-item-section>
           <q-item-section side>
             <q-btn

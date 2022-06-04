@@ -197,7 +197,7 @@ export default {
                 data2.value.hasRainbow ? data2.value._maxMintAmountRainbow : 10
               ),
               _rainbowDuration: ethers.BigNumber.from(
-                data2.value.hasRainbow ? data2.value._rainbowDuration : 0
+                data2.value._rainbowDuration * 3600
               ),
               _rainbowMerkleRoot: data2.value.hasRainbow
                 ? data2.value._rainbowMerkleRoot

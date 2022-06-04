@@ -25,6 +25,34 @@
           </template>
         </q-input>
 
+        <!-- Rainbow Period -->
+        <q-input
+          type="number"
+          v-model="rainbowDuration"
+          :label="'Rainbow Period Duration (hours)'"
+          :rules="[a => a >= 0]"
+          :min="0"
+          :loading="isLoading"
+          item-aligned
+        >
+          <template v-slot:append v-if="remaingRainbow">
+            <RelativeTime :value="remaingRainbow" />
+          </template>
+          <template v-slot:after>
+            <q-btn
+              @click="setRainbowDuration"
+              label="Set"
+              color="primary"
+              :disable="
+                isLoading ||
+                  (!rainbowDuration && rainbowDuration !== 0) ||
+                  rainbowDuration < 0
+              "
+              :loading="isSettingRainbowDuration"
+            />
+          </template>
+        </q-input>
+
         <!-- Zero Mint -->
         <q-item-label header>Zero Mint</q-item-label>
         <q-item v-if="hasZeroMinted">
@@ -70,15 +98,17 @@
             />
           </q-item-section>
           <q-item-section side>
-            <q-input
-              v-model="courtesyMintAmount"
-              :label="'Qty'"
-              :rules="[Boolean]"
-              type="number"
-              :min="1"
-              :max="20"
-              hide-bottom-space
-            />
+            <q-item-label>
+              <q-input
+                v-model="courtesyMintAmount"
+                :label="'Qty'"
+                :rules="[Boolean]"
+                type="number"
+                :min="1"
+                :max="20"
+                hide-bottom-space
+              />
+            </q-item-label>
           </q-item-section>
           <q-item-section side>
             <q-btn
@@ -118,6 +148,7 @@ import { LocalStorage } from "quasar";
 import { notifyError, notifySuccess } from "../util/notify";
 import LogIn from "../components/LogIn";
 import AddrInput from "../components/AddrInput";
+import RelativeTime from "../components/RelativeTime";
 
 import { pickBy } from "lodash";
 
@@ -128,7 +159,7 @@ import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.jso
 export default {
   name: "PageProjectAdmin",
 
-  components: { LogIn, AddrInput },
+  components: { LogIn, AddrInput, RelativeTime },
 
   props: ["projectID"],
 
@@ -176,6 +207,41 @@ export default {
         notifyError(error.error || error);
       } finally {
         isSettingBaseURI.value = false;
+      }
+    };
+
+    const rainbowDuration = ref(null);
+    const isSettingRainbowDuration = ref(false);
+    const mintedOn = ref(null);
+    const remaingRainbow = computed(() => {
+      return rainbowDuration.value
+        ? new Date(
+            (parseInt(mintedOn.value.toString(), 10) +
+              parseInt(rainbowDuration.value, 10) * 3600) *
+              1000
+          )
+        : null;
+    });
+    const setRainbowDuration = async () => {
+      try {
+        isSettingRainbowDuration.value = true;
+        const tx = await Moralis.executeFunction({
+          contractAddress: sharedFundingClone.address,
+          abi: SharedFunding.abi,
+          functionName: "setRainbowDuration",
+          params: {
+            _rainbowDuration: ethers.BigNumber.from(
+              (rainbowDuration.value * 3600).toString()
+            )
+          }
+        });
+        const response = await tx.wait();
+        notifySuccess("Success");
+      } catch (error) {
+        console.error(error);
+        notifyError(error.error || error);
+      } finally {
+        isSettingRainbowDuration.value = false;
       }
     };
 
@@ -250,8 +316,15 @@ export default {
     const isRainbowPeriod = ref(false);
     const isLoading = ref(true);
     const isPaused = ref(false);
+
     onMounted(async () => {
       baseURI.value = await changeDaoNFTClone.callStatic.baseURI();
+
+      mintedOn.value = await sharedFundingClone.callStatic.deployTime();
+
+      rainbowDuration.value = Math.round(
+        (await sharedFundingClone.callStatic.rainbowDuration()) / 3600
+      );
 
       hasZeroMinted.value = await sharedFundingClone.callStatic.hasZeroMinted();
 
@@ -269,6 +342,10 @@ export default {
       baseURI,
       setBaseURI,
       isSettingBaseURI,
+      rainbowDuration,
+      remaingRainbow,
+      isSettingRainbowDuration,
+      setRainbowDuration,
       hasZeroMinted,
       zeroMintAddress,
       zeroMint,

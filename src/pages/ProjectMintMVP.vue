@@ -4,7 +4,7 @@
       <div class="q-gutter-lg">
         <!-- Title -->
         <div class="text-h4 q-my-md">
-          {{ $t("Mint NFT") }}
+          {{ isRainbowPeriod ? "Rainbow Mint" : $t("Mint NFT") }}
         </div>
 
         <!-- Cost per Mint -->
@@ -363,9 +363,10 @@ export default {
       mintable.value = (
         await sharedFundingClone.callStatic.totalMints()
       ).toNumber();
-      const mintedOn = await sharedFundingClone.callStatic.deployTime();
-      const rainbowDuration = await sharedFundingClone.callStatic.rainbowDuration();
-      isRainbowPeriod.value = mintedOn + rainbowDuration < new Date() / 1000;
+
+      const rainbowExpiration = await sharedFundingClone.callStatic.getRainbowExpiration();
+      isRainbowPeriod.value =
+        parseInt(rainbowExpiration.toString(), 10) > new Date() / 1000;
       if (isRainbowPeriod.value) {
         // Rainbow Mint
         maxMintAmountRainbow.value = await sharedFundingClone.callStatic.maxMintAmountRainbow();

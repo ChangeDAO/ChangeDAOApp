@@ -21,15 +21,19 @@
     />
 
     <!-- Max Mint Amount Public -->
-    <q-input
-      v-model="data._maxMintAmountPublic"
-      :label="'Max Mints per Transaction'"
-      :rules="[Boolean]"
-      type="number"
-      :min="1"
-      :max="20"
-      item-aligned
-    />
+    <q-item>
+      <q-item-section>
+        <q-input
+          v-model="data._maxMintAmountPublic"
+          :label="'Max Mints per Transaction'"
+          :rules="[a => a > 0 && a <= 20]"
+          type="number"
+          :min="1"
+          :max="20"
+          hint="Max 20"
+        />
+      </q-item-section>
+    </q-item>
 
     <!-- Use Rainbow List? -->
     <q-item tag="label" clickable v-ripple>
@@ -47,7 +51,7 @@
         <q-input
           v-model="data._maxMintAmountRainbow"
           :label="'Max Mints per Transaction for Rainbow List'"
-          :rules="[Boolean]"
+          :rules="[a => a > 0 && a <= 20]"
           type="number"
           :min="1"
           :max="20"
@@ -56,29 +60,33 @@
 
         <!-- Rainbow Duration -->
         <q-input
+          type="number"
           v-model="data._rainbowDuration"
-          :label="'Rainbow Period Duration (seconds)'"
+          :label="'Rainbow Period Duration (hours)'"
           :rules="[a => a >= 0]"
           :min="0"
           item-aligned
         />
 
         <!-- Rainbow Merkle Root -->
-        <q-input
-          v-model="rainbowAddresses"
-          :label="'Rainbow List Addresses'"
-          :rules="[Boolean]"
-          hint="One address per line"
-          item-aligned
-          autogrow
-        />
+        <q-item>
+          <q-item-section>
+            <q-input
+              type="textarea"
+              v-model="rainbowAddresses"
+              :label="'Rainbow List Addresses'"
+              :rules="[Boolean]"
+              hint="One address per line"
+            />
+          </q-item-section>
+        </q-item>
       </div>
       <div v-else>
         <!-- Courtesy Mint Duration -->
         <q-input
-          type="textarea"
+          type="number"
           v-model="data._rainbowDuration"
-          :label="'Courtesy Mint Duration (seconds)'"
+          :label="'Courtesy Mint Duration (hours)'"
           :rules="[a => a >= 0]"
           :min="0"
           item-aligned
