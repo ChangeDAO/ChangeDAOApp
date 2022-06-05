@@ -36,7 +36,7 @@ export default {
   Help: "Help",
   Instagram: "Instagram",
   "Last Name": "Last Name",
-  "Log In": "Log In",
+  "Connect": "Connect",
   "Log in to ChangeDAO": "Log in to ChangeDAO",
   "Log Out": "Log Out",
   "Long Bio": "Long Bio",

@@ -58,12 +58,10 @@ p {
 .q-layout {
   .q-header {
     background: $dark-header;
-    box-shadow: 0px 2px 8px 0px #5200A166;
   }
 
   .q-footer {
     background: $dark-footer;
-    box-shadow: 0px -4px 8px 0px #8001FB66;
 
     a:not(.q-btn) {
       color: inherit;
