@@ -1,5 +1,5 @@
 <template>
-  <q-btn icon="lock_open" :label="$t('Log In')" color="primary" v-bind="$attrs">
+  <q-btn :label="$t('Connect')" class="text-bold text-color-white" v-bind="$attrs">
     <q-menu auto-close>
       <q-list class="text-no-wrap">
         <!-- Wallet Providers -->
@@ -23,6 +23,12 @@
     </q-menu>
   </q-btn>
 </template>
+
+<style lang="scss" scoped>
+.q-btn:before {
+  border: 1px solid $primary;
+}
+</style>
 
 <script>
 import { defineComponent } from "vue";

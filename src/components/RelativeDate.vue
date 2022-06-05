@@ -26,7 +26,7 @@ import {
 
 export default {
   name: "relative-date",
-  components: { Toolip },
+  components: { Tooltip },
   props: {
     before: String,
     after: String,
@@ -83,7 +83,7 @@ export default {
     this.updateLabel();
     this.timer = setInterval(this.updateLabel, 9e5);
   },
-  destroyed() {
+  unmounted() {
     clearInterval(this.timer);
   }
 };
