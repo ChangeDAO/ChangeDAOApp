@@ -25,7 +25,7 @@
         <!-- Log Out -->
         <q-item @click="logOut" clickable v-ripple>
           <q-item-section avatar>
-            <q-icon name="lock" />
+            <q-icon name="disconnect" />
           </q-item-section>
           <q-item-section>
             <q-item-label>{{ "Disconnect" }}</q-item-label>

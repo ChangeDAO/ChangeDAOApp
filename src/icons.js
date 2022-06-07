@@ -5,6 +5,7 @@ export default {
   close: "mdi-close-circle-outline",
   delete: "mdi-delete",
   discord: "mdi-discord",
+  disconnect: "mdi-wallet-outline",
   error: "mdi-alert-circle",
   info: "mdi-information",
   keyboard_arrow_down: "mdi-chevron-down",
