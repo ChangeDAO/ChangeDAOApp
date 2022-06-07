@@ -1,8 +1,15 @@
 <template>
-  <q-page class="page-home column">
+  <q-page class="page-home">
     <!-- Landing -->
-    <div class="row justify-center items-center landing">
-      <q-card-section class="col-12 col-md-5 q-pr-md column justify-center">
+    <div class="row reverse justify-center items-center landing">
+      <q-card-section class="col-12 col-sm-6">
+        <img
+          src="~assets/ChangeDAO-sample-cover.png"
+          style="width: 100%;"
+          class="shadow-4"
+        />
+      </q-card-section>
+      <q-card-section class="col-12 col-sm-6">
         <p class="text-h2">
           CHANGEMAKER NAME
         </p>
@@ -13,15 +20,12 @@
           MOVEMENT NAME
         </p>
         <div class="q-pt-md">
-          <q-btn label="Discover" color="primary" class="text-color-white" />
+          <q-btn
+            label="Discover"
+            color="primary"
+            :class="{ 'full-width': $q.screen.lt.sm }"
+          />
         </div>
-      </q-card-section>
-      <q-card-section class="col-12 col-md-auto">
-        <img
-          src="~assets/ChangeDAO-sample-cover.png"
-          style="width: 100%;"
-          class="shadow-4"
-        />
       </q-card-section>
     </div>
 
@@ -30,7 +34,7 @@
       <p class="text-h2 text-uppercase">Proof Of Change</p>
       <p class="text-h3">By ChangeDAO</p>
       <p class="q-mt-xl">
-        <q-btn label="Discover" color="primary" class="text-color-white" />
+        <q-btn label="Discover" color="primary" />
       </p>
     </q-card-section>
 
@@ -38,17 +42,24 @@
     <q-card-section
       class="stay-connected row justify-center items-center text-center"
     >
-      <div class="q-gutter-sm q-py-xl col-12 col-md-5">
+      <div class="q-gutter-sm q-py-xl col-12 col-sm-8">
         <p class="text-h3 text-uppercase">Stay Connected</p>
         <p>
           Subscribe to our weekly newsletter and be the first to know about
-          <br />upcoming events, news, and moments of change.
+          upcoming events, news, and moments of change.
         </p>
-        <q-input filled placeholder="Your email" hint="With placeholder" dense>
-          <template v-slot:after>
-            <q-btn label="Subscribe" color="black" class="text-color-white" />
+        <q-input
+          filled
+          placeholder="Your email"
+          hint="With placeholder"
+          bg-color="dark-accent"
+          dense
+        >
+          <template v-if="$q.screen.gt.xs" v-slot:after>
+            <q-btn label="Subscribe" color="dark-accent" />
           </template>
         </q-input>
+        <q-btn v-if="$q.screen.lt.sm" label="Subscribe" color="dark-accent" />
       </div>
     </q-card-section>
 
@@ -57,200 +68,112 @@
       <p class="text-center text-h3 text-uppercase q-mb-xl">
         Featured Projects
       </p>
-      <div class="row justify-center items-center q-gutter-xl q-px-lg">
-        <div class="col-12 col-md-2">
-          <q-card>
-            <img
-              src="~assets/ChangeDAO-sample-cover.png"
-              style="width: 100%;"
-              class="shadow-4"
-            />
-            <div class="absolute-bottom q-pa-md caption">
-              <div class="row items-center">
-                <q-avatar
-                  size="sm"
-                  color="grey-9"
-                  class="q-my-sm q-mr-sm"
-                  square
-                />
-                <div class="text-subtitle2 text-weight-bold">
-                  @changemakerhandle
-                </div>
-              </div>
-              <div class="text-caption text-weight-bold">Title of the drop</div>
-              <div class="row justify-between">
-                <div class="text-caption text-uppercase">Movement Name</div>
-                <div class="text-caption text-grey-6 text-right">
-                  ## of #### minted
-                </div>
-              </div>
-            </div>
-          </q-card>
-        </div>
-        <div class="col-12 col-md-2">
-          <q-card>
-            <img
-              src="~assets/ChangeDAO-sample-cover.png"
-              style="width: 100%;"
-              class="shadow-4"
-            />
-            <div class="absolute-bottom q-pa-md caption">
-              <div class="row items-center">
-                <q-avatar
-                  size="sm"
-                  color="grey-9"
-                  class="q-my-sm q-mr-sm"
-                  square
-                />
-                <div class="text-subtitle2 text-weight-bold">
-                  @changemakerhandle
-                </div>
-              </div>
-              <div class="text-caption text-weight-bold">Title of the drop</div>
-              <div class="row justify-between">
-                <div class="text-caption text-uppercase">Movement Name</div>
-                <div class="text-caption text-grey-6 text-right">
-                  ## of #### minted
-                </div>
-              </div>
-            </div>
-          </q-card>
-        </div>
-        <div class="col-12 col-md-2">
-          <q-card>
-            <img
-              src="~assets/ChangeDAO-sample-cover.png"
-              style="width: 100%;"
-              class="shadow-4"
-            />
-            <div class="absolute-bottom q-pa-md caption">
-              <div class="row items-center">
-                <q-avatar
-                  size="sm"
-                  color="grey-9"
-                  class="q-my-sm q-mr-sm"
-                  square
-                />
-                <div class="text-subtitle2 text-weight-bold">
-                  @changemakerhandle
-                </div>
-              </div>
-              <div class="text-caption text-weight-bold">Title of the drop</div>
-              <div class="row justify-between">
-                <div class="text-caption text-uppercase">Movement Name</div>
-                <div class="text-caption text-grey-6 text-right">
-                  ## of #### minted
-                </div>
-              </div>
-            </div>
-          </q-card>
-        </div>
+      <div class="row flex-center q-gutter-xl q-px-lg">
+        <ProjectCard class="col-sm-3" />
+        <ProjectCard class="col-sm-3" />
+        <ProjectCard class="col-sm-3" />
       </div>
     </q-card-section>
 
     <!-- Stories of Change -->
-    <q-card-section>
-      <!-- Podcast -->
-      <div class="q-gutter-xl q-pt-xl green-radial">
-        <p class="text-h3 text-uppercase text-center q-mb-xl">
-          Engage with our stories of change
-        </p>
-        <div class="row justify-center q-px-lg">
-          <div class="col col-md-8">
-            <div
-              class="stories-of-change q-pa-lg q-col-gutter-md"
-              :class="{ row: $q.screen.gt.sm }"
-            >
-              <div class="col-9">
-                <p class="text-h3 text-uppercase">Podcast</p>
-                <p>
-                  Proof of Change lorem ipsum dolor sit amet, consectetur
-                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                  dolore magna aliqua.
-                </p>
-                <p>
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut.
-                </p>
-                <q-btn label="Listen" color="black" class="text-color-white" />
-              </div>
-              <div class="col-3">
-                <img
-                  src="~assets/ChangeDAO-sample-cover.png"
-                  style="width: 100%;"
-                  class="shadow-4"
-                />
-              </div>
+    <q-card-section class="stories-of-change">
+      <p class="text-h3 text-uppercase text-center q-mb-xl">
+        Stories of Change
+      </p>
+
+      <div class="q-gutter-xl q-py-xl column flex-center">
+        <!-- Podcast -->
+        <div class="section q-pa-lg">
+          <p class="text-h3 text-uppercase">Podcast</p>
+
+          <div class="row reverse q-col-gutter-md">
+            <div class="col-sm-4">
+              <img
+                src="~assets/ChangeDAO-sample-cover.png"
+                style="width: 100%;"
+                class="shadow-4"
+              />
+            </div>
+
+            <div class="col-sm-8">
+              <p>
+                Proof of Change lorem ipsum dolor sit amet, consectetur
+                adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
+              </p>
+              <p>
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                laboris nisi ut.
+              </p>
+              <q-btn
+                label="Listen"
+                color="dark-accent"
+                :class="{ 'full-width': $q.screen.lt.sm }"
+              />
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Blog -->
-      <div class="q-gutter-xl q-pt-xl">
-        <div class="row justify-center q-px-lg">
-          <div class="col col-md-8">
-            <div
-              class="stories-of-change q-pa-lg q-col-gutter-md"
-              :class="{ row: $q.screen.gt.sm }"
-            >
-              <div class="col-9">
-                <p class="text-h3 text-uppercase">Blog</p>
-                <p>
-                  Proof of Change lorem ipsum dolor sit amet, consectetur
-                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                  dolore magna aliqua.
-                </p>
-                <p>
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut.
-                </p>
-                <q-btn label="Read" color="black" class="text-color-white" />
-              </div>
-              <div class="col-3">
-                <img
-                  src="~assets/ChangeDAO-sample-cover.png"
-                  style="width: 100%;"
-                  class="shadow-4"
-                />
-              </div>
+        <!-- Blog -->
+        <div class="section q-pa-lg">
+          <p class="text-h3 text-uppercase">Blog</p>
+
+          <div class="row reverse q-col-gutter-md">
+            <div class="col-sm-4">
+              <img
+                src="~assets/ChangeDAO-sample-cover.png"
+                style="width: 100%;"
+                class="shadow-4"
+              />
+            </div>
+
+            <div class="col-sm-8">
+              <p>
+                Proof of Change lorem ipsum dolor sit amet, consectetur
+                adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
+              </p>
+              <p>
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                laboris nisi ut.
+              </p>
+              <q-btn
+                label="Read"
+                color="dark-accent"
+                :class="{ 'full-width': $q.screen.lt.sm }"
+              />
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Events -->
-      <div class="q-gutter-xl q-pt-xl">
-        <div class="row justify-center q-px-lg">
-          <div class="col col-md-8">
-            <div
-              class="stories-of-change q-pa-lg q-col-gutter-md"
-              :class="{ row: $q.screen.gt.sm }"
-            >
-              <div class="col-9">
-                <p class="text-h3 text-uppercase">Events</p>
-                <p>
-                  Proof of Change lorem ipsum dolor sit amet, consectetur
-                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                  dolore magna aliqua.
-                </p>
-                <p>
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut.
-                </p>
-                <q-btn
-                  label="Get Involved"
-                  color="black"
-                  class="text-color-white"
-                />
-              </div>
-              <div class="col-3">
-                <img
-                  src="~assets/ChangeDAO-sample-cover.png"
-                  style="width: 100%;"
-                  class="shadow-4"
-                />
-              </div>
+        <!-- Events -->
+        <div class="section q-pa-lg">
+          <p class="text-h3 text-uppercase">Events</p>
+
+          <div class="row reverse q-col-gutter-md">
+            <div class="col-sm-4">
+              <img
+                src="~assets/ChangeDAO-sample-cover.png"
+                style="width: 100%;"
+                class="shadow-4"
+              />
+            </div>
+
+            <div class="col-sm-8">
+              <p>
+                Proof of Change lorem ipsum dolor sit amet, consectetur
+                adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
+              </p>
+              <p>
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                laboris nisi ut.
+              </p>
+              <q-btn
+                label="Get Involved"
+                color="dark-accent"
+                :class="{ 'full-width': $q.screen.lt.sm }"
+              />
             </div>
           </div>
         </div>
@@ -259,17 +182,17 @@
 
     <!-- Newsletter -->
     <q-card-section class="row justify-center items-center text-center">
-      <div class="q-gutter-sm q-py-xl col-12 col-md-5">
+      <div class="q-gutter-sm q-py-xl col-12 col-sm-6">
         <p class="text-h3 text-uppercase">Join Our Newsletter</p>
         <q-input
           filled
-          bg-color="black"
+          bg-color="dark-accent"
           placeholder="Your email"
           hint="With placeholder"
           dense
         >
           <template v-slot:after>
-            <q-btn label="Subscribe" color="black" class="text-color-white" />
+            <q-btn label="Subscribe" color="dark-accent" />
           </template>
         </q-input>
       </div>
@@ -285,7 +208,9 @@
   }
 
   .landing {
-    padding: 8vw 0;
+    padding: 8vw 0 10em;
+    max-width: $breakpoint-md;
+    margin: 0 auto;
   }
 
   .proof-of-change {
@@ -299,6 +224,12 @@
   .stay-connected {
     padding: 8em 4em;
     background-image: radial-gradient($primary 0%, transparent 50%);
+    background-size: 175% 100%;
+    background-position: center;
+
+    .q-field__control {
+      background-color: rgba(#000, 60%) !important;
+    }
   }
 
   .caption {
@@ -306,16 +237,29 @@
   }
 
   .stories-of-change {
-    border: 2px solid white;
-  }
+    .section {
+      border: 2px solid white;
+      max-width: $breakpoint-sm;
 
-  .green-radial {
+      @media (min-width: $breakpoint-sm-min) {
+        img {
+          margin-top: map-get($space-lg, "y") * -2;
+        }
+      }
+    }
+
     background-image: radial-gradient(
-      circle at center,
-      $accent 0%,
-      transparent 50%,
-      transparent
-    );
+        80% 50% at 25% 25%,
+        $accent 0%,
+        transparent 50%,
+        transparent
+      ),
+      radial-gradient(
+        80% 50% at 75% 75%,
+        $accent 0%,
+        transparent 50%,
+        transparent
+      );
   }
 
   @media (max-width: $breakpoint-sm-max) {
@@ -359,13 +303,17 @@
 </style>
 
 <script>
-import { defineComponent } from "vue";
+import ProjectCard from "../components/ProjectCard";
 
-export default defineComponent({
+export default {
   name: "PageHome",
+
+  components: {
+    ProjectCard
+  },
 
   setup() {
     return {};
   }
-});
+};
 </script>

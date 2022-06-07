@@ -10,7 +10,7 @@
             style="width: 200px; max-width: 100%"
           />
         </q-toolbar-title>
-        <SearchBar v-if="$q.screen.gt.sm" />
+        <SearchBar v-if="$q.screen.gt.xs" />
         <UserMenu />
       </q-toolbar>
     </q-header>
@@ -62,14 +62,14 @@
               @click="twitter"
               icon="twitter"
               color="white"
-              text-color="black"
+              text-color="dark-accent"
               size="md"
               padding="sm"
             />
             <q-btn
               @click="dialogEmail = true"
               color="white"
-              text-color="black"
+              text-color="dark-accent"
               icon="email"
               size="md"
               padding="sm"

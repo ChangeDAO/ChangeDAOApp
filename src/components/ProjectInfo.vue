@@ -67,6 +67,7 @@
 import { shortAddr } from "../util/formatting";
 
 export default {
+  name: "ProjectInfo",
   props: {
     project: Object,
     minimal: Boolean

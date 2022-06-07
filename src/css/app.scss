@@ -41,11 +41,11 @@ p {
 }
 .q-layout {
   .q-header {
-    background: $dark-header;
+    background: $dark-accent;
   }
 
   .q-footer {
-    background: $dark-footer;
+    background: $dark-accent;
 
     a:not(.q-btn) {
       color: inherit;
@@ -101,6 +101,14 @@ p {
 
 .border-primary {
   border-color: $primary;
+}
+
+.bg-dark-accent {
+  background: $dark-accent !important;
+}
+
+.text-dark-accent {
+  color: $dark-accent;
 }
 
 a:not(.q-btn) {
