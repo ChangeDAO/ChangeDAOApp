@@ -38,7 +38,7 @@ export async function logIn({ state, commit, dispatch }, provider) {
   if (provider) {
     try {
       user = await Moralis.authenticate({
-        signingMessage: t("Log in to ChangeDAO"),
+        signingMessage: t("Connect to ChangeDAO"),
         provider,
         chain
       });

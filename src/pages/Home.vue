@@ -1,110 +1,201 @@
 <template>
-  <q-page class="page-home column">
+  <q-page class="page-home">
     <!-- Landing -->
-    <q-card-section class="landing">
-      <div class="title text-h1">
-        NFTs AS A FORCE<br />
-        FOR CHANGE
-      </div>
-      <div class="subtitle text-h3">
-        Discover, Create, and Support Stories of Change
-      </div>
-      <div class="social q-mt-xl text-h4 text-center">
-        JOIN OUR STORY + STAY CONNECTED
-      </div>
-    </q-card-section>
-
-    <!-- Areas of Change -->
-    <q-card-section></q-card-section>
-
-    <!-- Social -->
-    <q-card-section class="bg-primary text-center text-h3">
-      Join our story
-      <q-btn class="q-mx-md" label="Message Us" outline />
-    </q-card-section>
-
-    <!-- NFTs as a Force for Change -->
-    <q-card-section class="text-center q-py-xl">
-      <div class="text-h2">NFTs as a Force for Change</div>
-      <div class="dots text-h2" />
-      <p class="text-body1">
-        <b>Changemakers</b> create positive change in the world<br />
-        <b>Art</b> inspires and educates us to participate<br />
-        <b>Community</b> makes change happen as one global movement
-      </p>
-    </q-card-section>
-
-    <!-- Banner -->
-    <img src="~assets/ChangeDao-Journey.png" style="width: 100%;" />
-
-    <!-- Are you a Changemaker? -->
-    <div class="items-center justify-center" :class="{ row: $q.screen.gt.sm }">
-      <div class="col q-pa-xl" style="max-width: 50em;">
-        <p class="text-h3">
-          Are you a Changemaker?
+    <div class="row reverse justify-center items-center landing">
+      <q-card-section class="col-12 col-sm-6">
+        <img
+          src="~assets/ChangeDAO-sample-cover.png"
+          style="width: 100%;"
+          class="shadow-4"
+        />
+      </q-card-section>
+      <q-card-section class="col-12 col-sm-6">
+        <p class="text-h2">
+          CHANGEMAKER NAME
         </p>
-        <p class="text-body1">
-          Changemakers are hand-selected and verified by our core team. They are
-          artists, causes and curators that have a track-record of using NFTs as
-          a force for change in the world.
+        <p class="text-h4">
+          Title of the drop
         </p>
-        <p class="text-body1 text-bold">
-          Want to get involved? Connect with our team today.
+        <p class="text-caption">
+          MOVEMENT NAME
         </p>
-        <p>
-          <q-btn label="Message Us" color="primary" />
-        </p>
-      </div>
-      <div class="col flex flex-center">
-        <img src="~assets/SplitPay.gif" />
-      </div>
+        <div class="q-pt-md">
+          <q-btn
+            label="Discover"
+            color="primary"
+            :class="{ 'full-width': $q.screen.lt.sm }"
+          />
+        </div>
+      </q-card-section>
     </div>
 
-    <!-- Triple P NFTs -->
-    <q-card-section class="q-py-xl bg-dark">
-      <div class="text-center text-h2">
-        We’re Introducing Triple P NFTs
-        <div class="dots text-h2" />
+    <!-- Proof of change -->
+    <q-card-section class="proof-of-change text-center q-gutter-md">
+      <p class="text-h2 text-uppercase">Proof Of Change</p>
+      <p class="text-h3">By ChangeDAO</p>
+      <p class="q-mt-xl">
+        <q-btn label="Discover" color="primary" />
+      </p>
+    </q-card-section>
+
+    <!-- Stay Connected -->
+    <q-card-section
+      class="stay-connected row justify-center items-center text-center"
+    >
+      <div class="q-gutter-sm q-py-xl col-12 col-sm-8">
+        <p class="text-h3 text-uppercase">Stay Connected</p>
+        <p>
+          Subscribe to our weekly newsletter and be the first to know about
+          upcoming events, news, and moments of change.
+        </p>
+        <q-input
+          filled
+          placeholder="Your email"
+          hint="With placeholder"
+          bg-color="dark-accent"
+          dense
+        >
+          <template v-if="$q.screen.gt.xs" v-slot:after>
+            <q-btn label="Subscribe" color="dark-accent" />
+          </template>
+        </q-input>
+        <q-btn v-if="$q.screen.lt.sm" label="Subscribe" color="dark-accent" />
       </div>
-      <div class="q-gutter-lg" :class="{ row: $q.screen.gt.sm }">
-        <div class="col">
-          <p class="text-h1">People</p>
-          <p class="text-h3 text-accent">Create to your heart’s delight.</p>
-          <p>
-            Every NFT on ChangeDAO benefits a cause. Elevate and educate our
-            community about the cause you care about with your art. Create
-            change, start a movement.
-          </p>
+    </q-card-section>
+
+    <!-- Featured Projects -->
+    <q-card-section class="q-py-xl">
+      <p class="text-center text-h3 text-uppercase q-mb-xl">
+        Featured Projects
+      </p>
+      <div class="row flex-center q-gutter-xl q-px-lg">
+        <ProjectCard class="col-sm-3" />
+        <ProjectCard class="col-sm-3" />
+        <ProjectCard class="col-sm-3" />
+      </div>
+    </q-card-section>
+
+    <!-- Stories of Change -->
+    <q-card-section class="stories-of-change">
+      <p class="text-h3 text-uppercase text-center q-mb-xl">
+        Stories of Change
+      </p>
+
+      <div class="q-gutter-xl q-py-xl column flex-center">
+        <!-- Podcast -->
+        <div class="section q-pa-lg">
+          <p class="text-h3 text-uppercase">Podcast</p>
+
+          <div class="row reverse q-col-gutter-md">
+            <div class="col-sm-4">
+              <img
+                src="~assets/ChangeDAO-sample-cover.png"
+                style="width: 100%;"
+                class="shadow-4"
+              />
+            </div>
+
+            <div class="col-sm-8">
+              <p>
+                Proof of Change lorem ipsum dolor sit amet, consectetur
+                adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
+              </p>
+              <p>
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                laboris nisi ut.
+              </p>
+              <q-btn
+                label="Listen"
+                color="dark-accent"
+                :class="{ 'full-width': $q.screen.lt.sm }"
+              />
+            </div>
+          </div>
         </div>
-        <q-separator color="primary" :vertical="$q.screen.gt.sm" />
-        <div class="col">
-          <p class="text-h1">Profit</p>
-          <p class="text-h3 text-accent">We’re all in this together.</p>
-          <p>
-            Our smart contracts are unique to the Changemaker — and to each
-            individual project. Changemakers determine how revenue from sales is
-            distribute d. And our platform fees are lower than you think.
-          </p>
+
+        <!-- Blog -->
+        <div class="section q-pa-lg">
+          <p class="text-h3 text-uppercase">Blog</p>
+
+          <div class="row reverse q-col-gutter-md">
+            <div class="col-sm-4">
+              <img
+                src="~assets/ChangeDAO-sample-cover.png"
+                style="width: 100%;"
+                class="shadow-4"
+              />
+            </div>
+
+            <div class="col-sm-8">
+              <p>
+                Proof of Change lorem ipsum dolor sit amet, consectetur
+                adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
+              </p>
+              <p>
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                laboris nisi ut.
+              </p>
+              <q-btn
+                label="Read"
+                color="dark-accent"
+                :class="{ 'full-width': $q.screen.lt.sm }"
+              />
+            </div>
+          </div>
         </div>
-        <q-separator color="primary" :vertical="$q.screen.gt.sm" />
-        <div class="col">
-          <p class="text-h1">Planet</p>
-          <p class="text-h3 text-accent">Reduce and offset.</p>
-          <p>
-            We’re taking sustainability head-on, crafting quality code that
-            reduces overall energy consumption. And ChangeDAO will acquire
-            carbon offsets to cover what little energy we do use to bring change
-            to life.
-          </p>
+
+        <!-- Events -->
+        <div class="section q-pa-lg">
+          <p class="text-h3 text-uppercase">Events</p>
+
+          <div class="row reverse q-col-gutter-md">
+            <div class="col-sm-4">
+              <img
+                src="~assets/ChangeDAO-sample-cover.png"
+                style="width: 100%;"
+                class="shadow-4"
+              />
+            </div>
+
+            <div class="col-sm-8">
+              <p>
+                Proof of Change lorem ipsum dolor sit amet, consectetur
+                adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
+              </p>
+              <p>
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                laboris nisi ut.
+              </p>
+              <q-btn
+                label="Get Involved"
+                color="dark-accent"
+                :class="{ 'full-width': $q.screen.lt.sm }"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </q-card-section>
 
-    <q-card-section class="footer text-center q-gutter-xl">
-      <p class="text-h2">Share Your Story.<br />Be the Change.</p>
-      <p>
-        <q-btn label="Message Us" outline />
-      </p>
+    <!-- Newsletter -->
+    <q-card-section class="row justify-center items-center text-center">
+      <div class="q-gutter-sm q-py-xl col-12 col-sm-6">
+        <p class="text-h3 text-uppercase">Join Our Newsletter</p>
+        <q-input
+          filled
+          bg-color="dark-accent"
+          placeholder="Your email"
+          hint="With placeholder"
+          dense
+        >
+          <template v-slot:after>
+            <q-btn label="Subscribe" color="dark-accent" />
+          </template>
+        </q-input>
+      </div>
     </q-card-section>
   </q-page>
 </template>
@@ -116,34 +207,59 @@
     display: block;
   }
 
-  .dots:after {
-    content: "• • •";
-    color: $primary;
-  }
-
   .landing {
-    padding: 0 8vw;
-    background-image: url("assets/bg.d99f0577.gif");
+    padding: 8vw 0 10em;
+    max-width: $breakpoint-md;
+    margin: 0 auto;
+  }
+
+  .proof-of-change {
+    padding: 10em 0 2em;
+    background-image: url("assets/ChangeDAO-sample-cover-01.png");
     background-position: 50%;
     background-repeat: no-repeat;
     background-size: cover;
-    .title {
-      margin: 1em 0 0.2em;
-    }
-    .subtitle {
-      margin-bottom: 2em;
-    }
-    .social {
-      margin: 1em 0 2em;
+  }
+
+  .stay-connected {
+    padding: 8em 4em;
+    background-image: radial-gradient($primary 0%, transparent 50%);
+    background-size: 175% 100%;
+    background-position: center;
+
+    .q-field__control {
+      background-color: rgba(#000, 60%) !important;
     }
   }
 
-  .footer {
-    padding: 5em;
-    background-image: url("assets/Footer.e1348242.png");
-    background-position: 50%;
-    background-repeat: no-repeat;
-    background-size: cover;
+  .caption {
+    background: rgba(0, 0, 0, 0.47);
+  }
+
+  .stories-of-change {
+    .section {
+      border: 2px solid white;
+      max-width: $breakpoint-sm;
+
+      @media (min-width: $breakpoint-sm-min) {
+        img {
+          margin-top: map-get($space-lg, "y") * -2;
+        }
+      }
+    }
+
+    background-image: radial-gradient(
+        80% 50% at 25% 25%,
+        $accent 0%,
+        transparent 50%,
+        transparent
+      ),
+      radial-gradient(
+        80% 50% at 75% 75%,
+        $accent 0%,
+        transparent 50%,
+        transparent
+      );
   }
 
   @media (max-width: $breakpoint-sm-max) {
@@ -187,13 +303,17 @@
 </style>
 
 <script>
-import { defineComponent } from "vue";
+import ProjectCard from "../components/ProjectCard";
 
-export default defineComponent({
+export default {
   name: "PageHome",
+
+  components: {
+    ProjectCard
+  },
 
   setup() {
     return {};
   }
-});
+};
 </script>

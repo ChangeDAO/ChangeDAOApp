@@ -10,6 +10,7 @@
             style="width: 200px; max-width: 100%"
           />
         </q-toolbar-title>
+        <SearchBar v-if="$q.screen.gt.xs" />
         <UserMenu />
       </q-toolbar>
     </q-header>
@@ -25,20 +26,21 @@
       }"
     >
       <div class="row q-col-gutter-md justify-center">
-        <div class="column col-sm-4 q-mb-md">
+        <div class="col-sm-4 q-mb-md">
           <img
             class="block q-mb-md"
             alt="ChangeDAO logo"
             src="~assets/ChangeDAO-white-horizontal-logo-asset-only.svg"
             style="width: 200px; max-width: 100%"
           />
-          <q-btn
+        </div>
+
+          <!-- <q-btn
             href="https://docs.changedao.org/about-us/master"
             :label="$t('About Us')"
             style="width: 200px; max-width: 100%"
             outline
-          />
-        </div>
+          /> -->
 
         <div
           class="col-sm-8 row items-start q-gutter-md q-mb-md"
@@ -47,11 +49,6 @@
             'justify-center': !$q.screen.gt.xs
           }"
         >
-          <q-btn
-            @click="dialogEmail = true"
-            color="primary"
-            :label="$t('Get Email Updates')"
-          />
           <div class="text-center q-gutter-md q-ma-none">
             <!-- <q-btn
               @click="discord"
@@ -64,19 +61,25 @@
             <q-btn
               @click="twitter"
               icon="twitter"
-              :label="$t('Twitter')"
-              size="sm"
+              color="white"
+              text-color="dark-accent"
+              size="md"
               padding="sm"
-              outline
+            />
+            <q-btn
+              @click="dialogEmail = true"
+              color="white"
+              text-color="dark-accent"
+              icon="email"
+              size="md"
+              padding="sm"
             />
           </div>
         </div>
       </div>
 
-      <q-separator class="q-mb-lg q-mt-sm" />
-
       <div class="text-caption row items-center justify-end">
-        <div class="col-grow q-mb-sm">
+        <div class="col-grow q-mb-sm text-grey-6">
           {{ $t("Copyright") }}
         </div>
 
@@ -133,13 +136,14 @@ import { openURL } from "quasar";
 import { notifyError } from "../util/notify";
 
 import UserMenu from "../components/UserMenu";
+import SearchBar from "../components/SearchBar";
 
 export const EMAIL_FORMAT = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default defineComponent({
   name: "MainLayout",
 
-  components: { UserMenu },
+  components: { UserMenu, SearchBar },
 
   setup() {
     const dialogEmail = ref(false);

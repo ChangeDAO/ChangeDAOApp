@@ -5,6 +5,7 @@ export default {
   close: "mdi-close-circle-outline",
   delete: "mdi-delete",
   discord: "mdi-discord",
+  disconnect: "mdi-wallet-outline",
   error: "mdi-alert-circle",
   info: "mdi-information",
   keyboard_arrow_down: "mdi-chevron-down",
@@ -15,7 +16,9 @@ export default {
   slack: "mdi-slack",
   success: "mdi-check-circle",
   twitter: "mdi-twitter",
+  email: "mdi-email",
   update: "mdi-cached",
   wallet: "mdi-wallet",
-  warning: "mdi-alert"
+  warning: "mdi-alert",
+  search: "mdi-magnify"
 };
