@@ -10,7 +10,6 @@
             style="width: 200px; max-width: 100%"
           />
         </q-toolbar-title>
-        <SearchBar v-if="$q.screen.gt.xs" />
         <UserMenu />
       </q-toolbar>
     </q-header>
@@ -102,12 +101,11 @@ import { openURL } from "quasar";
 import { notifyError } from "../util/notify";
 
 import UserMenu from "../components/UserMenu";
-import SearchBar from "../components/SearchBar";
 
 export default defineComponent({
   name: "MainLayout",
 
-  components: { UserMenu, SearchBar },
+  components: { UserMenu },
 
   setup() {
     const discord = () => {

@@ -27,6 +27,17 @@
           />
         </div>
       </q-card-section>
+
+      <div class="flex flex-center q-pa-xl q-pt-xl q-gutter-y-lg q-gutter-x-xl">
+        <q-btn
+          label="Featured Projects"
+          size="xl"
+          color="accent"
+          rounded
+          outline
+        />
+        <q-btn label="All Projects" size="xl" color="accent" rounded outline />
+      </div>
     </div>
 
     <!-- Proof of change -->
