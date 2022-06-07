@@ -17,7 +17,11 @@
         </div>
       </q-card-section>
       <q-card-section class="col-12 col-md-auto">
-        <img src="~assets/ChangeDAO-sample-cover.png" style="width: 100%;" class="shadow-4" />
+        <img
+          src="~assets/ChangeDAO-sample-cover.png"
+          style="width: 100%;"
+          class="shadow-4"
+        />
       </q-card-section>
     </div>
 
@@ -31,10 +35,15 @@
     </q-card-section>
 
     <!-- Stay Connected -->
-    <q-card-section class="stay-connected row justify-center items-center text-center">
+    <q-card-section
+      class="stay-connected row justify-center items-center text-center"
+    >
       <div class="q-gutter-sm q-py-xl col-12 col-md-5">
         <p class="text-h3 text-uppercase">Stay Connected</p>
-        <p>Subscribe to our weekly newsletter and be the first to know about <br />upcoming events, news, and moments of change.</p>
+        <p>
+          Subscribe to our weekly newsletter and be the first to know about
+          <br />upcoming events, news, and moments of change.
+        </p>
         <q-input filled placeholder="Your email" hint="With placeholder" dense>
           <template v-slot:after>
             <q-btn label="Subscribe" color="black" class="text-color-white" />
@@ -51,7 +60,11 @@
       <div class="row justify-center items-center q-gutter-xl q-px-lg">
         <div class="col-12 col-md-2">
           <q-card>
-            <img src="~assets/ChangeDAO-sample-cover.png" style="width: 100%;" class="shadow-4" />
+            <img
+              src="~assets/ChangeDAO-sample-cover.png"
+              style="width: 100%;"
+              class="shadow-4"
+            />
             <div class="absolute-bottom q-pa-md caption">
               <div class="row items-center">
                 <q-avatar
@@ -60,19 +73,27 @@
                   class="q-my-sm q-mr-sm"
                   square
                 />
-                <div class="text-subtitle2 text-weight-bold">@changemakerhandle</div>
+                <div class="text-subtitle2 text-weight-bold">
+                  @changemakerhandle
+                </div>
               </div>
               <div class="text-caption text-weight-bold">Title of the drop</div>
               <div class="row justify-between">
                 <div class="text-caption text-uppercase">Movement Name</div>
-                <div class="text-caption text-grey-6 text-right">## of #### minted</div>
+                <div class="text-caption text-grey-6 text-right">
+                  ## of #### minted
+                </div>
               </div>
             </div>
           </q-card>
         </div>
         <div class="col-12 col-md-2">
           <q-card>
-            <img src="~assets/ChangeDAO-sample-cover.png" style="width: 100%;" class="shadow-4" />
+            <img
+              src="~assets/ChangeDAO-sample-cover.png"
+              style="width: 100%;"
+              class="shadow-4"
+            />
             <div class="absolute-bottom q-pa-md caption">
               <div class="row items-center">
                 <q-avatar
@@ -81,19 +102,27 @@
                   class="q-my-sm q-mr-sm"
                   square
                 />
-                <div class="text-subtitle2 text-weight-bold">@changemakerhandle</div>
+                <div class="text-subtitle2 text-weight-bold">
+                  @changemakerhandle
+                </div>
               </div>
               <div class="text-caption text-weight-bold">Title of the drop</div>
               <div class="row justify-between">
                 <div class="text-caption text-uppercase">Movement Name</div>
-                <div class="text-caption text-grey-6 text-right">## of #### minted</div>
+                <div class="text-caption text-grey-6 text-right">
+                  ## of #### minted
+                </div>
               </div>
             </div>
           </q-card>
         </div>
         <div class="col-12 col-md-2">
           <q-card>
-            <img src="~assets/ChangeDAO-sample-cover.png" style="width: 100%;" class="shadow-4" />
+            <img
+              src="~assets/ChangeDAO-sample-cover.png"
+              style="width: 100%;"
+              class="shadow-4"
+            />
             <div class="absolute-bottom q-pa-md caption">
               <div class="row items-center">
                 <q-avatar
@@ -102,12 +131,16 @@
                   class="q-my-sm q-mr-sm"
                   square
                 />
-                <div class="text-subtitle2 text-weight-bold">@changemakerhandle</div>
+                <div class="text-subtitle2 text-weight-bold">
+                  @changemakerhandle
+                </div>
               </div>
               <div class="text-caption text-weight-bold">Title of the drop</div>
               <div class="row justify-between">
                 <div class="text-caption text-uppercase">Movement Name</div>
-                <div class="text-caption text-grey-6 text-right">## of #### minted</div>
+                <div class="text-caption text-grey-6 text-right">
+                  ## of #### minted
+                </div>
               </div>
             </div>
           </q-card>
@@ -119,18 +152,34 @@
     <q-card-section>
       <!-- Podcast -->
       <div class="q-gutter-xl q-pt-xl green-radial">
-        <p class="text-h3 text-uppercase text-center q-mb-xl">Engage with our stories of change</p>
+        <p class="text-h3 text-uppercase text-center q-mb-xl">
+          Engage with our stories of change
+        </p>
         <div class="row justify-center q-px-lg">
           <div class="col col-md-8">
-            <div class="stories-of-change q-pa-lg q-col-gutter-md" :class="{ row: $q.screen.gt.sm }">
+            <div
+              class="stories-of-change q-pa-lg q-col-gutter-md"
+              :class="{ row: $q.screen.gt.sm }"
+            >
               <div class="col-9">
                 <p class="text-h3 text-uppercase">Podcast</p>
-                <p>Proof of Change lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</p>
+                <p>
+                  Proof of Change lorem ipsum dolor sit amet, consectetur
+                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua.
+                </p>
+                <p>
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut.
+                </p>
                 <q-btn label="Listen" color="black" class="text-color-white" />
               </div>
               <div class="col-3">
-                <img src="~assets/ChangeDAO-sample-cover.png" style="width: 100%;" class="shadow-4" />
+                <img
+                  src="~assets/ChangeDAO-sample-cover.png"
+                  style="width: 100%;"
+                  class="shadow-4"
+                />
               </div>
             </div>
           </div>
@@ -141,15 +190,29 @@
       <div class="q-gutter-xl q-pt-xl">
         <div class="row justify-center q-px-lg">
           <div class="col col-md-8">
-            <div class="stories-of-change q-pa-lg q-col-gutter-md" :class="{ row: $q.screen.gt.sm }">
+            <div
+              class="stories-of-change q-pa-lg q-col-gutter-md"
+              :class="{ row: $q.screen.gt.sm }"
+            >
               <div class="col-9">
                 <p class="text-h3 text-uppercase">Blog</p>
-                <p>Proof of Change lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</p>
+                <p>
+                  Proof of Change lorem ipsum dolor sit amet, consectetur
+                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua.
+                </p>
+                <p>
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut.
+                </p>
                 <q-btn label="Read" color="black" class="text-color-white" />
               </div>
               <div class="col-3">
-                <img src="~assets/ChangeDAO-sample-cover.png" style="width: 100%;" class="shadow-4" />
+                <img
+                  src="~assets/ChangeDAO-sample-cover.png"
+                  style="width: 100%;"
+                  class="shadow-4"
+                />
               </div>
             </div>
           </div>
@@ -160,15 +223,33 @@
       <div class="q-gutter-xl q-pt-xl">
         <div class="row justify-center q-px-lg">
           <div class="col col-md-8">
-            <div class="stories-of-change q-pa-lg q-col-gutter-md" :class="{ row: $q.screen.gt.sm }">
+            <div
+              class="stories-of-change q-pa-lg q-col-gutter-md"
+              :class="{ row: $q.screen.gt.sm }"
+            >
               <div class="col-9">
                 <p class="text-h3 text-uppercase">Events</p>
-                <p>Proof of Change lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</p>
-                <q-btn label="Get Involved" color="black" class="text-color-white" />
+                <p>
+                  Proof of Change lorem ipsum dolor sit amet, consectetur
+                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua.
+                </p>
+                <p>
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut.
+                </p>
+                <q-btn
+                  label="Get Involved"
+                  color="black"
+                  class="text-color-white"
+                />
               </div>
               <div class="col-3">
-                <img src="~assets/ChangeDAO-sample-cover.png" style="width: 100%;" class="shadow-4" />
+                <img
+                  src="~assets/ChangeDAO-sample-cover.png"
+                  style="width: 100%;"
+                  class="shadow-4"
+                />
               </div>
             </div>
           </div>
@@ -180,7 +261,13 @@
     <q-card-section class="row justify-center items-center text-center">
       <div class="q-gutter-sm q-py-xl col-12 col-md-5">
         <p class="text-h3 text-uppercase">Join Our Newsletter</p>
-        <q-input filled bg-color="black" placeholder="Your email" hint="With placeholder" dense>
+        <q-input
+          filled
+          bg-color="black"
+          placeholder="Your email"
+          hint="With placeholder"
+          dense
+        >
           <template v-slot:after>
             <q-btn label="Subscribe" color="black" class="text-color-white" />
           </template>
@@ -215,7 +302,7 @@
   }
 
   .caption {
-    background: rgba(0,0,0,.47);
+    background: rgba(0, 0, 0, 0.47);
   }
 
   .stories-of-change {
@@ -223,7 +310,12 @@
   }
 
   .green-radial {
-    background-image: radial-gradient(circle at center, $accent 0%, transparent 50%, transparent);
+    background-image: radial-gradient(
+      circle at center,
+      $accent 0%,
+      transparent 50%,
+      transparent
+    );
   }
 
   @media (max-width: $breakpoint-sm-max) {
