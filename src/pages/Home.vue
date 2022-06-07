@@ -49,17 +49,31 @@
           upcoming events, news, and moments of change.
         </p>
         <q-input
+          v-model="email"
+          @keydown.enter="submitEmail"
           filled
           placeholder="Your email"
-          hint="With placeholder"
           bg-color="dark-accent"
           dense
         >
           <template v-if="$q.screen.gt.xs" v-slot:after>
-            <q-btn label="Subscribe" color="dark-accent" />
+            <q-btn
+              @click="submitEmail"
+              :disabled="!isEmailValid"
+              :loading="isSubmitting"
+              label="Subscribe"
+              color="dark-accent"
+            />
           </template>
         </q-input>
-        <q-btn v-if="$q.screen.lt.sm" label="Subscribe" color="dark-accent" />
+        <q-btn
+          v-if="$q.screen.lt.sm"
+          @click="submitEmail"
+          :disabled="!isEmailValid"
+          :loading="isSubmitting"
+          label="Subscribe"
+          color="dark-accent"
+        />
       </div>
     </q-card-section>
 
@@ -185,14 +199,21 @@
       <div class="q-gutter-sm q-py-xl col-12 col-sm-6">
         <p class="text-h3 text-uppercase">Join Our Newsletter</p>
         <q-input
+          v-model="email"
+          @keydown.enter="submitEmail"
           filled
           bg-color="dark-accent"
           placeholder="Your email"
-          hint="With placeholder"
           dense
         >
           <template v-slot:after>
-            <q-btn label="Subscribe" color="dark-accent" />
+            <q-btn
+              @click="submitEmail"
+              :disabled="!isEmailValid"
+              :loading="isSubmitting"
+              label="Subscribe"
+              color="dark-accent"
+            />
           </template>
         </q-input>
       </div>
@@ -303,6 +324,10 @@
 </style>
 
 <script>
+import { computed, ref } from "vue";
+import { EMAIL_FORMAT } from "../util/formatting";
+import { notifyError, notifySuccess } from "../util/notify";
+
 import ProjectCard from "../components/ProjectCard";
 
 export default {
@@ -313,7 +338,37 @@ export default {
   },
 
   setup() {
-    return {};
+    const email = ref("");
+    const isEmailValid = computed(() => EMAIL_FORMAT.test(email.value));
+    const isSubmitting = ref(false);
+    const submitEmail = async () => {
+      try {
+        isSubmitting.value = true;
+        await fetch(
+          "https://getform.io/f/664280cb-7478-486f-8945-4cc9d819e88a",
+          {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            body: JSON.stringify({})
+          }
+        );
+        email.value = "";
+        notifySuccess("You're subscribed!");
+      } catch (error) {
+        console.error(error);
+        notifyError(error);
+      } finally {
+        isSubmitting.value = false;
+      }
+    };
+
+    return {
+      email,
+      isEmailValid,
+      isSubmitting,
+      submitEmail
+    };
   }
 };
 </script>

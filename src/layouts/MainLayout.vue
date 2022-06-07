@@ -35,7 +35,7 @@
           />
         </div>
 
-          <!-- <q-btn
+        <!-- <q-btn
             href="https://docs.changedao.org/about-us/master"
             :label="$t('About Us')"
             style="width: 200px; max-width: 100%"
@@ -93,40 +93,6 @@
         </div> -->
       </div>
     </q-footer>
-
-    <q-dialog v-model="dialogEmail">
-      <q-card>
-        <q-card-section class="text-h4">
-          {{ $t("Get Email Updates") }}
-        </q-card-section>
-
-        <q-separator />
-
-        <q-form @submit="submitEmail" @reset="email = ''">
-          <q-card-section>
-            <q-input
-              v-model="email"
-              :label="$t('Email Address')"
-              :hint="$t('emailPrivacy')"
-              type="email"
-              name="email"
-            />
-          </q-card-section>
-
-          <q-card-actions align="right">
-            <q-btn type="reset" :label="$t('Cancel')" flat v-close-popup />
-            <q-btn
-              :label="$t('Submit')"
-              type="submit"
-              color="primary"
-              :flat="!isEmailValid"
-              :disabled="!isEmailValid"
-              :loading="isSubmitting"
-            />
-          </q-card-actions>
-        </q-form>
-      </q-card>
-    </q-dialog>
   </q-layout>
 </template>
 
@@ -138,41 +104,12 @@ import { notifyError } from "../util/notify";
 import UserMenu from "../components/UserMenu";
 import SearchBar from "../components/SearchBar";
 
-export const EMAIL_FORMAT = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
 export default defineComponent({
   name: "MainLayout",
 
   components: { UserMenu, SearchBar },
 
   setup() {
-    const dialogEmail = ref(false);
-    const email = ref("");
-    const isEmailValid = computed(() => EMAIL_FORMAT.test(email.value));
-
-    const isSubmitting = ref(false);
-    const submitEmail = async () => {
-      try {
-        isSubmitting.value = true;
-        await fetch(
-          "https://getform.io/f/664280cb-7478-486f-8945-4cc9d819e88a",
-          {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
-            body: JSON.stringify({})
-          }
-        );
-        dialogEmail.value = false;
-        email.value = "";
-      } catch (error) {
-        console.error(error);
-        notifyError(error);
-      } finally {
-        isSubmitting.value = false;
-      }
-    };
-
     const discord = () => {
       openURL("https://discord.gg/88KeENZnyQ");
     };
@@ -181,11 +118,6 @@ export default defineComponent({
     };
 
     return {
-      dialogEmail,
-      email,
-      isEmailValid,
-      isSubmitting,
-      submitEmail,
       discord,
       twitter
     };

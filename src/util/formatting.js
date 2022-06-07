@@ -45,3 +45,5 @@ export const tokenValue = (value, decimals) =>
  */
 export const tokenValueTxt = (value, decimals, symbol) =>
   `${n4.format(tokenValue(value, decimals))} ${symbol}`;
+
+export const EMAIL_FORMAT = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
