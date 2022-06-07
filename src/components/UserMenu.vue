@@ -28,7 +28,7 @@
             <q-icon name="lock" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>{{ "Log Out" }}</q-item-label>
+            <q-item-label>{{ "Disconnect" }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
