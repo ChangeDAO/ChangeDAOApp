@@ -27,17 +27,6 @@
           />
         </div>
       </q-card-section>
-
-      <div class="flex flex-center q-pa-xl q-pt-xl q-gutter-y-lg q-gutter-x-xl">
-        <q-btn
-          label="Featured Projects"
-          size="xl"
-          color="accent"
-          rounded
-          outline
-        />
-        <q-btn label="All Projects" size="xl" color="accent" rounded outline />
-      </div>
     </div>
 
     <!-- Proof of change -->
@@ -89,7 +78,7 @@
     </q-card-section>
 
     <!-- Featured Projects -->
-    <q-card-section class="q-py-xl">
+    <q-card-section class="q-pb-xl">
       <p class="text-center text-h3 text-uppercase q-mb-xl">
         Featured Projects
       </p>
@@ -98,11 +87,18 @@
         <ProjectCard class="col-sm-3" />
         <ProjectCard class="col-sm-3" />
       </div>
+
+      <div class="flex flex-center q-pa-xl q-pt-xl q-gutter-y-lg q-gutter-x-xl">
+        <q-btn-group outline>
+          <q-btn label="Featured Projects" color="accent" outline />
+          <q-btn label="All Projects" color="accent" outline />
+        </q-btn-group>
+      </div>
     </q-card-section>
 
     <!-- Stories of Change -->
     <q-card-section class="stories-of-change">
-      <p class="text-h3 text-uppercase text-center q-mb-xl">
+      <p class="text-h3 text-uppercase text-center q-my-lg">
         Stories of Change
       </p>
 

@@ -4,7 +4,7 @@
       <q-toolbar class="q-pa-md">
         <q-toolbar-title>
           <img
-            class="block"
+            class="block non-selectable"
             alt="ChangeDAO logo"
             src="~assets/ChangeDAO-white-horizontal-logo-asset-only.svg"
             style="width: 200px; max-width: 100%"
