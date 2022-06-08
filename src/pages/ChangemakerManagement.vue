@@ -159,7 +159,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Twitter") }}</q-item-label>
               <q-item-label>
-                {{ cm.social.twitter }}
+                {{ cm.twitter }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -169,7 +169,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Discord") }}</q-item-label>
               <q-item-label>
-                {{ cm.social.discord }}
+                {{ cm.discord }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -179,7 +179,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Instagram") }}</q-item-label>
               <q-item-label>
-                {{ cm.social.instagram }}
+                {{ cm.instagram }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -189,7 +189,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("TikTok") }}</q-item-label>
               <q-item-label>
-                {{ cm.social.tiktok }}
+                {{ cm.tiktok }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -199,7 +199,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("YouTube") }}</q-item-label>
               <q-item-label>
-                {{ cm.social.youtube }}
+                {{ cm.youtube }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -209,7 +209,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Website URL") }}</q-item-label>
               <q-item-label>
-                {{ cm.social.website }}
+                {{ cm.website }}
               </q-item-label>
             </q-item-section>
           </q-item>

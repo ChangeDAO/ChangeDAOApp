@@ -41,6 +41,13 @@
             item-aligned
           />
 
+          <!-- Display Name -->
+          <q-input
+            v-model="data.displayName"
+            :label="$t('Display Name')"
+            item-aligned
+          />
+
           <!-- Short Bio -->
           <q-input
             v-model="data.shortBio"
@@ -160,6 +167,7 @@ const REQUEST = {
   firstName: "",
   lastName: "",
   username: "",
+  displayName: "",
   shortBio: "",
   longBio: "",
   creatingChangeBy: "",
@@ -188,7 +196,8 @@ export default {
         address.value &&
         data.value.firstName &&
         data.value.lastName &&
-        data.value.username
+        data.value.username &&
+        data.value.displayName
     );
 
     watch(
