@@ -1,5 +1,6 @@
 import { register } from "register-service-worker";
 import { i18n } from "../src/boot/i18n";
+import { Notify } from "quasar";
 const { t } = i18n.global;
 
 // The ready(), registered(), cached(), updatefound() and updated()
