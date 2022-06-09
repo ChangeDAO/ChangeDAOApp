@@ -51,9 +51,11 @@
         <q-input
           v-model="email"
           @keydown.enter="submitEmail"
-          filled
           placeholder="Your email"
           bg-color="dark-accent"
+          class="q-mx-auto"
+          style="max-width: 40em;"
+          filled
           dense
         >
           <template v-if="$q.screen.gt.xs" v-slot:after>
@@ -208,9 +210,11 @@
         <q-input
           v-model="email"
           @keydown.enter="submitEmail"
-          filled
           bg-color="dark-accent"
           placeholder="Your email"
+          class="q-mx-auto"
+          style="max-width: 40em;"
+          filled
           dense
         >
           <template v-slot:after>
