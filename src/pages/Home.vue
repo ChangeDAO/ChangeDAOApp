@@ -129,6 +129,7 @@
                 laboris nisi ut.
               </p>
               <q-btn
+                @click="podcast"
                 label="Listen"
                 color="dark-accent"
                 :class="{ 'full-width': $q.screen.lt.sm }"
@@ -161,6 +162,7 @@
                 laboris nisi ut.
               </p>
               <q-btn
+                @click="blog"
                 label="Read"
                 color="dark-accent"
                 :class="{ 'full-width': $q.screen.lt.sm }"
@@ -193,6 +195,7 @@
                 laboris nisi ut.
               </p>
               <q-btn
+                @click="events"
                 label="Get Involved"
                 color="dark-accent"
                 :class="{ 'full-width': $q.screen.lt.sm }"
@@ -337,6 +340,8 @@
 <script>
 import { computed, ref } from "vue";
 import { EMAIL_FORMAT } from "../util/formatting";
+import { openURL } from "quasar";
+import { URLS } from "../util/constants";
 import { notifyError, notifySuccess } from "../util/notify";
 
 import ProjectCard from "../components/ProjectCard";
@@ -374,11 +379,24 @@ export default {
       }
     };
 
+    const blog = () => {
+      openURL(URLS.BLOG);
+    };
+    const podcast = () => {
+      openURL(URLS.PODCAST);
+    };
+    const events = () => {
+      openURL(URLS.EVENTS);
+    };
+
     return {
       email,
       isEmailValid,
       isSubmitting,
-      submitEmail
+      submitEmail,
+      blog,
+      podcast,
+      events
     };
   }
 };

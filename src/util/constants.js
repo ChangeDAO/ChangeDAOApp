@@ -1,3 +1,16 @@
+export const URLS = {
+  ABOUT_US: "https://docs.changedao.org/about-us/master",
+  TWITTER: "https://twitter.com/ChangeDAO",
+  DISCORD: "https://discord.gg/88KeENZnyQ",
+  PODCAST: "",
+  BLOG: "https://medium.com/changedao",
+  EVENTS: ""
+};
+
+export const ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+export const DAI_ADDRESS = "0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea";
+export const USDC_ADDRESS = "0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b";
+
 export const NETWORKS = {
   "1": "Main Net",
   "2": "Deprecated Morden test network",
@@ -17,10 +30,6 @@ export const AREAS_OF_CHANGE = [
   "identityAndVulnerablePopulations",
   "supplyChain"
 ];
-
-export const ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
-export const DAI_ADDRESS = "0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea";
-export const USDC_ADDRESS = "0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b";
 
 export const ERC20_ABI = [
   {

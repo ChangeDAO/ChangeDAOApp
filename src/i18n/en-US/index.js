@@ -6,6 +6,7 @@ export default {
   "Area of Change": "Area of Change",
   "Artwork Description": "Artwork Description",
   "Base URI": "Base URI",
+  Blog: "Blog",
   Cancel: "Cancel",
   Checkout: "Checkout",
   Claim: "Claim",
@@ -30,6 +31,7 @@ export default {
   "Edit Project": "Edit Project",
   "Email Address": "Email Address",
   emailPrivacy: "We'll never share your email with anyone else.",
+  Events: "Events",
   "First Name": "First Name",
   "From ChangeDAO": "From ChangeDAO",
   "From Collaborators": "From Collaborators",
@@ -57,6 +59,7 @@ export default {
   "Part of": "Part of",
   "Please and thankyou":
     "Your gift powers the mission and vision of ChangeDAO. If you support the work we're doing, please consider adding a tip.",
+  Podcast: "Podcast",
   "Price per Token": "Price per Token",
   "Primary Split Caption":
     "100% of all primary sales will be split as follows:",
