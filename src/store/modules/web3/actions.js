@@ -25,7 +25,6 @@ export async function init({ commit, dispatch, state }) {
   });
 
   Moralis.onConnect(provider => {
-    console.log("connect:", provider);
     commit("setProvider", provider);
   });
 

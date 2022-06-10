@@ -122,6 +122,16 @@
             </q-item-section>
           </q-item>
 
+          <!-- Username -->
+          <q-item>
+            <q-item-section>
+              <q-item-label caption>{{ $t("Display Name") }}</q-item-label>
+              <q-item-label>
+                {{ cm.displayName }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+
           <!-- Short Bio -->
           <q-item>
             <q-item-section>
@@ -159,7 +169,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Twitter") }}</q-item-label>
               <q-item-label>
-                {{ cm.twitter }}
+                {{ cm.social.twitter }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -169,7 +179,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Discord") }}</q-item-label>
               <q-item-label>
-                {{ cm.discord }}
+                {{ cm.social.discord }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -179,7 +189,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Instagram") }}</q-item-label>
               <q-item-label>
-                {{ cm.instagram }}
+                {{ cm.social.instagram }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -189,7 +199,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("TikTok") }}</q-item-label>
               <q-item-label>
-                {{ cm.tiktok }}
+                {{ cm.social.tiktok }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -199,7 +209,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("YouTube") }}</q-item-label>
               <q-item-label>
-                {{ cm.youtube }}
+                {{ cm.social.youtube }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -209,7 +219,7 @@
             <q-item-section>
               <q-item-label caption>{{ $t("Website URL") }}</q-item-label>
               <q-item-label>
-                {{ cm.website }}
+                {{ cm.social.website }}
               </q-item-label>
             </q-item-section>
           </q-item>

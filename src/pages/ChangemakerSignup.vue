@@ -107,7 +107,8 @@
       <q-item class="q-my-xl">
         <q-item-section>
           <q-item-label>
-            <div class="row q-gutter-md flex-center">
+            <div class="row q-gutter-md justify-end">
+              <q-btn @click="clear" :label="$t('Reset')" color="secondary" />
               <q-btn
                 @click="submit"
                 :label="$t('Submit')"
@@ -115,7 +116,6 @@
                 :disable="!isValid"
                 color="primary"
               />
-              <q-btn @click="clear" :label="$t('Reset')" color="secondary" />
             </div>
           </q-item-label>
         </q-item-section>

@@ -257,8 +257,7 @@ export default {
           LocalStorage.remove(LOCALSTORAGE_KEY);
         } else {
           LocalStorage.set(LOCALSTORAGE_KEY, {
-            ...value,
-            address: address.value
+            ...value
           });
         }
       },

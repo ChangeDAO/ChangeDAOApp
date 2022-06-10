@@ -171,24 +171,31 @@ export default {
     const defaultModel = ref(cloneDeep(REQUEST));
 
     const reset = (clear = false) => {
+      let newData;
       if (clear) {
-        data.value = cloneDeep(defaultModel.value);
+        newData = cloneDeep(defaultModel.value);
       } else {
-        data.value =
-          LocalStorage.getItem(LOCALSTORAGE_KEY) ||
-          cloneDeep(defaultModel.value);
-
-        // Preserve contract addresses from Part 1
-        if (data.value) {
-          if (data.value._changeDaoNFTClone) {
-            defaultModel.value._changeDaoNFTClone =
-              data.value._changeDaoNFTClone;
+        newData = LocalStorage.getItem(LOCALSTORAGE_KEY);
+        if (newData) {
+          // Preserve data from Part 1
+          if (newData.projectId) {
+            defaultModel.value.projectId = newData.projectId;
           }
-          if (data.value._fundingPSClone) {
-            defaultModel.value._fundingPSClone = data.value._fundingPSClone;
+          if (newData._changeDaoNFTClone) {
+            defaultModel.value._changeDaoNFTClone = newData._changeDaoNFTClone;
           }
+          if (newData._fundingPSClone) {
+            defaultModel.value._fundingPSClone = newData._fundingPSClone;
+          }
+        } else {
+          // Restore data from Part 1
+          newData = cloneDeep(REQUEST);
+          newData.projectId = defaultModel.value.projectId;
+          newData._changeDaoNFTClone = defaultModel.value._changeDaoNFTClone;
+          newData._fundingPSClone = defaultModel.value._fundingPSClone;
         }
       }
+      data.value = newData;
     };
 
     onMounted(() => {
@@ -198,15 +205,25 @@ export default {
     // Backup unsaved form data
     watch(
       data,
-      (value, oldValue) => {
-        if (isEqual(value, defaultModel.value)) {
+      newData => {
+        if (isEqual(newData, REQUEST)) {
           // Remove if default
           LocalStorage.remove(LOCALSTORAGE_KEY);
         } else {
           LocalStorage.set(LOCALSTORAGE_KEY, {
-            ...value,
-            address: address.value
+            ...newData
           });
+
+          // Preserve data from Part 1
+          if (newData.projectId) {
+            defaultModel.value.projectId = newData.projectId;
+          }
+          if (newData._changeDaoNFTClone) {
+            defaultModel.value._changeDaoNFTClone = newData._changeDaoNFTClone;
+          }
+          if (newData._fundingPSClone) {
+            defaultModel.value._fundingPSClone = newData._fundingPSClone;
+          }
         }
       },
       { deep: true }

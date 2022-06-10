@@ -14,7 +14,7 @@
       <q-item class="q-my-xl">
         <q-item-section>
           <q-item-label>
-            <div class="row q-gutter-md flex-center">
+            <div class="row q-gutter-md justify-end">
               <!-- Reset -->
               <q-btn
                 @click="reset(true)"
@@ -144,10 +144,10 @@ export default {
           data1.value.transactionHash = tx.hash;
 
           // Call Cloud Function
-          // data1.value.projectId = await Moralis.Cloud.run(
-          //   "createProjectPartOne",
-          //   data1.value
-          // );
+          data1.value.projectId = (
+            await Moralis.Cloud.run("createProjectPartOne", data1.value)
+          ).id;
+          data2.value.projectId = data1.value.projectId;
 
           // Transaction Complete
           const response = await tx.wait();
