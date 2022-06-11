@@ -38,6 +38,7 @@ register(process.env.SERVICE_WORKER_FILE, {
         color: "grey-1",
         textColor: "grey-10",
         position: "top",
+        multiLine: false,
         timeout: 0,
         actions: [
           {
