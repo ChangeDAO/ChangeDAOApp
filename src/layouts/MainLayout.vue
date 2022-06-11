@@ -20,76 +20,79 @@
       <router-view />
     </q-page-container>
 
-    <q-footer
-      :class="{
-        'q-px-lg q-pt-lg q-pb-md': $q.screen.gt.xs,
-        'q-pa-xl': !$q.screen.gt.xs
-      }"
-    >
+    <q-footer>
       <div
-        class="justify-between"
         :class="{
-          row: $q.screen.gt.xs,
-          column: !$q.screen.gt.xs
+          'q-px-lg q-pt-lg q-pb-md': $q.screen.gt.xs,
+          'q-pa-xl': !$q.screen.gt.xs
         }"
+        :style="{ maxWidth: $q.screen.sizes.md + 'px', margin: '0 auto' }"
       >
-        <!-- Logo -->
-        <div class="col-sm-3 q-mb-md">
-          <router-link :to="{ name: 'home' }">
-            <img
-              class="block q-mb-md"
-              alt="ChangeDAO logo"
-              src="~assets/ChangeDAO-white-horizontal-logo-asset-only.svg"
-              style="width: 200px; max-width: 100%"
-            />
-          </router-link>
-        </div>
-
         <div
-          class="col-sm-7 row items-start q-mb-md"
+          class="justify-between"
           :class="{
-            'justify-start text-right': $q.screen.gt.xs,
-            'justify-start': !$q.screen.gt.xs
+            row: $q.screen.gt.xs,
+            column: !$q.screen.gt.xs
           }"
         >
-          <!-- Nav Links -->
+          <!-- Logo -->
+          <div class="col-sm-3 q-mb-md">
+            <router-link :to="{ name: 'home' }">
+              <img
+                class="block q-mb-md"
+                alt="ChangeDAO logo"
+                src="~assets/ChangeDAO-white-horizontal-logo-asset-only.svg"
+                style="width: 200px; max-width: 100%"
+              />
+            </router-link>
+          </div>
+
           <div
-            class="q-col-gutter-md"
+            class="col-sm-7 row items-start q-mb-md"
             :class="{
-              'row q-pt-xs q-px-lg justify-between full-width': $q.screen.gt.xs,
-              'column q-gutter-y-md': !$q.screen.gt.xs
+              'justify-start text-right': $q.screen.gt.xs,
+              'justify-start': !$q.screen.gt.xs
             }"
           >
-            <template v-for="(link, i) in nav">
-              <a
-                v-if="'href' in link"
-                :href="link.href"
-                :key="'a-' + i"
-                v-bind="link.attrs || {}"
-              >
-                {{ $t(link.label) }}
-              </a>
-              <router-link
-                v-else
-                :to="link.route"
-                :key="'route-' + i"
-                v-bind="link.attrs || {}"
-              >
-                {{ $t(link.label) }}
-              </router-link>
-            </template>
+            <!-- Nav Links -->
+            <div
+              class="q-col-gutter-md"
+              :class="{
+                'row q-pt-xs q-px-lg justify-between full-width':
+                  $q.screen.gt.xs,
+                'column q-gutter-y-md': !$q.screen.gt.xs
+              }"
+            >
+              <template v-for="(link, i) in nav">
+                <a
+                  v-if="'href' in link"
+                  :href="link.href"
+                  :key="'a-' + i"
+                  v-bind="link.attrs || {}"
+                >
+                  {{ $t(link.label) }}
+                </a>
+                <router-link
+                  v-else
+                  :to="link.route"
+                  :key="'route-' + i"
+                  v-bind="link.attrs || {}"
+                >
+                  {{ $t(link.label) }}
+                </router-link>
+              </template>
+            </div>
           </div>
-        </div>
 
-        <!-- Social Links -->
-        <div
-          class="col-sm-2 row q-gutter-lg q-pt-xs q-mb-lg"
-          :class="{
-            'justify-end self-start': $q.screen.gt.xs,
-            'q-pt-lg': !$q.screen.gt.xs
-          }"
-        >
-          <!-- <q-btn
+          <!-- Social Links -->
+          <div
+            class="col-sm-2 row q-gutter-lg q-pt-xs q-mb-lg"
+            :class="{
+              'justify-end self-start': $q.screen.gt.xs,
+              'q-pt-lg': !$q.screen.gt.xs
+            }"
+          >
+            <!-- <q-btn
           @click="discord"
           icon="discord"
           :label="$t('Discord')"
@@ -97,27 +100,28 @@
           padding="sm"
           outline
           /> -->
-          <q-btn
-            @click="twitter"
-            icon="twitter"
-            color="white"
-            text-color="dark-accent"
-            size="md"
-            padding="sm"
-          />
-          <q-btn
-            @click="dialogEmail = true"
-            color="white"
-            text-color="dark-accent"
-            icon="email"
-            size="md"
-            padding="sm"
-          />
+            <q-btn
+              @click="twitter"
+              icon="twitter"
+              color="white"
+              text-color="dark-accent"
+              size="md"
+              padding="sm"
+            />
+            <q-btn
+              @click="dialogEmail = true"
+              color="white"
+              text-color="dark-accent"
+              icon="email"
+              size="md"
+              padding="sm"
+            />
+          </div>
         </div>
-      </div>
 
-      <div class="text-caption text-grey-6 q-mb-sm">
-        {{ $t("Copyright") }}
+        <div class="text-caption text-grey-6 q-mb-sm">
+          {{ $t("Copyright") }}
+        </div>
       </div>
     </q-footer>
   </q-layout>
