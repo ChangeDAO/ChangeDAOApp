@@ -10,6 +10,12 @@
           {{ project.name }}
         </template>
         <q-skeleton v-else type="text" width="15em" />
+        <p class="text-caption">
+          <q-skeleton v-if="isLoading" type="text" width="10em" />
+          <template v-else>
+            {{ $tc("n Mints Remaining", mintable - minted) }}
+          </template>
+        </p>
       </div>
 
       <q-list>
@@ -256,6 +262,7 @@ export default {
         const response = await tx.wait(TX_WAIT);
         hasZeroMinted.value = true;
         notifySuccess("Success");
+        getMinted();
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -290,6 +297,7 @@ export default {
 
         const response = await tx.wait(TX_WAIT);
         notifySuccess("Success");
+        getMinted();
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -322,6 +330,14 @@ export default {
     const isRainbowPeriod = ref(false);
     const isLoading = ref(true);
     const isPaused = ref(false);
+    const minted = ref(null);
+    const mintable = ref(null);
+
+    const getMinted = async () => {
+      return (minted.value = (
+        await sharedFundingClone.callStatic.getMintedTokens()
+      ).toNumber());
+    };
 
     onMounted(async () => {
       const provider = ethers.getDefaultProvider(process.env.chain);
@@ -351,8 +367,9 @@ export default {
       );
 
       baseURI.value = project.value.baseURI;
-
       mintedOn.value = project.value.deployTimeInMS;
+      mintable.value = project.value.numMints;
+      await getMinted();
 
       rainbowDuration.value = Math.round(
         project.value.rainbowDurationInMS / 36e5
@@ -382,6 +399,8 @@ export default {
       hasZeroMinted,
       zeroMintAddress,
       zeroMint,
+      minted,
+      mintable,
       isMintingZero,
       courtesyMintAddress,
       courtesyMintAmount,
