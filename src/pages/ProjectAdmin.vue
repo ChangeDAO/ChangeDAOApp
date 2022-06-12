@@ -149,6 +149,7 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
+import { TX_WAIT } from "../util/constants";
 import { notifyError, notifySuccess } from "../util/notify";
 import LogIn from "../components/LogIn";
 import AddrInput from "../components/AddrInput";
@@ -192,7 +193,7 @@ export default {
           functionName: "setBaseURI",
           params: { _newBaseURI: baseURI.value }
         });
-        const response = await tx.wait();
+        const response = await tx.wait(TX_WAIT);
         notifySuccess("Success");
       } catch (error) {
         console.error(error);
@@ -223,7 +224,7 @@ export default {
             )
           }
         });
-        const response = await tx.wait();
+        const response = await tx.wait(TX_WAIT);
         notifySuccess("Success");
       } catch (error) {
         console.error(error);
@@ -252,7 +253,7 @@ export default {
           transactionHash: tx.hash
         });
 
-        const response = await tx.wait();
+        const response = await tx.wait(TX_WAIT);
         hasZeroMinted.value = true;
         notifySuccess("Success");
       } catch (error) {
@@ -287,7 +288,7 @@ export default {
           transactionHash: tx.hash
         });
 
-        const response = await tx.wait();
+        const response = await tx.wait(TX_WAIT);
         notifySuccess("Success");
       } catch (error) {
         console.error(error);
@@ -306,7 +307,7 @@ export default {
           abi: SharedFunding.abi,
           functionName: isPaused.value ? "unPause" : "pause"
         });
-        const response = await tx.wait();
+        const response = await tx.wait(TX_WAIT);
         isPaused.value = !isPaused.value;
         notifySuccess("Success");
       } catch (error) {

@@ -241,6 +241,8 @@ import AddrAvatar from "../components/AddrAvatar";
 import RelativeTime from "../components/RelativeTime";
 import Tooltip from "../components/Tooltip";
 
+import { TX_WAIT } from "../util/constants";
+
 export default defineComponent({
   name: "PageChangemakerManagement",
 
@@ -286,7 +288,7 @@ export default defineComponent({
           changemakerId: cm.id,
           transactionHash: tx.hash
         });
-        const response = await tx.wait();
+        const response = await tx.wait(TX_WAIT);
         cm.isApproved = true;
         cm.isReviewed = true;
         notifySuccess("Success");
@@ -316,7 +318,7 @@ export default defineComponent({
           changemakerId: cm.id,
           transactionHash: tx.hash
         });
-        const response = await tx.wait();
+        const response = await tx.wait(TX_WAIT);
         cm.isApproved = false;
         notifySuccess("Success");
       } catch (error) {

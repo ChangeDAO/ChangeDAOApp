@@ -136,6 +136,7 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
+import { TX_WAIT } from "../util/constants";
 import { createLeafRainbow, createMerkleProofRainbow } from "../util/merkle";
 import { notifyError, notifySuccess } from "../util/notify";
 import LogIn from "../components/LogIn";
@@ -259,7 +260,9 @@ export default {
           _value: Moralis.Units.ETH(total.value.toString())
         }
       });
-      const response = await tx.wait().then(() => (isDAIApproved.value = true));
+      const response = await tx
+        .wait(TX_WAIT)
+        .then(() => (isDAIApproved.value = true));
     };
 
     const isUSDCApproved = ref(false);
@@ -353,7 +356,7 @@ export default {
             transactionHash: tx.hash
           });
         }
-        const response = await tx.wait();
+        const response = await tx.wait(TX_WAIT);
         getMinted();
 
         notifySuccess("Success");

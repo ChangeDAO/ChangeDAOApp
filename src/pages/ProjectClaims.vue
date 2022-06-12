@@ -59,6 +59,7 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
 
+import { TX_WAIT, DAI_ADDRESS, USDC_ADDRESS } from "../util/constants";
 import { notifyError, notifySuccess } from "../util/notify";
 import LogIn from "../components/LogIn";
 
@@ -68,8 +69,6 @@ import Moralis from "moralis";
 import ChangeDaoNFT from "../../contracts/deployments/rinkeby/ChangeDaoNFT.json";
 import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
 import PaymentSplitter from "../../contracts/deployments/rinkeby/PaymentSplitter.json";
-
-import { DAI_ADDRESS, USDC_ADDRESS } from "../util/constants";
 
 export default {
   name: "ProjectClaims",
@@ -109,7 +108,7 @@ export default {
             _account: userAddress.value
           }
         });
-        const response = await tx.wait();
+        const response = await tx.wait(TX_WAIT);
         getAvailable();
         notifySuccess("Success");
       } catch (error) {

@@ -56,6 +56,8 @@ import Moralis from "moralis";
 
 import ProjectPart1 from "./ProjectPart1";
 import ProjectPart2 from "./ProjectPart2";
+
+import { TX_WAIT } from "../util/constants";
 import { notifyError, notifySuccess } from "../util/notify";
 import { createMerkleRootRainbow } from "../util/merkle";
 import LogIn from "../components/LogIn";
@@ -151,7 +153,7 @@ export default {
           data2.value.projectId = data1.value.projectId;
 
           // Transaction Complete
-          const response = await tx.wait();
+          const response = await tx.wait(TX_WAIT);
 
           // Get NFT Clone Address
           const changeDaoNFTFactory = new ethers.Contract(
@@ -223,7 +225,7 @@ export default {
           await Moralis.Cloud.run("createProjectPartTwo", data2.value);
 
           // Transaction Complete
-          const response = await tx.wait();
+          const response = await tx.wait(TX_WAIT);
 
           // Get Shared Funding Clone Address
           const sharedFundingFactory = new ethers.Contract(
