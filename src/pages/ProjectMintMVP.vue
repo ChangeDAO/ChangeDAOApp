@@ -122,7 +122,9 @@
             color="primary"
           />
           <div class="col-grow text-caption q-mt-sm q-mr-sm">
-            {{ $t("This will open wallet") }}
+            {{
+              $t(isPurchasing ? "This will take time" : "This will open wallet")
+            }}
           </div>
         </div>
       </div>

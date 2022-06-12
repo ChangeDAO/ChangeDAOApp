@@ -87,6 +87,7 @@ export default {
   "Supported Causes": "Supported Causes",
   Terms: "Terms",
   "This will open wallet": "This will open your wallet for authorization.",
+  "This will take time": "This may take a few minutes.",
   TikTok: "TikTok",
   Tip: "Tip",
   Total: "Total",
