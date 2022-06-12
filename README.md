@@ -5,6 +5,8 @@ Desktop/Mobile Web App
 ## Install the dependencies
 ```bash
 yarn
+git submodule init
+git submodule udpate
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
