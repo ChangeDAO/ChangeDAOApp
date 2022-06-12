@@ -57,6 +57,7 @@ import Moralis from "moralis";
 import ProjectPart1 from "./ProjectPart1";
 import ProjectPart2 from "./ProjectPart2";
 import { notifyError, notifySuccess } from "../util/notify";
+import { createMerkleRootRainbow } from "../util/merkle";
 import LogIn from "../components/LogIn";
 
 const LOCALSTORAGE_KEY1 = "projectPart1";
@@ -180,37 +181,46 @@ export default {
         } else {
           // Part 2
 
+          // Create Merkle Root
+          data2.value._rainbowMerkleRoot = data2.value.hasRainbow
+            ? createMerkleRootRainbow(data2.value.rainbowAddresses)
+            : ethers.utils.formatBytes32String("0");
+
           // Create Transaction
           const tx = await Moralis.executeFunction({
             contractAddress: Controller.address,
             abi: Controller.abi,
             functionName: "callSharedFundingFactory",
             params: {
+              projectId: data1.value.projectId,
+              transactionHash: data2.value.transactionHash,
+              rainbowAddresses: data2.value.rainbowAddresses,
               _changeDaoNFTClone: data2.value._changeDaoNFTClone,
               _fundingPSClone: data2.value._fundingPSClone,
-              _mintPrice: ethers.utils.parseEther(data2.value._mintPrice),
-              _totalMints: ethers.BigNumber.from(data2.value._totalMints),
+              _mintPrice: ethers.utils.parseEther(
+                data2.value._mintPrice.toString()
+              ),
+              _totalMints: ethers.BigNumber.from(
+                data2.value._totalMints.toString()
+              ),
               _maxMintAmountPublic: ethers.BigNumber.from(
-                data2.value._maxMintAmountPublic
+                data2.value._maxMintAmountPublic.toString()
               ),
               _maxMintAmountRainbow: ethers.BigNumber.from(
-                data2.value.hasRainbow ? data2.value._maxMintAmountRainbow : 10
+                data2.value.hasRainbow
+                  ? data2.value._maxMintAmountRainbow.toString()
+                  : 1
               ),
               _rainbowDuration: ethers.BigNumber.from(
                 data2.value._rainbowDuration * 3600
               ),
-              _rainbowMerkleRoot: data2.value.hasRainbow
-                ? data2.value._rainbowMerkleRoot
-                : ethers.utils.formatBytes32String("0")
+              _rainbowMerkleRoot: data2.value._rainbowMerkleRoot
             }
           });
           data2.value.transactionHash = tx.hash;
 
           // Call Cloud Function
-          // data2.value.projectId = await Moralis.Cloud.run(
-          //   "createProjectPartTwo",
-          //   data2.value
-          // );
+          await Moralis.Cloud.run("createProjectPartTwo", data2.value);
 
           // Transaction Complete
           const response = await tx.wait();
@@ -249,7 +259,7 @@ export default {
       if (data2.value && data2.value.sharedFundingClone) {
         router.replace({
           name: "project-admin",
-          params: { projectID: data2.value.sharedFundingClone }
+          params: { projectID: data1.value.projectId }
         });
       }
     };

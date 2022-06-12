@@ -5,21 +5,21 @@
       <div class="text-h4 q-ma-md">
         {{ $t("Project Administration") }}
       </div>
+      <div class="text-h5 q-ma-md">
+        <template v-if="project">
+          {{ project.name }}
+        </template>
+        <q-skeleton v-else type="text" width="15em" />
+      </div>
 
       <q-list>
         <!-- Base URI -->
-        <q-input
-          v-model="baseURI"
-          label="Base URI"
-          :loading="isLoading"
-          item-aligned
-        >
+        <q-input v-model="baseURI" label="Base URI" item-aligned>
           <template v-slot:after>
             <q-btn
               @click="setBaseURI"
               label="Set"
               color="primary"
-              :disable="isLoading"
               :loading="isSettingBaseURI"
             />
           </template>
@@ -32,7 +32,6 @@
           :label="'Rainbow Period Duration (hours)'"
           :rules="[a => a >= 0]"
           :min="0"
-          :loading="isLoading"
           item-aligned
         >
           <template v-slot:append v-if="remaingRainbow">
@@ -121,14 +120,20 @@
         </q-item>
 
         <!-- Pause/Unpause -->
-        <q-item-label header>Pause/Unpause Minting</q-item-label>
         <q-item>
-          <q-btn
-            @click="togglePause"
-            :label="isPaused ? 'Unpause' : 'Pause'"
-            :loading="isLoading || isPausing"
-            color="primary"
-          />
+          <q-item-section>
+            <q-item-label header class="q-pl-none">
+              Pause/Unpause Minting
+            </q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-btn
+              @click="togglePause"
+              :label="isPaused ? 'Unpause' : 'Pause'"
+              :loading="isLoading || isPausing"
+              color="primary"
+            />
+          </q-item-section>
         </q-item>
       </q-list>
     </div>
@@ -143,7 +148,6 @@ import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { LocalStorage } from "quasar";
 
 import { notifyError, notifySuccess } from "../util/notify";
 import LogIn from "../components/LogIn";
@@ -169,23 +173,11 @@ export default {
     const store = useStore();
 
     const ethers = Moralis.web3Library;
-    window.ethers = ethers;
-    const provider = ethers.getDefaultProvider(process.env.chain);
 
-    // Shared Funding Clone
-    const sharedFundingClone = new ethers.Contract(
-      props.projectID,
-      SharedFunding.abi,
-      provider
-    );
+    const project = ref(null);
 
-    // ChangeDAO NFT
-    const data2 = LocalStorage.getItem("projectPart2");
-    const changeDaoNFTClone = new ethers.Contract(
-      data2._changeDaoNFTClone,
-      ChangeDaoNFT.abi,
-      provider
-    );
+    let sharedFundingClone;
+    let changeDaoNFTClone;
 
     const userAddress = computed(() => store.state.web3.userAddress);
 
@@ -215,11 +207,7 @@ export default {
     const mintedOn = ref(null);
     const remaingRainbow = computed(() => {
       return rainbowDuration.value
-        ? new Date(
-            (parseInt(mintedOn.value.toString(), 10) +
-              parseInt(rainbowDuration.value, 10) * 3600) *
-              1000
-          )
+        ? new Date(mintedOn.value + rainbowDuration.value * 36e5)
         : null;
     });
     const setRainbowDuration = async () => {
@@ -256,6 +244,14 @@ export default {
           functionName: "zeroMint",
           params: { _recipient: zeroMintAddress.value }
         });
+
+        // Call Cloud Function
+        await Moralis.Cloud.run("zeroMint", {
+          projectId: props.projectID,
+          recipientAddress: zeroMintAddress.value,
+          transactionHash: tx.hash
+        });
+
         const response = await tx.wait();
         hasZeroMinted.value = true;
         notifySuccess("Success");
@@ -282,6 +278,15 @@ export default {
             _mintAmount: courtesyMintAmount.value
           }
         });
+
+        // Call Cloud Function
+        await Moralis.Cloud.run("courtesyMint", {
+          projectId: props.projectID,
+          recipientAddress: courtesyMintAddress.value,
+          numMints: courtesyMintAmount.value,
+          transactionHash: tx.hash
+        });
+
         const response = await tx.wait();
         notifySuccess("Success");
       } catch (error) {
@@ -318,25 +323,52 @@ export default {
     const isPaused = ref(false);
 
     onMounted(async () => {
-      baseURI.value = await changeDaoNFTClone.callStatic.baseURI();
+      const provider = ethers.getDefaultProvider(process.env.chain);
+      try {
+        const response = await Moralis.Cloud.run("getProject", {
+          projectId: props.projectID
+        });
 
-      mintedOn.value = await sharedFundingClone.callStatic.deployTime();
+        project.value = response.project;
+      } catch (error) {
+        console.error(error);
+        notifyError(error.error || error);
+      }
 
-      rainbowDuration.value = Math.round(
-        (await sharedFundingClone.callStatic.rainbowDuration()) / 3600
+      // Shared Funding Clone
+      sharedFundingClone = new ethers.Contract(
+        project.value.sharedFundingCloneAddress,
+        SharedFunding.abi,
+        provider
       );
 
-      hasZeroMinted.value = await sharedFundingClone.callStatic.hasZeroMinted();
+      // ChangeDAO NFT
+      changeDaoNFTClone = new ethers.Contract(
+        project.value.ethAddress,
+        ChangeDaoNFT.abi,
+        provider
+      );
 
-      const rainbowExpiration = await sharedFundingClone.callStatic.getRainbowExpiration();
-      isRainbowPeriod.value =
-        parseInt(rainbowExpiration.toString(), 10) > new Date() / 1000;
+      baseURI.value = project.value.baseURI;
+
+      mintedOn.value = project.value.deployTimeInMS;
+
+      rainbowDuration.value = Math.round(
+        project.value.rainbowDurationInMS / 36e5
+      );
+
+      hasZeroMinted.value = project.value.isZeroMintMinted;
+
+      const rainbowExpiration =
+        mintedOn.value + project.value.rainbowDurationInMS;
+      isRainbowPeriod.value = rainbowExpiration > new Date().getTime();
 
       isPaused.value = await sharedFundingClone.callStatic.paused();
       isLoading.value = false;
     });
 
     return {
+      project,
       isLoading,
       userAddress,
       baseURI,

@@ -6,6 +6,12 @@
         <div class="text-h4 q-my-md">
           {{ isRainbowPeriod ? "Rainbow Mint" : $t("Mint NFT") }}
         </div>
+        <div class="text-h5 q-my-md">
+          <template v-if="project">
+            {{ project.name }}
+          </template>
+          <q-skeleton v-else type="text" width="15em" />
+        </div>
 
         <!-- Cost per Mint -->
         <div class="row">
@@ -130,6 +136,7 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
+import { createLeafRainbow, createMerkleProofRainbow } from "../util/merkle";
 import { notifyError, notifySuccess } from "../util/notify";
 import LogIn from "../components/LogIn";
 import SmoothReflow from "../components/SmoothReflow";
@@ -227,14 +234,8 @@ export default {
     const balanceDAI = computed(() => balances.value.DAI);
 
     const ethers = Moralis.web3Library;
-    const provider = ethers.getDefaultProvider(process.env.chain);
-
-    // Shared Funding Clone
-    const sharedFundingClone = new ethers.Contract(
-      props.projectID,
-      SharedFunding.abi,
-      provider
-    );
+    const project = ref(null);
+    let sharedFundingClone;
 
     const getDAIBalance = async () => {
       return Moralis.executeFunction({
@@ -298,18 +299,60 @@ export default {
             .toString();
         }
 
-        // Public Mint
-        const tx = await Moralis.executeFunction({
-          contractAddress: sharedFundingClone.address,
-          abi: SharedFunding.abi,
-          functionName: "fundPublic",
-          params: {
-            _token: currency.value,
-            _tipInUsd: ethers.utils.parseEther(tipTotal.value.toString()),
-            _mintAmount: ethers.BigNumber.from(quantity.value)
-          },
-          msgValue
-        });
+        const paymentType = currencies.value
+          .find(c => c.value === currency.value)
+          .label.toLowerCase();
+
+        let tx;
+        if (isRainbowPeriod.value) {
+          // Rainbow Mint
+          tx = await Moralis.executeFunction({
+            contractAddress: sharedFundingClone.address,
+            abi: SharedFunding.abi,
+            functionName: "fundRainbow",
+            params: {
+              _token: currency.value,
+              _tipInUsd: ethers.utils.parseEther(tipTotal.value.toString()),
+              _mintAmount: ethers.BigNumber.from(quantity.value),
+              _proof: createMerkleProofRainbow(
+                project.value.rainbowAddresses,
+                createLeafRainbow(userAddress.value)
+              )
+            },
+            msgValue
+          });
+
+          // Call Cloud Function
+          await Moralis.Cloud.run("rainbowMint", {
+            projectId: props.projectID,
+            numMints: quantity.value,
+            paymentType,
+            tipAmountInUsd: tipTotal.value,
+            transactionHash: tx.hash
+          });
+        } else {
+          // Public Mint
+          tx = await Moralis.executeFunction({
+            contractAddress: sharedFundingClone.address,
+            abi: SharedFunding.abi,
+            functionName: "fundPublic",
+            params: {
+              _token: currency.value,
+              _tipInUsd: ethers.utils.parseEther(tipTotal.value.toString()),
+              _mintAmount: ethers.BigNumber.from(quantity.value)
+            },
+            msgValue
+          });
+
+          // Call Cloud Function
+          await Moralis.Cloud.run("publicMint", {
+            projectId: props.projectID,
+            numMints: quantity.value,
+            paymentType,
+            tipAmountInUsd: tipTotal.value,
+            transactionHash: tx.hash
+          });
+        }
         const response = await tx.wait();
         getMinted();
 
@@ -343,7 +386,10 @@ export default {
     });
 
     const isValid = computed(
-      () => quantity.value > 0 && quantity.value <= maxQuantity.value
+      () =>
+        quantity.value > 0 &&
+        quantity.value <= maxQuantity.value &&
+        currency.value
     );
 
     const getMinted = async () => {
@@ -354,30 +400,47 @@ export default {
 
     // Initialize
     onMounted(async () => {
-      cost.value = parseInt(
-        ethers.utils.formatEther(
-          await sharedFundingClone.callStatic.mintPrice()
-        )
-      );
-      await getMinted();
-      mintable.value = (
-        await sharedFundingClone.callStatic.totalMints()
-      ).toNumber();
+      const provider = ethers.getDefaultProvider(process.env.chain);
+      try {
+        // project.value = await store.dispatch("getProject", props.projectID);
+        const response = await Moralis.Cloud.run("getProject", {
+          projectId: props.projectID
+        });
 
-      const rainbowExpiration = await sharedFundingClone.callStatic.getRainbowExpiration();
-      isRainbowPeriod.value =
-        parseInt(rainbowExpiration.toString(), 10) > new Date() / 1000;
+        project.value = response.project;
+      } catch (error) {
+        console.error(error);
+        notifyError(error.error || error);
+      }
+
+      // Shared Funding Clone
+      sharedFundingClone = new ethers.Contract(
+        project.value.sharedFundingCloneAddress,
+        SharedFunding.abi,
+        provider
+      );
+
+      cost.value = project.value.mintPriceInUsd;
+      minted.value = project.value.numMintsBought;
+      mintable.value = project.value.numMints;
+      getMinted();
+
+      const rainbowExpiration =
+        project.value.deployTimeInMS + project.value.rainbowDurationInMS;
+      isRainbowPeriod.value = rainbowExpiration > new Date().getTime();
+
       if (isRainbowPeriod.value) {
         // Rainbow Mint
-        maxMintAmountRainbow.value = await sharedFundingClone.callStatic.maxMintAmountRainbow();
+        maxMintAmountRainbow.value = project.value.numMintsRainbowCanBuy;
       } else {
         // Public Mint
-        maxMintAmountPublic.value = await sharedFundingClone.callStatic.maxMintAmountPublic();
+        maxMintAmountPublic.value = project.value.numMintsPublicCanBuy;
       }
       isLoading.value = false;
     });
 
     return {
+      project,
       isLoading,
       userAddress,
       cost,

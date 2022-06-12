@@ -2,7 +2,7 @@
   <q-list v-if="data">
     <!-- Mint Price -->
     <q-input
-      v-model="data._mintPrice"
+      v-model.number="data._mintPrice"
       :label="'Mint Price (USD)'"
       :rules="[Boolean]"
       :min="0"
@@ -12,7 +12,7 @@
 
     <!-- Total Mints -->
     <q-input
-      v-model="data._totalMints"
+      v-model.number="data._totalMints"
       :label="'Total Mints'"
       :rules="[Boolean]"
       type="number"
@@ -24,7 +24,7 @@
     <q-item>
       <q-item-section>
         <q-input
-          v-model="data._maxMintAmountPublic"
+          v-model.number="data._maxMintAmountPublic"
           :label="'Max Mints per Transaction'"
           :rules="[a => a > 0 && a <= 20]"
           type="number"
@@ -49,7 +49,7 @@
       <div v-if="data.hasRainbow">
         <!-- Max Mint Amount Rainbow -->
         <q-input
-          v-model="data._maxMintAmountRainbow"
+          v-model.number="data._maxMintAmountRainbow"
           :label="'Max Mints per Transaction for Rainbow List'"
           :rules="[a => a > 0 && a <= 20]"
           type="number"
@@ -61,22 +61,22 @@
         <!-- Rainbow Duration -->
         <q-input
           type="number"
-          v-model="data._rainbowDuration"
+          v-model.number="data._rainbowDuration"
           :label="'Rainbow Period Duration (hours)'"
           :rules="[a => a >= 0]"
           :min="0"
           item-aligned
         />
 
-        <!-- Rainbow Merkle Root -->
+        <!-- Rainbow Addresses -->
         <q-item>
           <q-item-section>
             <q-input
               type="textarea"
               v-model="rainbowAddresses"
               :label="'Rainbow List Addresses'"
-              :rules="[Boolean]"
-              hint="One address per line"
+              :rules="[Boolean, () => rainbowAddrValid]"
+              hint="Separate addresses by commas or spaces"
             />
           </q-item-section>
         </q-item>
@@ -85,7 +85,7 @@
         <!-- Courtesy Mint Duration -->
         <q-input
           type="number"
-          v-model="data._rainbowDuration"
+          v-model.number="data._rainbowDuration"
           :label="'Courtesy Mint Duration (hours)'"
           :rules="[a => a >= 0]"
           :min="0"
@@ -106,8 +106,6 @@ import Moralis from "moralis";
 
 import SmoothReflow from "../components/SmoothReflow";
 
-import { createMerkleRootRainbow } from "../util/merkle";
-
 const REQUEST = {
   _changeDaoNFTClone: "", // From Part 1 event
   _fundingPSClone: "", // From Part 1 event
@@ -118,6 +116,7 @@ const REQUEST = {
   _rainbowDuration: null, // Seconds
   _rainbowMerkleRoot: "",
   projectId: "",
+  rainbowAddresses: [],
   transactionHash: "",
   hasRainbow: false
 };
@@ -146,11 +145,15 @@ export default {
     });
 
     const rainbowAddresses = ref("");
+    const rainbowAddrValid = ref(false);
 
     watch(rainbowAddresses, addresses => {
-      if (addresses) {
-        addresses = addresses.trim().split(/\s+/);
-        data.value._rainbowMerkleRoot = createMerkleRootRainbow(addresses);
+      if (data.value && addresses) {
+        addresses = addresses.trim().split(/[\s,]+/);
+        data.value.rainbowAddresses = addresses;
+        rainbowAddrValid.value = addresses.every(addr =>
+          Moralis.web3Library.utils.isAddress(addr)
+        );
       }
     });
 
@@ -164,7 +167,9 @@ export default {
         data.value._maxMintAmountPublic &&
         data.value._rainbowDuration >= 0 &&
         (!data.value.hasRainbow ||
-          (data.value._maxMintAmountRainbow && data.value._rainbowMerkleRoot))
+          (data.value._maxMintAmountRainbow &&
+            data.value.rainbowAddresses.length &&
+            rainbowAddrValid.value))
     );
 
     // Reset
@@ -195,6 +200,7 @@ export default {
           newData._fundingPSClone = defaultModel.value._fundingPSClone;
         }
       }
+      rainbowAddresses.value = newData.rainbowAddresses.join("\n") || "";
       data.value = newData;
     };
 
@@ -236,6 +242,7 @@ export default {
       address,
       data,
       rainbowAddresses,
+      rainbowAddrValid,
       reset,
       isValid
     };
