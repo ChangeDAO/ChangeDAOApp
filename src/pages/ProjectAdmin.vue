@@ -34,8 +34,8 @@
           :min="0"
           item-aligned
         >
-          <template v-slot:append v-if="remaingRainbow">
-            <RelativeTime :value="remaingRainbow" />
+          <template v-slot:append v-if="remainingRainbow">
+            <RelativeTime :value="remainingRainbow" />
           </template>
           <template v-slot:after>
             <q-btn
@@ -206,7 +206,7 @@ export default {
     const rainbowDuration = ref(null);
     const isSettingRainbowDuration = ref(false);
     const mintedOn = ref(null);
-    const remaingRainbow = computed(() => {
+    const remainingRainbow = computed(() => {
       return rainbowDuration.value
         ? new Date(mintedOn.value + rainbowDuration.value * 36e5)
         : null;
@@ -376,7 +376,7 @@ export default {
       setBaseURI,
       isSettingBaseURI,
       rainbowDuration,
-      remaingRainbow,
+      remainingRainbow,
       isSettingRainbowDuration,
       setRainbowDuration,
       hasZeroMinted,

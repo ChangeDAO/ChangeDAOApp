@@ -5,6 +5,9 @@
         <!-- Title -->
         <div class="text-h4 q-my-md">
           {{ isRainbowPeriod ? "Rainbow Mint" : $t("Mint NFT") }}
+          <div v-if="remainingRainbow" class="text-caption">
+            <RelativeTime before="ends" :value="remainingRainbow" text-only />
+          </div>
         </div>
         <div class="text-h5 q-my-md">
           <template v-if="project">
@@ -140,6 +143,7 @@ import { TX_WAIT } from "../util/constants";
 import { createLeafRainbow, createMerkleProofRainbow } from "../util/merkle";
 import { notifyError, notifySuccess } from "../util/notify";
 import LogIn from "../components/LogIn";
+import RelativeTime from "../components/RelativeTime";
 import SmoothReflow from "../components/SmoothReflow";
 
 import { pickBy } from "lodash";
@@ -159,7 +163,7 @@ const ETH_BUFFER = 0.01;
 export default {
   name: "PageProjectMint",
 
-  components: { LogIn, SmoothReflow },
+  components: { LogIn, RelativeTime, SmoothReflow },
 
   props: ["projectID"],
 
@@ -377,7 +381,6 @@ export default {
     const isLoading = ref(true);
     const minted = ref(null);
     const mintable = ref(null);
-    const isRainbowPeriod = ref(false);
     const maxMintAmountPublic = ref(0);
     const maxMintAmountRainbow = ref(0);
     const maxQuantity = computed(() => {
@@ -386,6 +389,20 @@ export default {
         ? maxMintAmountRainbow.value
         : maxMintAmountPublic.value;
       return Math.min(remaining, allowed);
+    });
+
+    const rainbowExpiration = computed(() => {
+      return project.value
+        ? project.value.deployTimeInMS + project.value.rainbowDurationInMS
+        : null;
+    });
+    const remainingRainbow = computed(() => {
+      return rainbowExpiration.value ? new Date(rainbowExpiration.value) : null;
+    });
+    const isRainbowPeriod = computed(() => {
+      return rainbowExpiration.value
+        ? rainbowExpiration.value > new Date().getTime()
+        : null;
     });
 
     const isValid = computed(
@@ -428,10 +445,6 @@ export default {
       mintable.value = project.value.numMints;
       getMinted();
 
-      const rainbowExpiration =
-        project.value.deployTimeInMS + project.value.rainbowDurationInMS;
-      isRainbowPeriod.value = rainbowExpiration > new Date().getTime();
-
       if (isRainbowPeriod.value) {
         // Rainbow Mint
         maxMintAmountRainbow.value = project.value.numMintsRainbowCanBuy;
@@ -450,6 +463,7 @@ export default {
       minted,
       mintable,
       isRainbowPeriod,
+      remainingRainbow,
       maxQuantity,
       quantity,
       subtotal,
