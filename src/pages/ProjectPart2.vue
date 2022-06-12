@@ -150,10 +150,11 @@ export default {
     watch(rainbowAddresses, addresses => {
       if (data.value && addresses) {
         addresses = addresses.trim().split(/[\s,]+/);
-        data.value.rainbowAddresses = addresses;
         rainbowAddrValid.value = addresses.every(addr =>
           Moralis.web3Library.utils.isAddress(addr)
         );
+        addresses = addresses.map(a => a.toLowerCase());
+        data.value.rainbowAddresses = addresses;
       }
     });
 

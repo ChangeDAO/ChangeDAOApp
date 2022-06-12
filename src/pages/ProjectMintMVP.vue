@@ -323,7 +323,7 @@ export default {
               _mintAmount: ethers.BigNumber.from(quantity.value),
               _proof: createMerkleProofRainbow(
                 project.value.rainbowAddresses,
-                createLeafRainbow(userAddress.value)
+                createLeafRainbow(userAddress.value.toLowerCase())
               )
             },
             msgValue
