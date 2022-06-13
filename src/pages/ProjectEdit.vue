@@ -18,7 +18,7 @@
               <!-- Reset -->
               <q-btn
                 @click="reset(true)"
-                :label="$t('Reset')"  
+                :label="$t('Reset')"
                 color="secondary"
               />
 
@@ -42,12 +42,10 @@
 </template>
 
 <script>
-import { computed, onMounted, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { LocalStorage } from "quasar";
-import { cloneDeep, isEqual, pickBy } from "lodash";
+import { pickBy } from "lodash";
 import Controller from "../../contracts/deployments/rinkeby/Controller.json";
 import ChangeDaoNFTFactory from "../../contracts/deployments/rinkeby/ChangeDaoNFTFactory.json";
 import PaymentSplitterFactory from "../../contracts/deployments/rinkeby/PaymentSplitterFactory.json";
@@ -62,16 +60,12 @@ import { notifyError, notifySuccess } from "../util/notify";
 import { createMerkleRootRainbow } from "../util/merkle";
 import LogIn from "../components/LogIn";
 
-const LOCALSTORAGE_KEY1 = "projectPart1";
-const LOCALSTORAGE_KEY2 = "projectPart2";
-
 export default {
   name: "PageProjectEdit",
 
   components: { ProjectPart1, ProjectPart2, LogIn },
 
   setup() {
-    const { t } = useI18n({ useScope: "global" });
     const router = useRouter();
     const store = useStore();
 
@@ -99,21 +93,7 @@ export default {
         : part1.value && part1.value.isValid
     );
 
-    const areasOfChange = computed(() =>
-      AREAS_OF_CHANGE.map(value => ({
-        value,
-        label: t("areasOfChange." + value)
-      }))
-    );
-
     // Reset
-    const defaultModel1 = computed(() =>
-      part1.value ? part1.value.defaultModel : {}
-    );
-    const defaultModel2 = computed(() =>
-      part2.value ? part2.value.defaultModel : {}
-    );
-
     const reset = (clear = false) => {
       if (!isPart1Complete.value) {
         part1.value.reset(clear);
@@ -140,7 +120,7 @@ export default {
             contractAddress: Controller.address,
             abi: Controller.abi,
             functionName: "createNFTAndPSClones",
-            params: pickBy(data1.value, (value, key) => key.startsWith("_"))
+            params: pickBy(data1.value, (value, key) => key.startsWith("_")),
           });
           data1.value.transactionHash = tx.hash;
 
@@ -209,13 +189,13 @@ export default {
               _maxMintAmountRainbow: ethers.BigNumber.from(
                 data2.value.hasRainbow
                   ? data2.value._maxMintAmountRainbow.toString()
-                  : 1
+                  : 10
               ),
               _rainbowDuration: ethers.BigNumber.from(
                 data2.value._rainbowDuration * 3600
               ),
-              _rainbowMerkleRoot: data2.value._rainbowMerkleRoot
-            }
+              _rainbowMerkleRoot: data2.value._rainbowMerkleRoot,
+            },
           });
           data2.value.transactionHash = tx.hash;
 
@@ -259,7 +239,7 @@ export default {
       if (data2.value && data2.value.sharedFundingClone) {
         router.replace({
           name: "project-admin",
-          params: { projectID: data1.value.projectId }
+          params: { projectID: data1.value.projectId },
         });
       }
     };
@@ -275,8 +255,8 @@ export default {
       reset,
       isSubmitting,
       isNew,
-      isValid
+      isValid,
     };
-  }
+  },
 };
 </script>

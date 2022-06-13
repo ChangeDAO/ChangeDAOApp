@@ -156,8 +156,6 @@ import LogIn from "../components/LogIn";
 import RelativeTime from "../components/RelativeTime";
 import SmoothReflow from "../components/SmoothReflow";
 
-import { pickBy } from "lodash";
-
 import Moralis from "moralis";
 import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
 

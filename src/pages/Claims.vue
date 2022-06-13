@@ -126,23 +126,17 @@
 
 <script>
 import { computed, onMounted, ref } from "vue";
-import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { Loading, LocalStorage } from "quasar";
+import { Loading } from "quasar";
 
-import { TX_WAIT, DAI_ADDRESS, USDC_ADDRESS } from "../util/constants";
+import { TX_WAIT } from "../util/constants";
 import { notifyError, notifySuccess } from "../util/notify";
 import { shortAddr } from "../util/formatting";
 import AddrAvatar from "../components/AddrAvatar";
 import RelativeTime from "../components/RelativeTime";
 import LogIn from "../components/LogIn";
 
-import { pickBy } from "lodash";
-
 import Moralis from "moralis";
-import ChangeDaoNFT from "../../contracts/deployments/rinkeby/ChangeDaoNFT.json";
-import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
 import PaymentSplitter from "../../contracts/deployments/rinkeby/PaymentSplitter.json";
 
 export default {
@@ -150,12 +144,8 @@ export default {
 
   components: { AddrAvatar, RelativeTime, LogIn },
 
-  setup(props) {
-    const { t } = useI18n({ useScope: "global" });
-    const router = useRouter();
+  setup() {
     const store = useStore();
-
-    const ethers = Moralis.web3Library;
 
     const userAddress = computed(() => store.state.web3.userAddress);
 
@@ -179,7 +169,6 @@ export default {
         });
 
         const response = await tx.wait(TX_WAIT);
-        getAvailable();
         notifySuccess("Success");
       } catch (error) {
         console.error(error);
@@ -190,12 +179,6 @@ export default {
     };
 
     const projects = ref([]);
-    const hasZeroMinted = ref(false);
-    const isRainbowPeriod = ref(false);
-    const isPaused = ref(false);
-    const availableETH = ref(0);
-    const availableDAI = ref(0);
-    const availableUSDC = ref(0);
 
     onMounted(async () => {
       if (userAddress.value) {

@@ -232,7 +232,6 @@
 <script>
 import Moralis from "moralis";
 import { defineComponent, computed, ref } from "vue";
-import { LocalStorage } from "quasar";
 import ChangeMakers from "../../contracts/deployments/rinkeby/ChangeMakers.json";
 
 import { notifyError, notifySuccess } from "../util/notify";
