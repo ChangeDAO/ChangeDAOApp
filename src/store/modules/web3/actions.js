@@ -45,11 +45,10 @@ export async function logIn({ state, commit, dispatch }, provider) {
     } catch (error) {
       console.log(error);
     }
-  } else {
-    Moralis.enableWeb3({ provider: state.provider || "metamask" });
   }
 
   if (Moralis.User.current()) {
+    Moralis.enableWeb3({ provider: state.provider || "metamask" });
     commit("setUser", user);
     dispatch("getUserData");
   } else {

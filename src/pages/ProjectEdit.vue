@@ -36,7 +36,7 @@
       </q-item>
     </div>
     <div v-else class="q-layout-padding">
-      <LogIn />
+      <LogInDialog />
     </div>
   </q-page>
 </template>
@@ -56,14 +56,14 @@ import ProjectPart1 from "./ProjectPart1";
 import ProjectPart2 from "./ProjectPart2";
 
 import { TX_WAIT } from "../util/constants";
-import { notifyError, notifySuccess } from "../util/notify";
+import { notifyError, notifySuccess, notifyTx } from "../util/notify";
 import { createMerkleRootRainbow } from "../util/merkle";
-import LogIn from "../components/LogIn";
+import LogInDialog from "../components/LogInDialog";
 
 export default {
   name: "PageProjectEdit",
 
-  components: { ProjectPart1, ProjectPart2, LogIn },
+  components: { ProjectPart1, ProjectPart2, LogInDialog },
 
   setup() {
     const router = useRouter();
@@ -125,6 +125,7 @@ export default {
             functionName: "createNFTAndPSClones",
             params: pickBy(data1.value, (value, key) => key.startsWith("_")),
           });
+          notifyTx(tx.hash);
           data1.value.transactionHash = tx.hash;
 
           // Call Cloud Function
@@ -206,6 +207,7 @@ export default {
               _rainbowMerkleRoot: data2.value._rainbowMerkleRoot,
             },
           });
+          notifyTx(tx.hash);
           data2.value.transactionHash = tx.hash;
           if (data2.value._maxMintAmountRainbow === null) {
             data2.value._maxMintAmountRainbow = 1;
@@ -223,12 +225,6 @@ export default {
             SharedFundingFactory.abi,
             provider
           );
-          data2.value.sharedFundingClone = (
-            await sharedFundingFactory.queryFilter(
-              sharedFundingFactory.filters.SharedFundingCreated(),
-              response.blockHash
-            )
-          )[0].args.sharedFundingClone;
 
           goToAdmin();
           reset(true, true);
@@ -243,17 +239,11 @@ export default {
       }
     };
 
-    onMounted(() => {
-      goToAdmin();
-    });
-
     const goToAdmin = () => {
-      if (data2.value && data2.value.sharedFundingClone) {
-        router.replace({
-          name: "project-admin",
-          params: { projectID: data1.value.projectId },
-        });
-      }
+      router.replace({
+        name: "project-admin",
+        params: { projectID: data1.value.projectId },
+      });
     };
 
     return {

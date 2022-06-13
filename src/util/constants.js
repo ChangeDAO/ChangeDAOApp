@@ -4,23 +4,24 @@ export const URLS = {
   DISCORD: "https://discord.gg/88KeENZnyQ",
   PODCAST: "",
   BLOG: "https://medium.com/changedao",
-  EVENTS: ""
+  EVENTS: "",
 };
 
-export const TX_WAIT = 6;
+export const TX_WAIT = 7;
+export const TX_URL = "https://rinkeby.etherscan.io/tx/";
 
 export const ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
 export const DAI_ADDRESS = "0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea";
 export const USDC_ADDRESS = "0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b";
 
 export const NETWORKS = {
-  "1": "Main Net",
-  "2": "Deprecated Morden test network",
-  "3": "Ropsten test network",
-  "4": "Rinkeby test network",
-  "42": "Kovan test network",
-  "4447": "Truffle Develop Network",
-  "5777": "Ganache Blockchain"
+  1: "Main Net",
+  2: "Deprecated Morden test network",
+  3: "Ropsten test network",
+  4: "Rinkeby test network",
+  42: "Kovan test network",
+  4447: "Truffle Develop Network",
+  5777: "Ganache Blockchain",
 };
 
 export const AREAS_OF_CHANGE = [
@@ -30,7 +31,7 @@ export const AREAS_OF_CHANGE = [
   "healthAndWellness",
   "humanRights",
   "identityAndVulnerablePopulations",
-  "supplyChain"
+  "supplyChain",
 ];
 
 export const ERC20_ABI = [
@@ -41,19 +42,19 @@ export const ERC20_ABI = [
     outputs: [{ name: "", type: "string" }],
     payable: false,
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     constant: false,
     inputs: [
       { name: "_spender", type: "address" },
-      { name: "_value", type: "uint256" }
+      { name: "_value", type: "uint256" },
     ],
     name: "approve",
     outputs: [{ name: "", type: "bool" }],
     payable: false,
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     constant: true,
@@ -62,20 +63,20 @@ export const ERC20_ABI = [
     outputs: [{ name: "", type: "uint256" }],
     payable: false,
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     constant: false,
     inputs: [
       { name: "_from", type: "address" },
       { name: "_to", type: "address" },
-      { name: "_value", type: "uint256" }
+      { name: "_value", type: "uint256" },
     ],
     name: "transferFrom",
     outputs: [{ name: "", type: "bool" }],
     payable: false,
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     constant: true,
@@ -84,7 +85,7 @@ export const ERC20_ABI = [
     outputs: [{ name: "", type: "uint8" }],
     payable: false,
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     constant: true,
@@ -93,7 +94,7 @@ export const ERC20_ABI = [
     outputs: [{ name: "", type: "uint256" }],
     payable: false,
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     constant: true,
@@ -102,50 +103,50 @@ export const ERC20_ABI = [
     outputs: [{ name: "", type: "string" }],
     payable: false,
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     constant: false,
     inputs: [
       { name: "_to", type: "address" },
-      { name: "_value", type: "uint256" }
+      { name: "_value", type: "uint256" },
     ],
     name: "transfer",
     outputs: [{ name: "", type: "bool" }],
     payable: false,
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     constant: true,
     inputs: [
       { name: "_owner", type: "address" },
-      { name: "_spender", type: "address" }
+      { name: "_spender", type: "address" },
     ],
     name: "allowance",
     outputs: [{ name: "", type: "uint256" }],
     payable: false,
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     anonymous: false,
     inputs: [
       { indexed: true, name: "_from", type: "address" },
       { indexed: true, name: "_to", type: "address" },
-      { indexed: false, name: "_value", type: "uint256" }
+      { indexed: false, name: "_value", type: "uint256" },
     ],
     name: "Transfer",
-    type: "event"
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       { indexed: true, name: "_owner", type: "address" },
       { indexed: true, name: "_spender", type: "address" },
-      { indexed: false, name: "_value", type: "uint256" }
+      { indexed: false, name: "_value", type: "uint256" },
     ],
     name: "Approval",
-    type: "event"
-  }
+    type: "event",
+  },
 ];

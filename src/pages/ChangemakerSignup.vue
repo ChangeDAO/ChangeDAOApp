@@ -20,7 +20,7 @@
             </q-item-section>
           </q-item>
           <q-item v-else>
-            <LogIn />
+            <LogInDialog />
           </q-item>
 
           <q-item>
@@ -159,7 +159,7 @@ import Moralis from "moralis";
 import { notifyError, notifySuccess } from "../util/notify";
 import { shortAddr } from "../util/formatting";
 import AddrAvatar from "../components/AddrAvatar";
-import LogIn from "../components/LogIn";
+import LogInDialog from "../components/LogInDialog";
 
 const LOCALSTORAGE_KEY = "changemakerSignup";
 
@@ -176,13 +176,13 @@ const REQUEST = {
   instagram: "",
   tiktok: "",
   youtube: "",
-  website: ""
+  website: "",
 };
 
 export default {
   name: "PageChangemakerSignup",
 
-  components: { AddrAvatar, LogIn },
+  components: { AddrAvatar, LogInDialog },
 
   setup() {
     const store = useStore();
@@ -202,13 +202,13 @@ export default {
 
     watch(
       data,
-      value => {
+      (value) => {
         if (isEqual(value, REQUEST)) {
           LocalStorage.remove(LOCALSTORAGE_KEY);
         } else {
           LocalStorage.set(LOCALSTORAGE_KEY, {
             ...value,
-            address: address.value
+            address: address.value,
           });
         }
       },
@@ -240,8 +240,8 @@ export default {
       submit,
       clear,
       isSubmitting,
-      isValid
+      isValid,
     };
-  }
+  },
 };
 </script>

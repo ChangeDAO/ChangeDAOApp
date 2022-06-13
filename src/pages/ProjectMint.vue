@@ -6,7 +6,7 @@
       <div class="page-col col q-col-6">
         <div class="sticky header-top">
           <!-- Connect Wallet -->
-          <LogIn
+          <LogInDialog
             v-if="!user"
             class="full-width q-mb-lg"
             :label="$t('Connect Wallet')"
@@ -92,7 +92,7 @@
             :label="$t('Mint NFT')"
             color="primary"
           />
-          <LogIn v-else :label="$t('Connect Wallet')" />
+          <LogInDialog v-else :label="$t('Connect Wallet')" />
         </div>
       </div>
     </div>
@@ -153,7 +153,7 @@ import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 
-import LogIn from "../components/LogIn";
+import LogInDialog from "../components/LogInDialog";
 import ProjectInfo from "../components/ProjectInfo";
 import ProjectSplit from "../components/ProjectSplit";
 import SecondarySplit from "../components/SecondarySplit";
@@ -164,7 +164,7 @@ export default defineComponent({
   props: ["projectID"],
 
   components: {
-    LogIn,
+    LogInDialog,
     ProjectInfo,
     ProjectSplit,
     SecondarySplit

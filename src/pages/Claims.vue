@@ -122,7 +122,7 @@
       </q-list>
     </div>
     <div v-else class="q-layout-padding">
-      <LogIn />
+      <LogInDialog />
     </div>
   </q-page>
 </template>
@@ -133,11 +133,11 @@ import { useStore } from "vuex";
 import { Loading } from "quasar";
 
 import { TX_WAIT } from "../util/constants";
-import { notifyError, notifySuccess } from "../util/notify";
+import { notifyError, notifySuccess, notifyTx } from "../util/notify";
 import { shortAddr } from "../util/formatting";
 import AddrAvatar from "../components/AddrAvatar";
 import RelativeTime from "../components/RelativeTime";
-import LogIn from "../components/LogIn";
+import LogInDialog from "../components/LogInDialog";
 
 import Moralis from "moralis";
 import PaymentSplitter from "../../contracts/deployments/rinkeby/PaymentSplitter.json";
@@ -145,7 +145,7 @@ import PaymentSplitter from "../../contracts/deployments/rinkeby/PaymentSplitter
 export default {
   name: "PageClaims",
 
-  components: { AddrAvatar, RelativeTime, LogIn },
+  components: { AddrAvatar, RelativeTime, LogInDialog },
 
   setup() {
     const store = useStore();
@@ -170,6 +170,7 @@ export default {
           paymentSplitterId,
           transactionHash: tx.hash,
         });
+        notifyTx(tx.hash);
 
         const response = await tx.wait(TX_WAIT);
         getProjects();

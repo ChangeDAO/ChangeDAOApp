@@ -12,7 +12,7 @@
           </router-link>
         </template>
         <q-skeleton v-else type="text" width="15em" />
-        <p class="text-caption">
+        <p v-if="!isPending" class="text-caption">
           <q-skeleton v-if="isLoading" type="text" width="10em" />
           <template v-else>
             {{ $tc("n Mints Remaining", mintable - minted) }}
@@ -20,7 +20,7 @@
         </p>
       </div>
 
-      <q-list>
+      <q-list v-if="!isPending">
         <!-- Base URI -->
         <q-input v-model="baseURI" label="Base URI" item-aligned>
           <template v-slot:after>
@@ -140,9 +140,12 @@
           </q-item-section>
         </q-item>
       </q-list>
+      <div v-else>
+        {{ $t("Project has pending changes") }}
+      </div>
     </div>
     <div v-else class="q-layout-padding">
-      <LogIn />
+      <LogInDialog />
     </div>
   </q-page>
 </template>
@@ -154,8 +157,8 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 import { TX_WAIT } from "../util/constants";
-import { notifyError, notifySuccess } from "../util/notify";
-import LogIn from "../components/LogIn";
+import { notifyError, notifySuccess, notifyTx } from "../util/notify";
+import LogInDialog from "../components/LogInDialog";
 import AddrInput from "../components/AddrInput";
 import RelativeTime from "../components/RelativeTime";
 
@@ -168,7 +171,7 @@ import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.jso
 export default {
   name: "PageProjectAdmin",
 
-  components: { LogIn, AddrInput, RelativeTime },
+  components: { LogInDialog, AddrInput, RelativeTime },
 
   props: ["projectID"],
 
@@ -197,6 +200,7 @@ export default {
           functionName: "setBaseURI",
           params: { _newBaseURI: baseURI.value },
         });
+        notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
         notifySuccess("Success");
       } catch (error) {
@@ -228,6 +232,7 @@ export default {
             ),
           },
         });
+        notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
         notifySuccess("Success");
       } catch (error) {
@@ -249,6 +254,7 @@ export default {
           functionName: "zeroMint",
           params: { _recipient: zeroMintAddress.value },
         });
+        notifyTx(tx.hash);
 
         // Call Cloud Function
         await Moralis.Cloud.run("zeroMint", {
@@ -284,12 +290,13 @@ export default {
             _mintAmount: courtesyMintAmount.value,
           },
         });
+        notifyTx(tx.hash);
 
         // Call Cloud Function
         await Moralis.Cloud.run("courtesyMint", {
           projectId: props.projectID,
           recipientAddress: courtesyMintAddress.value,
-          numMints: courtesyMintAmount.value,
+          numMints: courtesyMintAmount.value.toNumber(),
           transactionHash: tx.hash,
         });
 
@@ -313,6 +320,7 @@ export default {
           abi: SharedFunding.abi,
           functionName: isPaused.value ? "unPause" : "pause",
         });
+        notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
         isPaused.value = !isPaused.value;
         notifySuccess("Success");
@@ -336,6 +344,14 @@ export default {
         await sharedFundingClone.callStatic.getMintedTokens()
       ).toNumber());
     };
+
+    const isPending = computed(() =>
+      Boolean(
+        project.value &&
+          (project.value.pendingChanges.paymentSplitters.length ||
+            project.value.pendingChanges.project.length)
+      )
+    );
 
     onMounted(async () => {
       const provider = ethers.getDefaultProvider(process.env.chain);
@@ -404,6 +420,7 @@ export default {
       courtesyMintAmount,
       isRainbowPeriod,
       courtesyMint,
+      isPending,
       isMintingCourtesy,
       isPaused,
       isPausing,

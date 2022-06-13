@@ -7,7 +7,7 @@
         </slot>
       </q-item-section>
       <q-item-section>
-        <q-item-label class="text-h3">
+        <q-item-label class="text-h5">
           <slot name="title">
             {{ title }}
           </slot>

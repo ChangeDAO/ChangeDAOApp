@@ -1,21 +1,44 @@
-import { Notify } from "quasar";
+import { Notify, openURL } from "quasar";
 import { i18n } from "../boot/i18n";
+import { TX_URL } from "../util/constants";
 import { isString } from "lodash";
 
 const { t, te } = i18n.global;
 
-export const notifyError = error => {
+export const notifyTx = (hash) => {
+  return Notify.create({
+    message: t("Transaction Pending"),
+    type: "warning",
+    icon: "pending",
+    timeout: 0,
+    position: "top-right",
+    multiLine: false,
+    actions: [
+      {
+        label: t("View"),
+        color: "primary",
+        noDismiss: true,
+        handler() {
+          openURL(TX_URL + hash);
+        },
+      },
+      { icon: "close", color: "grey-10" },
+    ],
+  });
+};
+
+export const notifyError = (error) => {
   Notify.create({
     message: formatError(error),
     type: "negative",
     icon: "error",
     timeout: 0,
     position: "top-right",
-    actions: [{ icon: "close", color: "grey-1" }]
+    actions: [{ icon: "close", color: "grey-1" }],
   });
 };
 
-export const notifySuccess = success => {
+export const notifySuccess = (success) => {
   return Notify.create({
     message: formatSuccess(success),
     type: "positive",
@@ -23,11 +46,11 @@ export const notifySuccess = success => {
     timeout: 0,
     position: "top-right",
     multiLine: false,
-    actions: [{ icon: "close", color: "grey-1" }]
+    actions: [{ icon: "close", color: "grey-1" }],
   });
 };
 
-export const notifyWarning = warning => {
+export const notifyWarning = (warning) => {
   return Notify.create({
     message: formatWarning(warning),
     type: "warning",
@@ -35,11 +58,11 @@ export const notifyWarning = warning => {
     timeout: 0,
     position: "top-right",
     multiLine: false,
-    actions: [{ icon: "close", color: "grey-10" }]
+    actions: [{ icon: "close", color: "grey-10" }],
   });
 };
 
-export const notifyHint = hint => {
+export const notifyHint = (hint) => {
   return Notify.create({
     message: formatHint(hint),
     type: "info",
@@ -47,11 +70,11 @@ export const notifyHint = hint => {
     timeout: 0,
     position: "top-right",
     multiLine: false,
-    actions: [{ icon: "close", color: "grey-1" }]
+    actions: [{ icon: "close", color: "grey-1" }],
   });
 };
 
-export const formatError = error => {
+export const formatError = (error) => {
   if (isString(error)) {
     if (te(`error["${error}"]`)) {
       return t(`error["${error}"]`);
@@ -71,7 +94,7 @@ export const formatError = error => {
   }
 };
 
-export const formatSuccess = success => {
+export const formatSuccess = (success) => {
   if (isString(success)) {
     if (te(`success["${success}"]`)) {
       return t(`success["${success}"]`);
@@ -81,7 +104,7 @@ export const formatSuccess = success => {
   }
 };
 
-export const formatWarning = warning => {
+export const formatWarning = (warning) => {
   if (isString(warning)) {
     if (te(`warning["${warning}"]`)) {
       return t(`warning["${warning}"]`);
@@ -101,7 +124,7 @@ export const formatWarning = warning => {
   }
 };
 
-export const formatHint = hint => {
+export const formatHint = (hint) => {
   if (isString(hint)) {
     if (te(`hint["${hint}"]`)) {
       return t(`hint["${hint}"]`);

@@ -24,121 +24,130 @@
           <q-skeleton v-else type="text" width="15em" />
         </div>
 
-        <!-- Cost per Mint -->
-        <div class="row">
-          <span class="text-subtitle col-grow">{{ $t("Cost per Mint") }}</span>
-          <span>{{ $n(cost, "USD") }} USD</span>
-        </div>
-
-        <!-- Number of Mints -->
-        <div class="row">
-          <div class="q-mb-sm col-grow">
-            <div class="text-subtitle">
-              {{ $t("Number of Mints") }}
-            </div>
-            <p class="text-caption">
-              <q-skeleton v-if="isLoading" type="text" width="10em" />
-              <template v-else>
-                {{ $tc("n Mints Remaining", mintable - minted) }}
-              </template>
-            </p>
+        <template v-if="!isPending">
+          <!-- Cost per Mint -->
+          <div class="row">
+            <span class="text-subtitle col-grow">{{
+              $t("Cost per Mint")
+            }}</span>
+            <span>{{ $n(cost, "USD") }} USD</span>
           </div>
-          <q-input
-            v-model.number="quantity"
-            type="number"
-            :min="1"
-            :max="maxQuantity"
-            :rules="[(q) => q > 0 && q <= maxQuantity]"
-            dense
-            outlined
-          />
-        </div>
 
-        <!-- Subtotal -->
-        <div class="row">
-          <span class="text-subtitle col-grow">{{ $t("Subtotal") }}</span>
-          <span>{{ $n(subtotal, "USD") }} USD</span>
-        </div>
-
-        <q-separator />
-
-        <!-- Tip -->
-        <div>
-          <div class="text-subtitle">{{ $t("Add a Tip") }}</div>
-          <div class="text-caption">{{ $t("Please and thankyou") }}</div>
-          <q-option-group
-            v-model="tip"
-            :options="tips"
-            color="primary"
-            inline
-          />
-          <SmoothReflow>
+          <!-- Number of Mints -->
+          <div class="row">
+            <div class="q-mb-sm col-grow">
+              <div class="text-subtitle">
+                {{ $t("Number of Mints") }}
+              </div>
+              <p class="text-caption">
+                <q-skeleton v-if="isLoading" type="text" width="10em" />
+                <template v-else>
+                  {{ $tc("n Mints Remaining", mintable - minted) }}
+                </template>
+              </p>
+            </div>
             <q-input
-              v-show="tip === 'custom'"
-              v-model.number="customTip"
+              v-model.number="quantity"
               type="number"
               :min="1"
-              prefix="$"
-              suffix="USD"
+              :max="maxQuantity"
+              :rules="[(q) => q > 0 && q <= maxQuantity]"
               dense
               outlined
             />
-          </SmoothReflow>
-        </div>
-        <div class="row">
-          <span class="text-subtitle col-grow">{{ $t("Tip") }}</span>
-          <span>{{ $n(tipTotal, "USD") }} USD</span>
-        </div>
-
-        <q-separator />
-
-        <!-- Total -->
-        <div class="row">
-          <span class="text-subtitle col-grow">{{ $t("Total") }}</span>
-          <span class="text-bold">{{ $n(total, "USD") }} USD</span>
-        </div>
-
-        <q-separator />
-
-        <!-- Currency -->
-        <div>
-          <div class="text-subtitle">{{ $t("Select Currency") }}</div>
-          <q-option-group
-            v-model="currency"
-            :options="currencies"
-            color="primary"
-            inline
-          />
-          <div
-            v-if="disabledCurrencies.length"
-            class="text-caption text-italic"
-          >
-            {{ $t("Not enough X", { X: disabledCurrencies.join(", ") }) }}
           </div>
-        </div>
 
-        <q-separator />
-
-        <!-- Purchase -->
-        <div class="row reverse">
-          <q-btn
-            @click="purchase"
-            :loading="isPurchasing"
-            class="col-grow"
-            :label="$t('Purchase')"
-            :disable="!isValid"
-            color="primary"
-          />
-          <div class="col-grow text-caption q-mt-sm q-mr-sm">
-            {{
-              $t(isPurchasing ? "This will take time" : "This will open wallet")
-            }}
+          <!-- Subtotal -->
+          <div class="row">
+            <span class="text-subtitle col-grow">{{ $t("Subtotal") }}</span>
+            <span>{{ $n(subtotal, "USD") }} USD</span>
           </div>
+
+          <q-separator />
+
+          <!-- Tip -->
+          <div>
+            <div class="text-subtitle">{{ $t("Add a Tip") }}</div>
+            <div class="text-caption">{{ $t("Please and thankyou") }}</div>
+            <q-option-group
+              v-model="tip"
+              :options="tips"
+              color="primary"
+              inline
+            />
+            <SmoothReflow>
+              <q-input
+                v-show="tip === 'custom'"
+                v-model.number="customTip"
+                type="number"
+                :min="1"
+                prefix="$"
+                suffix="USD"
+                dense
+                outlined
+              />
+            </SmoothReflow>
+          </div>
+          <div class="row">
+            <span class="text-subtitle col-grow">{{ $t("Tip") }}</span>
+            <span>{{ $n(tipTotal, "USD") }} USD</span>
+          </div>
+
+          <q-separator />
+
+          <!-- Total -->
+          <div class="row">
+            <span class="text-subtitle col-grow">{{ $t("Total") }}</span>
+            <span class="text-bold">{{ $n(total, "USD") }} USD</span>
+          </div>
+
+          <q-separator />
+
+          <!-- Currency -->
+          <div>
+            <div class="text-subtitle">{{ $t("Select Currency") }}</div>
+            <q-option-group
+              v-model="currency"
+              :options="currencies"
+              color="primary"
+              inline
+            />
+            <div
+              v-if="disabledCurrencies.length"
+              class="text-caption text-italic"
+            >
+              {{ $t("Not enough X", { X: disabledCurrencies.join(", ") }) }}
+            </div>
+          </div>
+
+          <q-separator />
+
+          <!-- Purchase -->
+          <div class="row reverse">
+            <q-btn
+              @click="purchase"
+              :loading="isPurchasing"
+              class="col-grow"
+              :label="$t('Purchase')"
+              :disable="!isValid"
+              color="primary"
+            />
+            <div class="col-grow text-caption q-mt-sm q-mr-sm">
+              {{
+                $t(
+                  isPurchasing ? "This will take time" : "This will open wallet"
+                )
+              }}
+            </div>
+          </div>
+        </template>
+        <div v-else>
+          {{ $t("Project has pending changes") }}
         </div>
       </div>
     </div>
     <div v-else class="q-layout-padding">
-      <LogIn />
+      <LogInDialog />
     </div>
   </q-page>
 </template>
@@ -151,8 +160,8 @@ import { useStore } from "vuex";
 
 import { TX_WAIT } from "../util/constants";
 import { createLeafRainbow, createMerkleProofRainbow } from "../util/merkle";
-import { notifyError, notifySuccess } from "../util/notify";
-import LogIn from "../components/LogIn";
+import { notifyError, notifySuccess, notifyTx } from "../util/notify";
+import LogInDialog from "../components/LogInDialog";
 import RelativeTime from "../components/RelativeTime";
 import SmoothReflow from "../components/SmoothReflow";
 
@@ -171,7 +180,7 @@ const ETH_BUFFER = 0.01;
 export default {
   name: "PageProjectMint",
 
-  components: { LogIn, RelativeTime, SmoothReflow },
+  components: { LogInDialog, RelativeTime, SmoothReflow },
 
   props: ["projectID"],
 
@@ -368,6 +377,7 @@ export default {
             transactionHash: tx.hash,
           });
         }
+        notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
         getMinted();
 
@@ -418,6 +428,14 @@ export default {
         currency.value
     );
 
+    const isPending = computed(() =>
+      Boolean(
+        project.value &&
+          (project.value.pendingChanges.paymentSplitters.length ||
+            project.value.pendingChanges.project.length)
+      )
+    );
+
     const getMinted = async () => {
       minted.value = (
         await sharedFundingClone.callStatic.getMintedTokens()
@@ -463,6 +481,7 @@ export default {
 
     return {
       project,
+      isPending,
       isLoading,
       userAddress,
       cost,
