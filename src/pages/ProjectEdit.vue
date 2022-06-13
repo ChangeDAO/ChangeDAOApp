@@ -18,7 +18,7 @@
               <!-- Reset -->
               <q-btn
                 @click="reset(true)"
-                :label="$t('Reset')"
+                :label="$t('Reset')"  
                 color="secondary"
               />
 
@@ -122,8 +122,6 @@ export default {
         part2.value.reset(clear);
       }
     };
-
-    window.ethers = Moralis.web3Library;
 
     // Submit
     const isSubmitting = ref(false);
@@ -243,7 +241,7 @@ export default {
           goToAdmin();
         }
 
-        // reset(true);
+        reset(true);
         notifySuccess("Success");
       } catch (error) {
         console.error(error);

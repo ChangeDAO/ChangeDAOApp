@@ -4,18 +4,27 @@
     {{ ens || shortAddr(address) }}
     <q-menu auto-close>
       <q-list class="text-no-wrap">
-        <q-item :to="{ name: 'claims' }" clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="claims" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>
-              {{ $t("Claims") }}
-            </q-item-label>
-          </q-item-section>
-        </q-item>
+        <template v-if="roles.includes('Admin')">
+          <q-item :to="{ name: 'admin-deploy' }" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="admin" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ $t("Deployed Contracts") }}</q-item-label>
+            </q-item-section>
+          </q-item>
 
-        <q-separator />
+          <q-item :to="{ name: 'admin-approve' }" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="admin" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ $t("Changemaker Approval") }}</q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <q-separator />
+        </template>
 
         <!-- Wallet Providers -->
         <q-item
@@ -34,6 +43,22 @@
             </q-item-label>
           </q-item-section>
         </q-item>
+
+        <q-separator />
+        
+        <!-- Claims -->
+        <q-item :to="{ name: 'claims' }" clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="claims" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>
+              {{ $t("Claims") }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-separator />
 
         <!-- Log Out -->
         <q-item @click="logOut" clickable v-ripple>
@@ -55,7 +80,7 @@
 import { defineComponent, computed } from "vue";
 import { useStore } from "vuex";
 
-import { shortAddr, tokenValueTxt } from "../util/formatting";
+import { shortAddr } from "../util/formatting";
 import AddrAvatar from "./AddrAvatar";
 import LogIn from "./LogIn";
 
@@ -67,26 +92,27 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const logIn = provider => {
+    const logIn = (provider) => {
       store.dispatch("logIn", provider);
     };
 
-    const logOut = () => {
+    const logOut = async () => {
       store.dispatch("logOut");
     };
 
     const providers = [
       {
         value: "metamask",
-        label: "Metamask"
+        label: "Metamask",
       },
       {
         value: "walletconnect",
-        label: "WalletConnect"
-      }
+        label: "WalletConnect",
+      },
     ];
 
     const user = computed(() => store.state.web3.user);
+    const roles = computed(() => store.state.web3.userRoles);
 
     const balances = computed(() => store.state.web3.userBalances);
 
@@ -103,13 +129,13 @@ export default defineComponent({
       logIn,
       logOut,
       providers,
-      tokenValueTxt,
       user,
+      roles,
       balances,
       address,
       shortAddr,
-      ens
+      ens,
     };
-  }
+  },
 });
 </script>

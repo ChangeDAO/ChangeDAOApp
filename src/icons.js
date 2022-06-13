@@ -1,5 +1,6 @@
 export default {
   add: "mdi-plus",
+  admin: "mdi-shield-account",
   arrow_drop_down: "mdi-menu-down",
   check: "mdi-check-circle",
   claims: "mdi-account-cash",
@@ -21,5 +22,5 @@ export default {
   update: "mdi-cached",
   wallet: "mdi-wallet",
   warning: "mdi-alert",
-  search: "mdi-magnify"
+  search: "mdi-magnify",
 };

@@ -7,7 +7,9 @@
       </div>
       <div class="text-h5 q-ma-md">
         <template v-if="project">
-          {{ project.name }}
+          <router-link :to="{ name: 'mint' }">
+            {{ project.name }}
+          </router-link>
         </template>
         <q-skeleton v-else type="text" width="15em" />
         <p class="text-caption">
@@ -36,7 +38,7 @@
           type="number"
           v-model="rainbowDuration"
           :label="'Rainbow Period Duration (hours)'"
-          :rules="[a => a >= 0]"
+          :rules="[(a) => a >= 0]"
           :min="0"
           item-aligned
         >
@@ -50,8 +52,8 @@
               color="primary"
               :disable="
                 isLoading ||
-                  (!rainbowDuration && rainbowDuration !== 0) ||
-                  rainbowDuration < 0
+                (!rainbowDuration && rainbowDuration !== 0) ||
+                rainbowDuration < 0
               "
               :loading="isSettingRainbowDuration"
             />
@@ -62,9 +64,7 @@
         <q-item-label header>Zero Mint</q-item-label>
         <q-item v-if="hasZeroMinted">
           <q-item-section>
-            <q-item-label>
-              Zero Mint has already been made
-            </q-item-label>
+            <q-item-label> Zero Mint has already been made </q-item-label>
           </q-item-section>
         </q-item>
         <AddrInput
@@ -90,9 +90,7 @@
         <q-item v-if="!isRainbowPeriod">
           <q-item-section>
             <q-skeleton type="text" v-if="isLoading" width="15em" />
-            <q-item-label v-else>
-              The Rainbow Period has ended
-            </q-item-label>
+            <q-item-label v-else> The Rainbow Period has ended </q-item-label>
           </q-item-section>
         </q-item>
         <q-item v-else>
@@ -197,7 +195,7 @@ export default {
           contractAddress: changeDaoNFTClone.address,
           abi: ChangeDaoNFT.abi,
           functionName: "setBaseURI",
-          params: { _newBaseURI: baseURI.value }
+          params: { _newBaseURI: baseURI.value },
         });
         const response = await tx.wait(TX_WAIT);
         notifySuccess("Success");
@@ -227,8 +225,8 @@ export default {
           params: {
             _rainbowDuration: ethers.BigNumber.from(
               (rainbowDuration.value * 3600).toString()
-            )
-          }
+            ),
+          },
         });
         const response = await tx.wait(TX_WAIT);
         notifySuccess("Success");
@@ -249,14 +247,14 @@ export default {
           contractAddress: sharedFundingClone.address,
           abi: SharedFunding.abi,
           functionName: "zeroMint",
-          params: { _recipient: zeroMintAddress.value }
+          params: { _recipient: zeroMintAddress.value },
         });
 
         // Call Cloud Function
         await Moralis.Cloud.run("zeroMint", {
           projectId: props.projectID,
           recipientAddress: zeroMintAddress.value,
-          transactionHash: tx.hash
+          transactionHash: tx.hash,
         });
 
         const response = await tx.wait(TX_WAIT);
@@ -283,8 +281,8 @@ export default {
           functionName: "courtesyMint",
           params: {
             _recipient: courtesyMintAddress.value,
-            _mintAmount: courtesyMintAmount.value
-          }
+            _mintAmount: courtesyMintAmount.value,
+          },
         });
 
         // Call Cloud Function
@@ -292,7 +290,7 @@ export default {
           projectId: props.projectID,
           recipientAddress: courtesyMintAddress.value,
           numMints: courtesyMintAmount.value,
-          transactionHash: tx.hash
+          transactionHash: tx.hash,
         });
 
         const response = await tx.wait(TX_WAIT);
@@ -313,7 +311,7 @@ export default {
         const tx = await Moralis.executeFunction({
           contractAddress: sharedFundingClone.address,
           abi: SharedFunding.abi,
-          functionName: isPaused.value ? "unPause" : "pause"
+          functionName: isPaused.value ? "unPause" : "pause",
         });
         const response = await tx.wait(TX_WAIT);
         isPaused.value = !isPaused.value;
@@ -343,7 +341,7 @@ export default {
       const provider = ethers.getDefaultProvider(process.env.chain);
       try {
         const response = await Moralis.Cloud.run("getProject", {
-          projectId: props.projectID
+          projectId: props.projectID,
         });
 
         project.value = response.project;
@@ -409,8 +407,8 @@ export default {
       isMintingCourtesy,
       isPaused,
       isPausing,
-      togglePause
+      togglePause,
     };
-  }
+  },
 };
 </script>

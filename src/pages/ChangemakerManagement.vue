@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="text-h4 q-mb-md">Changemaker Approval</div>
+    <div class="text-h4 q-mb-md">{{ $t("Changemaker Approval") }}</div>
     <q-linear-progress v-if="!changemakers.length" indeterminate />
     <q-list v-else separator bordered>
       <q-expansion-item v-for="cm in changemakers" :key="cm.walletAddress">
@@ -250,14 +250,14 @@ export default defineComponent({
 
   setup() {
     // Validation rules
-    const isValidAddress = address =>
+    const isValidAddress = (address) =>
       Moralis.web3Library.utils.isAddress(address);
 
     const changemakers = ref([]);
     try {
-      Moralis.Cloud.run("getAllChangemakers").then(response => {
+      Moralis.Cloud.run("getAllChangemakers").then((response) => {
         changemakers.value = response.changemakers;
-        response.pending.forEach(pending => {
+        response.pending.forEach((pending) => {
           switch (pending.eventName) {
             case "ChangeMakerApproved":
               approving.value[pending.changemakerId] = true;
@@ -273,7 +273,7 @@ export default defineComponent({
     }
 
     const approving = ref({});
-    const approve = async cm => {
+    const approve = async (cm) => {
       try {
         approving.value[cm.id] = true;
         const tx = await Moralis.executeFunction({
@@ -281,12 +281,12 @@ export default defineComponent({
           abi: ChangeMakers.abi,
           functionName: "approveChangeMaker",
           params: {
-            _changeMaker: cm.walletAddress
-          }
+            _changeMaker: cm.walletAddress,
+          },
         });
         Moralis.Cloud.run("approveChangemaker", {
           changemakerId: cm.id,
-          transactionHash: tx.hash
+          transactionHash: tx.hash,
         });
         const response = await tx.wait(TX_WAIT);
         cm.isApproved = true;
@@ -300,10 +300,10 @@ export default defineComponent({
     };
 
     const denying = ref({});
-    const deny = async cm => {};
+    const deny = async (cm) => {};
 
     const revoking = ref({});
-    const revoke = async cm => {
+    const revoke = async (cm) => {
       try {
         revoking.value[cm.id] = true;
         const tx = await Moralis.executeFunction({
@@ -311,12 +311,12 @@ export default defineComponent({
           abi: ChangeMakers.abi,
           functionName: "revokeChangeMaker",
           params: {
-            _changeMaker: cm.walletAddress
-          }
+            _changeMaker: cm.walletAddress,
+          },
         });
         Moralis.Cloud.run("revokeChangemaker", {
           changemakerId: cm.id,
-          transactionHash: tx.hash
+          transactionHash: tx.hash,
         });
         const response = await tx.wait(TX_WAIT);
         cm.isApproved = false;
@@ -336,8 +336,8 @@ export default defineComponent({
       denying,
       deny,
       revoking,
-      revoke
+      revoke,
     };
-  }
+  },
 });
 </script>

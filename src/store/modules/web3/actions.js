@@ -1,5 +1,4 @@
 import Moralis from "moralis";
-import { zipObject } from "lodash";
 import { i18n } from "../../../boot/i18n";
 const { t } = i18n.global;
 
@@ -7,12 +6,12 @@ const chain = process.env.chain;
 
 // Init
 export async function init({ commit, dispatch, state }) {
-  Moralis.onChainChanged(chain => {
+  Moralis.onChainChanged((chain) => {
     commit("setChain", chain);
     dispatch("getUserData");
   });
 
-  Moralis.onAccountChanged(async address => {
+  Moralis.onAccountChanged(async (address) => {
     if (address) {
       // await Moralis.link(address);
       commit("setUser", Moralis.User.current());
@@ -24,7 +23,7 @@ export async function init({ commit, dispatch, state }) {
     }
   });
 
-  Moralis.onConnect(provider => {
+  Moralis.onConnect((provider) => {
     commit("setProvider", provider);
   });
 
@@ -39,7 +38,7 @@ export async function logIn({ state, commit, dispatch }, provider) {
       user = await Moralis.authenticate({
         signingMessage: t("Connect to ChangeDAO"),
         provider,
-        chain
+        chain,
       });
       commit("setProvider", provider);
       commit("setChain", Moralis.chainId);
@@ -75,12 +74,14 @@ export async function getUserData({ commit, state }) {
   const user = state.user;
   const address = state.userAddress;
 
+  commit("setUserRoles", await getRoles());
+
   const balances = {};
 
   // Native balance
   let nativeBalance = await Moralis.Web3API.account.getNativeBalance({
     address,
-    chain
+    chain,
   });
   if (nativeBalance && nativeBalance.balance) {
     balances.ETH = { ...nativeBalance, symbol: "ETH", decimals: 18 };
@@ -89,10 +90,10 @@ export async function getUserData({ commit, state }) {
   // ERC20 Tokens
   let tokens = await Moralis.Web3API.account.getTokenBalances({
     address,
-    chain
+    chain,
   });
   if (tokens && tokens.length) {
-    tokens.forEach(t => (balances[t.symbol] = t));
+    tokens.forEach((t) => (balances[t.symbol] = t));
   }
   commit("setUserBalances", balances);
 
@@ -105,17 +106,16 @@ export async function getUserData({ commit, state }) {
   // commit("setUserENS", ens);
 }
 
-// Mint nft
-export async function mintNFT({ commit, state }, options) {
-  // return Moralis.executeFunction({
-  //   chain,
-  //   contractAddress: AddrRecursiveExchange,
-  //   functionName: "placeOffering",
-  //   abi: [],
-  //   params: {
-  //     _hostContract: token_address,
-  //     _tokenId: token_id,
-  //     _price: Moralis.Units.ETH(price)
-  //   }
-  // });
+export async function hasRole(context, role) {
+  const matchingRole = await new Moralis.Query(Moralis.Role)
+    .equalTo("name", role)
+    .equalTo("users", Moralis.User)
+    .first();
+  return Boolean(matchingRole);
+}
+
+export async function getRoles() {
+  return (
+    await new Moralis.Query(Moralis.Role).equalTo("users", Moralis.User).find()
+  ).map((role) => role.get("name"));
 }

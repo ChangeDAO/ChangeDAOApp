@@ -8,6 +8,7 @@ export default {
   "Base URI": "Base URI",
   Blog: "Blog",
   Cancel: "Cancel",
+  "Changemaker Approval": "Changemaker Approval",
   Checkout: "Checkout",
   Claim: "Claim",
   Claims: "Claims",
@@ -110,12 +111,12 @@ export default {
     healthAndWellness: "Health & Wellness",
     humanRights: "Human Rights",
     identityAndVulnerablePopulations: "Identity & Vulnerable Populations",
-    supplyChain: "Supply Chain"
+    supplyChain: "Supply Chain",
   },
 
   psTypes: {
     funding: "Funding",
-    royalties: "Royalties"
+    royalties: "Royalties",
   },
 
   mask: {
@@ -124,7 +125,7 @@ export default {
     "date-short": "M/D/YYYY",
     "date-time-short": "M/D/YYYY h:mma",
     "date-full": "dddd, MMMM D, YYYY",
-    "date-time-full": "dddd, MMMM D, YYYY h:mma"
+    "date-time-full": "dddd, MMMM D, YYYY h:mma",
   },
 
   format: {
@@ -133,19 +134,19 @@ export default {
     "date-short": "E, M/d/yyyy",
     "date-time-short": "E, M/d/yyyy–h:mma",
     "date-full": "E, MMM d, yyyy",
-    "date-time-full": "E, MMM d, yyyy–h:mma"
+    "date-time-full": "E, MMM d, yyyy–h:mma",
   },
 
   error: {
-    loadingProject: "There was a problem getting the project information"
+    loadingProject: "There was a problem getting the project information",
   },
 
   success: {
     Success: "Success!",
-    updateAvailable: "A new version is available"
+    updateAvailable: "A new version is available",
   },
 
   warning: {},
 
-  hint: {}
+  hint: {},
 };

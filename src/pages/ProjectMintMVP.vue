@@ -12,6 +12,14 @@
         <div class="text-h5 q-my-md">
           <template v-if="project">
             {{ project.name }}
+            <q-btn
+              v-if="project.createdByWalletAddress === userAddress"
+              :to="{ name: 'project-admin' }"
+              color="primary"
+              icon="admin"
+              round
+              flat
+            />
           </template>
           <q-skeleton v-else type="text" width="15em" />
         </div>
@@ -40,7 +48,7 @@
             type="number"
             :min="1"
             :max="maxQuantity"
-            :rules="[q => q > 0 && q <= maxQuantity]"
+            :rules="[(q) => q > 0 && q <= maxQuantity]"
             dense
             outlined
           />
@@ -157,7 +165,7 @@ import {
   ETH_ADDRESS,
   DAI_ADDRESS,
   USDC_ADDRESS,
-  ERC20_ABI
+  ERC20_ABI,
 } from "../util/constants";
 
 const ETH_BUFFER = 0.01;
@@ -182,7 +190,7 @@ export default {
       { value: 10, label: "10%" },
       { value: 20, label: "20%" },
       { value: 30, label: "30%" },
-      { value: "custom", label: t("Custom") }
+      { value: "custom", label: t("Custom") },
     ];
     const tip = ref(0);
     const customTip = ref(5);
@@ -203,18 +211,18 @@ export default {
         {
           value: ETH_ADDRESS,
           label: "ETH",
-          disable: disabledCurrencies.value.includes("ETH")
+          disable: disabledCurrencies.value.includes("ETH"),
         },
         {
           value: DAI_ADDRESS,
           label: "DAI",
-          disable: disabledCurrencies.value.includes("DAI")
+          disable: disabledCurrencies.value.includes("DAI"),
         },
         {
           value: USDC_ADDRESS,
           label: "USDC",
-          disable: disabledCurrencies.value.includes("USDC")
-        }
+          disable: disabledCurrencies.value.includes("USDC"),
+        },
       ];
     });
     const currency = ref(ETH_ADDRESS);
@@ -250,8 +258,8 @@ export default {
         abi: ERC20_ABI,
         functionName: "balanceOf",
         params: {
-          _owner: userAddress.value
-        }
+          _owner: userAddress.value,
+        },
       });
     };
 
@@ -263,8 +271,8 @@ export default {
         functionName: "approve",
         params: {
           _spender: sharedFundingClone.address,
-          _value: Moralis.Units.ETH(total.value.toString())
-        }
+          _value: Moralis.Units.ETH(total.value.toString()),
+        },
       });
       const response = await tx
         .wait(TX_WAIT)
@@ -279,8 +287,8 @@ export default {
         functionName: "approve",
         params: {
           _spender: sharedFundingClone.address,
-          _value: Moralis.Units.ETH(total.value.toString())
-        }
+          _value: Moralis.Units.ETH(total.value.toString()),
+        },
       });
       const response = await tx
         .wait()
@@ -309,7 +317,7 @@ export default {
         }
 
         const paymentType = currencies.value
-          .find(c => c.value === currency.value)
+          .find((c) => c.value === currency.value)
           .label.toLowerCase();
 
         let tx;
@@ -326,9 +334,9 @@ export default {
               _proof: createMerkleProofRainbow(
                 project.value.rainbowAddresses,
                 createLeafRainbow(userAddress.value.toLowerCase())
-              )
+              ),
             },
-            msgValue
+            msgValue,
           });
 
           // Call Cloud Function
@@ -337,7 +345,7 @@ export default {
             numMints: quantity.value,
             paymentType,
             tipAmountInUsd: tipTotal.value,
-            transactionHash: tx.hash
+            transactionHash: tx.hash,
           });
         } else {
           // Public Mint
@@ -348,9 +356,9 @@ export default {
             params: {
               _token: currency.value,
               _tipInUsd: ethers.utils.parseEther(tipTotal.value.toString()),
-              _mintAmount: ethers.BigNumber.from(quantity.value)
+              _mintAmount: ethers.BigNumber.from(quantity.value),
             },
-            msgValue
+            msgValue,
           });
 
           // Call Cloud Function
@@ -359,7 +367,7 @@ export default {
             numMints: quantity.value,
             paymentType,
             tipAmountInUsd: tipTotal.value,
-            transactionHash: tx.hash
+            transactionHash: tx.hash,
           });
         }
         const response = await tx.wait(TX_WAIT);
@@ -424,7 +432,7 @@ export default {
       try {
         // project.value = await store.dispatch("getProject", props.projectID);
         const response = await Moralis.Cloud.run("getProject", {
-          projectId: props.projectID
+          projectId: props.projectID,
         });
 
         project.value = response.project;
@@ -477,8 +485,8 @@ export default {
       disabledCurrencies,
       isPurchasing,
       purchase,
-      isValid
+      isValid,
     };
-  }
+  },
 };
 </script>

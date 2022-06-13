@@ -15,7 +15,15 @@
         >
           <template v-slot:header>
             <q-item-section avatar>
-              <AddrAvatar :address="project.ethAddress" />
+              <AddrAvatar
+                @click="
+                  $router.push({
+                    name: 'mint',
+                    params: { projectID: project.id },
+                  })
+                "
+                :address="project.ethAddress"
+              />
             </q-item-section>
             <q-item-section>
               <q-item-label>
@@ -160,14 +168,14 @@ export default {
           abi: PaymentSplitter.abi,
           functionName: "releaseAll",
           params: {
-            _account: userAddress.value
-          }
+            _account: userAddress.value,
+          },
         });
 
         // Call Cloud Function
         await Moralis.Cloud.run("withdrawFunds", {
           paymentSplitterId,
-          transactionHash: tx.hash
+          transactionHash: tx.hash,
         });
 
         const response = await tx.wait(TX_WAIT);
@@ -195,7 +203,7 @@ export default {
         try {
           projects.value = (
             await Moralis.Cloud.run("getUserBalances")
-          ).projects.map(project => {
+          ).projects.map((project) => {
             let total = project.paymentSplitters.reduce(
               (total, ps) => {
                 total.eth += ps.balances.eth;
@@ -221,8 +229,8 @@ export default {
       userAddress,
       projects,
       isClaiming,
-      claim
+      claim,
     };
-  }
+  },
 };
 </script>

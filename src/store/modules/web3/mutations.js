@@ -9,6 +9,7 @@ export async function setUser(state, user) {
     state.userAddress = "";
     state.userENS = "";
     state.userNFTs = [];
+    state.userRoles = [];
     state.userBalances = [];
   }
 }
@@ -31,6 +32,10 @@ export function setUserENS(state, ens) {
 
 export function setUserNFTs(state, nfts) {
   // state.userNFTs = deepFreeze(nfts);
+}
+
+export function setUserRoles(state, roles) {
+  state.userRoles = roles || [];
 }
 
 export function setUserBalances(state, balances) {
