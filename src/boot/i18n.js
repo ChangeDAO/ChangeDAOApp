@@ -12,6 +12,21 @@ const numberFormats = {
     USD: {
       style: "currency",
       currency: "USD"
+    },
+    n8: {
+      style: "decimal",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 8
+    },
+    n6: {
+      style: "decimal",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 6
+    },
+    n4: {
+      style: "decimal",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 4
     }
   }
 };

@@ -111,7 +111,7 @@ p {
   color: $dark-accent;
 }
 
-a:not(.q-btn) {
+a:not(.q-btn):not(.q-item) {
   text-decoration: none;
   color: $accent;
   &:hover {

@@ -10,6 +10,7 @@ export default {
   Cancel: "Cancel",
   Checkout: "Checkout",
   Claim: "Claim",
+  Claims: "Claims",
   Connect: "Connect",
   "Connect to ChangeDAO": "Connect to ChangeDAO",
   "Connect Wallet": "Connect Wallet",
@@ -48,7 +49,7 @@ export default {
   Mint: "Mint",
   "Mint NFT": "Mint NFT",
   Movement: "Movement",
-  "n Mints Remaining": "{count} Mints Remaining",
+  "n Mints Remaining": "{count} Mint Remaining | {count} Mints Remaining",
   Name: "Name",
   "Need help?": "Need help?",
   "New Project": "New Project",
@@ -66,7 +67,6 @@ export default {
   Privacy: "Privacy",
   "Processing Transaction": "Processing Transaction",
   "Project Administration": "Project Administration",
-  "Project Claims": "Project Claims",
   "Project Name": "Project Name",
   "Project Split": "Project Split",
   Purchase: "Purchase",
@@ -111,6 +111,11 @@ export default {
     humanRights: "Human Rights",
     identityAndVulnerablePopulations: "Identity & Vulnerable Populations",
     supplyChain: "Supply Chain"
+  },
+
+  psTypes: {
+    funding: "Funding",
+    royalties: "Royalties"
   },
 
   mask: {

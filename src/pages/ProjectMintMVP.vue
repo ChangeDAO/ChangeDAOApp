@@ -5,7 +5,7 @@
         <!-- Title -->
         <div class="text-h4 q-my-md">
           {{ isRainbowPeriod ? "Rainbow Mint" : $t("Mint NFT") }}
-          <div v-if="remainingRainbow" class="text-caption">
+          <div v-if="isRainbowPeriod" class="text-caption">
             <RelativeTime before="ends" :value="remainingRainbow" text-only />
           </div>
         </div>
@@ -402,9 +402,7 @@ export default {
       return rainbowExpiration.value ? new Date(rainbowExpiration.value) : null;
     });
     const isRainbowPeriod = computed(() => {
-      return rainbowExpiration.value
-        ? rainbowExpiration.value > new Date().getTime()
-        : null;
+      return remainingRainbow.value > new Date();
     });
 
     const isValid = computed(

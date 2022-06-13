@@ -4,6 +4,19 @@
     {{ ens || shortAddr(address) }}
     <q-menu auto-close>
       <q-list class="text-no-wrap">
+        <q-item :to="{ name: 'claims' }" clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="claims" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>
+              {{ $t("Claims") }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-separator />
+
         <!-- Wallet Providers -->
         <q-item
           v-for="provider in providers"

@@ -9,6 +9,12 @@ const routes = [
         component: () => import("pages/Home.vue")
       },
       {
+        name: "claims",
+        path: "claims",
+        props: true,
+        component: () => import("pages/Claims.vue")
+      },
+      {
         name: "project-new",
         path: "project/new",
         props: true,
@@ -38,12 +44,6 @@ const routes = [
         //     component: () => import("pages/MintCheckout.vue")
         //   }
         // ]
-      },
-      {
-        name: "claims",
-        path: "project/:projectID/claims",
-        props: true,
-        component: () => import("pages/ProjectClaims.vue")
       },
       {
         name: "mintTx",

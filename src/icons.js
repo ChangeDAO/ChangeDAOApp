@@ -2,6 +2,7 @@ export default {
   add: "mdi-plus",
   arrow_drop_down: "mdi-menu-down",
   check: "mdi-check-circle",
+  claims: "mdi-account-cash",
   close: "mdi-close-circle-outline",
   delete: "mdi-delete",
   discord: "mdi-discord",
