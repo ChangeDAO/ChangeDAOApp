@@ -4,6 +4,64 @@
     {{ ens || shortAddr(address) }}
     <q-menu auto-close>
       <q-list class="text-no-wrap">
+        <!-- Claims -->
+        <q-item :to="{ name: 'claims' }" clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="claims" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>
+              {{ $t("Claims") }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-separator />
+
+        <!-- Changemaker -->
+        <template v-if="roles.includes('Changemaker')">
+          <q-item :to="{ name: 'project-new' }" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="admin" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ $t("New Project") }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
+
+        <!-- Non-Changemaker -->
+        <q-item v-else :to="{ name: 'cm-signup' }" clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="admin" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ $t("Changemaker Signup") }}</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-separator />
+
+        <!-- Wallet Providers -->
+        <q-item
+          v-for="provider in providers"
+          :key="provider.value"
+          clickable
+          v-ripple
+          @click="logIn(provider.value)"
+        >
+          <q-item-section avatar>
+            <q-icon name="wallet" />
+          </q-item-section>
+          <q-item-section side>
+            <q-item-label>
+              {{ provider.label }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-separator />
+
         <template v-if="roles.includes('Admin')">
           <q-item :to="{ name: 'admin-deploy' }" clickable v-ripple>
             <q-item-section avatar>
@@ -25,40 +83,6 @@
 
           <q-separator />
         </template>
-
-        <!-- Wallet Providers -->
-        <q-item
-          v-for="provider in providers"
-          :key="provider.value"
-          clickable
-          v-ripple
-          @click="logIn(provider.value)"
-        >
-          <q-item-section avatar>
-            <q-icon name="wallet" />
-          </q-item-section>
-          <q-item-section side>
-            <q-item-label>
-              {{ provider.label }}
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-separator />
-        
-        <!-- Claims -->
-        <q-item :to="{ name: 'claims' }" clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="claims" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>
-              {{ $t("Claims") }}
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-separator />
 
         <!-- Log Out -->
         <q-item @click="logOut" clickable v-ripple>

@@ -9,6 +9,7 @@ export default {
   Blog: "Blog",
   Cancel: "Cancel",
   "Changemaker Approval": "Changemaker Approval",
+  "Changemaker Signup": "Changemaker Signup",
   Checkout: "Checkout",
   Claim: "Claim",
   Claims: "Claims",
