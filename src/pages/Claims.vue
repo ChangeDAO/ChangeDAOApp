@@ -106,7 +106,10 @@
                 </div>
               </div>
             </q-item-section>
-            <q-item-section side>
+            <q-item-section
+              v-if="ps.balances.eth || ps.balances.dai || ps.balances.usdc"
+              side
+            >
               <q-btn
                 @click="claim(ps.id, ps.ethAddress)"
                 :label="$t('Claim')"
@@ -169,6 +172,7 @@ export default {
         });
 
         const response = await tx.wait(TX_WAIT);
+        getProjects();
         notifySuccess("Success");
       } catch (error) {
         console.error(error);
@@ -179,11 +183,10 @@ export default {
     };
 
     const projects = ref([]);
-
-    onMounted(async () => {
+    const getProjects = async () => {
       if (userAddress.value) {
-        Loading.show();
         try {
+          Loading.show();
           projects.value = (
             await Moralis.Cloud.run("getUserBalances")
           ).projects.map((project) => {
@@ -205,6 +208,10 @@ export default {
           Loading.hide();
         }
       }
+    };
+
+    onMounted(async () => {
+      getProjects();
     });
 
     return {

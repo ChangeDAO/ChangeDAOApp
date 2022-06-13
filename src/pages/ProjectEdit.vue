@@ -94,10 +94,13 @@ export default {
     );
 
     // Reset
-    const reset = (clear = false) => {
+    const reset = (clear = false, complete = false) => {
       if (!isPart1Complete.value) {
         part1.value.reset(clear);
         part2.value.reset(true);
+      } else if (complete) {
+        part1.value.reset(true, true);
+        part2.value.reset(true, true);
       } else {
         part2.value.reset(clear);
       }
@@ -128,7 +131,6 @@ export default {
           data1.value.projectId = (
             await Moralis.Cloud.run("createProjectPartOne", data1.value)
           ).id;
-          data2.value.projectId = data1.value.projectId;
 
           // Transaction Complete
           const response = await tx.wait(TX_WAIT);
@@ -139,7 +141,7 @@ export default {
             ChangeDaoNFTFactory.abi,
             provider
           );
-          data2.value._changeDaoNFTClone = (
+          const _changeDaoNFTClone = (
             await changeDaoNFTFactory.queryFilter(
               changeDaoNFTFactory.filters.ChangeDaoNFTCloneCreated(),
               response.blockHash
@@ -152,12 +154,19 @@ export default {
             PaymentSplitterFactory.abi,
             provider
           );
-          data2.value._fundingPSClone = (
+          const _fundingPSClone = (
             await paymentSplitterFactory.queryFilter(
               paymentSplitterFactory.filters.FundingPSCloneDeployed(),
               response.blockHash
             )
           )[0].args.fundingPSClone;
+
+          // Set data for Part 2
+          Object.assign(data2.value, {
+            _changeDaoNFTClone,
+            _fundingPSClone,
+          });
+          data2.value.projectId = data1.value.projectId;
         } else {
           // Part 2
 
@@ -189,7 +198,7 @@ export default {
               _maxMintAmountRainbow: ethers.BigNumber.from(
                 data2.value.hasRainbow
                   ? data2.value._maxMintAmountRainbow.toString()
-                  : 10
+                  : 1
               ),
               _rainbowDuration: ethers.BigNumber.from(
                 data2.value._rainbowDuration * 3600
@@ -198,6 +207,9 @@ export default {
             },
           });
           data2.value.transactionHash = tx.hash;
+          if (data2.value._maxMintAmountRainbow === null) {
+            data2.value._maxMintAmountRainbow = 1;
+          }
 
           // Call Cloud Function
           await Moralis.Cloud.run("createProjectPartTwo", data2.value);
@@ -219,9 +231,9 @@ export default {
           )[0].args.sharedFundingClone;
 
           goToAdmin();
+          reset(true, true);
         }
 
-        reset(true);
         notifySuccess("Success");
       } catch (error) {
         console.error(error);

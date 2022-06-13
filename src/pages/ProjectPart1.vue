@@ -82,9 +82,7 @@
             <q-avatar color="primary" size="sm" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>
-              ChangeDAO
-            </q-item-label>
+            <q-item-label> ChangeDAO </q-item-label>
           </q-item-section>
           <q-item-section side> {{ changeDaoFunding / 100 }}% </q-item-section>
         </q-item>
@@ -112,9 +110,7 @@
             <q-avatar color="primary" size="sm" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>
-              ChangeDAO
-            </q-item-label>
+            <q-item-label> ChangeDAO </q-item-label>
           </q-item-section>
           <q-item-section side>
             {{ changeDaoRoyalties / 100 }}%
@@ -149,7 +145,7 @@ const REQUEST = {
   _fundingShares: [],
   transactionHash: "",
   description: "",
-  areaOfChange: ""
+  areaOfChange: "",
 };
 
 const LOCALSTORAGE_KEY = "projectPart1";
@@ -174,7 +170,7 @@ export default {
       },
       set(value) {
         emit("update:modelValue", value);
-      }
+      },
     });
 
     const isValid = computed(
@@ -194,9 +190,9 @@ export default {
     );
 
     const areasOfChange = computed(() =>
-      AREAS_OF_CHANGE.map(value => ({
+      AREAS_OF_CHANGE.map((value) => ({
         value,
-        label: t("areasOfChange." + value)
+        label: t("areasOfChange." + value),
       }))
     );
 
@@ -213,8 +209,10 @@ export default {
       return data;
     });
 
-    const reset = (clear = false) => {
-      if (clear) {
+    const reset = (clear = false, complete = false) => {
+      if (complete) {
+        return LocalStorage.remove(LOCALSTORAGE_KEY);
+      } else if (clear) {
         data.value = cloneDeep(defaultModel.value);
       } else {
         data.value =
@@ -233,15 +231,15 @@ export default {
         Moralis.executeFunction({
           contractAddress: FundingAllocations.address,
           abi: FundingAllocations.abi,
-          functionName: "changeDaoFunding"
-        }).then(result => {
+          functionName: "changeDaoFunding",
+        }).then((result) => {
           changeDaoFunding.value = result;
         });
         Moralis.executeFunction({
           contractAddress: FundingAllocations.address,
           abi: FundingAllocations.abi,
-          functionName: "changeDaoRoyalties"
-        }).then(result => {
+          functionName: "changeDaoRoyalties",
+        }).then((result) => {
           changeDaoRoyalties.value = result;
         });
       }
@@ -257,7 +255,7 @@ export default {
           LocalStorage.remove(LOCALSTORAGE_KEY);
         } else {
           LocalStorage.set(LOCALSTORAGE_KEY, {
-            ...value
+            ...value,
           });
         }
       },
@@ -277,8 +275,8 @@ export default {
       changeDaoRoyalties,
       fundingShares,
       royaltiesShares,
-      maxPayees
+      maxPayees,
     };
-  }
+  },
 };
 </script>

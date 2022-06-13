@@ -26,7 +26,7 @@
         <q-input
           v-model.number="data._maxMintAmountPublic"
           :label="'Max Mints per Transaction'"
-          :rules="[a => a > 0 && a <= 20]"
+          :rules="[(a) => a > 0 && a <= 20]"
           type="number"
           :min="1"
           :max="20"
@@ -51,7 +51,7 @@
         <q-input
           v-model.number="data._maxMintAmountRainbow"
           :label="'Max Mints per Transaction for Rainbow List'"
-          :rules="[a => a > 0 && a <= 20]"
+          :rules="[(a) => a > 0 && a <= 20]"
           type="number"
           :min="1"
           :max="20"
@@ -63,7 +63,7 @@
           type="number"
           v-model.number="data._rainbowDuration"
           :label="'Rainbow Period Duration (hours)'"
-          :rules="[a => a >= 0]"
+          :rules="[(a) => a >= 0]"
           :min="0"
           item-aligned
         />
@@ -87,7 +87,7 @@
           type="number"
           v-model.number="data._rainbowDuration"
           :label="'Courtesy Mint Duration (hours)'"
-          :rules="[a => a >= 0]"
+          :rules="[(a) => a >= 0]"
           :min="0"
           item-aligned
         />
@@ -118,7 +118,7 @@ const REQUEST = {
   projectId: "",
   rainbowAddresses: [],
   transactionHash: "",
-  hasRainbow: false
+  hasRainbow: false,
 };
 
 const LOCALSTORAGE_KEY = "projectPart2";
@@ -141,31 +141,31 @@ export default {
       },
       set(value) {
         emit("update:modelValue", value);
-      }
+      },
     });
 
     const rainbowAddresses = ref("");
     const rainbowAddrValid = ref(false);
 
-    watch(rainbowAddresses, addresses => {
+    watch(rainbowAddresses, (addresses) => {
       if (data.value && addresses) {
         addresses = addresses.trim().split(/[\s,]+/);
-        rainbowAddrValid.value = addresses.every(addr =>
+        rainbowAddrValid.value = addresses.every((addr) =>
           Moralis.web3Library.utils.isAddress(addr)
         );
-        addresses = addresses.map(a => a.toLowerCase());
+        addresses = addresses.map((a) => a.toLowerCase());
         data.value.rainbowAddresses = addresses;
       }
     });
 
     const isValid = computed(
       () =>
-        address.value &&
-        data.value._changeDaoNFTClone &&
-        data.value._fundingPSClone &&
-        data.value._mintPrice &&
-        data.value._totalMints &&
-        data.value._maxMintAmountPublic &&
+        Boolean(address.value) &&
+        Boolean(data.value._changeDaoNFTClone) &&
+        Boolean(data.value._fundingPSClone) &&
+        Boolean(data.value._mintPrice) &&
+        Boolean(data.value._totalMints) &&
+        Boolean(data.value._maxMintAmountPublic) &&
         data.value._rainbowDuration >= 0 &&
         (!data.value.hasRainbow ||
           (data.value._maxMintAmountRainbow &&
@@ -176,9 +176,11 @@ export default {
     // Reset
     const defaultModel = ref(cloneDeep(REQUEST));
 
-    const reset = (clear = false) => {
+    const reset = (clear = false, complete = false) => {
       let newData;
-      if (clear) {
+      if (complete) {
+        return LocalStorage.remove(LOCALSTORAGE_KEY);
+      } else if (clear) {
         newData = cloneDeep(defaultModel.value);
       } else {
         newData = LocalStorage.getItem(LOCALSTORAGE_KEY);
@@ -201,7 +203,9 @@ export default {
           newData._fundingPSClone = defaultModel.value._fundingPSClone;
         }
       }
-      rainbowAddresses.value = newData.rainbowAddresses.join("\n") || "";
+      if (newData) {
+        rainbowAddresses.value = newData.rainbowAddresses.join("\n") || "";
+      }
       data.value = newData;
     };
 
@@ -212,13 +216,13 @@ export default {
     // Backup unsaved form data
     watch(
       data,
-      newData => {
+      (newData) => {
         if (isEqual(newData, REQUEST)) {
           // Remove if default
           LocalStorage.remove(LOCALSTORAGE_KEY);
         } else {
           LocalStorage.set(LOCALSTORAGE_KEY, {
-            ...newData
+            ...newData,
           });
 
           // Preserve data from Part 1
@@ -245,8 +249,8 @@ export default {
       rainbowAddresses,
       rainbowAddrValid,
       reset,
-      isValid
+      isValid,
     };
-  }
+  },
 };
 </script>
