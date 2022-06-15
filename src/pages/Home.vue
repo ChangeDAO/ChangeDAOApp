@@ -121,7 +121,7 @@
       <div class="q-gutter-xl q-py-xl column flex-center">
         <!-- Podcast -->
         <div class="section q-pa-lg">
-          <p class="text-h3 text-uppercase">Podcast</p>
+          <p class="text-h3 text-uppercase">{{ $t("Podcast") }}</p>
 
           <div class="row reverse q-col-gutter-md">
             <div class="col-sm-4">
@@ -133,15 +133,7 @@
             </div>
 
             <div class="col-sm-8">
-              <p>
-                Proof of Change lorem ipsum dolor sit amet, consectetur
-                adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.
-              </p>
-              <p>
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                laboris nisi ut.
-              </p>
+              <p v-html="$t('home.podcast')" />
               <q-btn
                 @click="podcast"
                 label="Listen"
@@ -154,7 +146,7 @@
 
         <!-- Blog -->
         <div class="section q-pa-lg">
-          <p class="text-h3 text-uppercase">Blog</p>
+          <p class="text-h3 text-uppercase">{{ $t("Blog") }}</p>
 
           <div class="row reverse q-col-gutter-md">
             <div class="col-sm-4">
@@ -166,15 +158,7 @@
             </div>
 
             <div class="col-sm-8">
-              <p>
-                Proof of Change lorem ipsum dolor sit amet, consectetur
-                adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.
-              </p>
-              <p>
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                laboris nisi ut.
-              </p>
+              <p v-html="$t('home.blog')" />
               <q-btn
                 @click="blog"
                 label="Read"
@@ -187,7 +171,7 @@
 
         <!-- Events -->
         <div class="section q-pa-lg">
-          <p class="text-h3 text-uppercase">Events</p>
+          <p class="text-h3 text-uppercase">{{ $t("Events") }}</p>
 
           <div class="row reverse q-col-gutter-md">
             <div class="col-sm-4">
@@ -199,15 +183,8 @@
             </div>
 
             <div class="col-sm-8">
-              <p>
-                Proof of Change lorem ipsum dolor sit amet, consectetur
-                adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.
-              </p>
-              <p>
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                laboris nisi ut.
-              </p>
+              <p v-html="$t('home.events')" />
+
               <q-btn
                 @click="events"
                 label="Get Involved"

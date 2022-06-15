@@ -2,9 +2,9 @@ export const URLS = {
   ABOUT_US: "https://docs.changedao.org/about-us/master",
   TWITTER: "https://twitter.com/ChangeDAO",
   DISCORD: "https://discord.gg/88KeENZnyQ",
-  PODCAST: "",
+  PODCAST: "https://medium.com/changedao/podcast/home",
   BLOG: "https://medium.com/changedao",
-  EVENTS: "",
+  EVENTS: "https://medium.com/changedao/events/home",
   NEWSLETTER_FORM: "https://getform.io/f/664280cb-7478-486f-8945-4cc9d819e88a",
 };
 

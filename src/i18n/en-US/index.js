@@ -124,6 +124,14 @@ export default {
     supplyChain: "Supply Chain",
   },
 
+  home: {
+    podcast:
+      "Proof of Change is dedicated to elevating the stories of changemakers using NFTs as a Force for Change™.<br/><br/>Change starts with a story. Listen in and be a part of our stories of change.",
+    blog: "Stay informed on the happenings in our community.<br/><br/>Follow along on Medium and join our movement of change.",
+    events:
+      "Show up and experience what it's like to be heard.<br/><br/>We build meaningful connections through our IRL and metaverse events.",
+  },
+
   psTypes: {
     funding: "Funding",
     royalties: "Royalties",
