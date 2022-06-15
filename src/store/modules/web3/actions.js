@@ -31,7 +31,7 @@ export async function init({ commit, dispatch, state }) {
 }
 
 // Enable Web3
-export async function enable({ state, dispatch }) {
+export async function enableWeb3({ state, dispatch }) {
   return Moralis.enableWeb3({ provider: state.provider || "metamask" }).then(
     (result) => {
       dispatch("getUserData");

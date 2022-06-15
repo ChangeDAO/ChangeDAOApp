@@ -17,7 +17,7 @@
     </q-header>
 
     <q-page-container>
-      <router-view v-if="!showLogIn" />
+      <router-view v-if="isInitialized && !showLogIn" />
       <LogInDialog :model-value="showLogIn" />
     </q-page-container>
 
@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { openURL } from "quasar";
@@ -137,6 +137,8 @@ import { URLS } from "../util/constants";
 
 import LogInDialog from "../components/LogInDialog";
 import UserMenu from "../components/UserMenu";
+
+import Moralis from "moralis";
 
 export default defineComponent({
   name: "MainLayout",
@@ -154,11 +156,24 @@ export default defineComponent({
       openURL(URLS.TWITTER);
     };
 
+    const isInitialized = ref(false);
+
+    const isLoggedIn = computed(() => Boolean(store.state.web3.user));
+
     const showLogIn = computed(() =>
-      Boolean(
-        router.currentRoute.value.meta.requiresWeb3 && !store.state.web3.user
-      )
+      Boolean(router.currentRoute.value.meta.requiresWeb3 && !isLoggedIn.value)
     );
+
+    router.beforeEach(async (to) => {
+      if (
+        to.meta.requiresWeb3 &&
+        isLoggedIn.value &&
+        !Moralis.isWeb3Enabled()
+      ) {
+        await store.dispatch("enableWeb3");
+      }
+      return true;
+    });
 
     const nav = [
       {
@@ -197,9 +212,22 @@ export default defineComponent({
       },
     ];
 
+    if (
+      router.currentRoute.value.meta.requiresWeb3 &&
+      isLoggedIn.value &&
+      !Moralis.isWeb3Enabled()
+    ) {
+      store.dispatch("enableWeb3").then(() => {
+        isInitialized.value = true;
+      });
+    } else {
+      isInitialized.value = true;
+    }
+
     return {
       discord,
       twitter,
+      isInitialized,
       showLogIn,
       nav,
     };

@@ -362,6 +362,12 @@ export default {
         notifyError(error.error || error);
       }
 
+      // Abort if project not loaded
+      if (!project.value) {
+        isLoading.value = false;
+        return notifyError("loadingProject");
+      }
+
       // Shared Funding Clone
       sharedFundingClone = new ethers.Contract(
         project.value.sharedFundingCloneAddress,
