@@ -11,17 +11,17 @@ export async function init({ commit, dispatch, state }) {
     dispatch("getUserData");
   });
 
-  Moralis.onAccountChanged(async (address) => {
-    if (address) {
-      // await Moralis.link(address);
-      commit("setUser", Moralis.User.current());
-      commit("setUserAddress", address);
-      dispatch("getUserData");
-    } else {
-      commit("setUserAddress");
-      return dispatch("logOut");
-    }
-  });
+  // Moralis.onAccountChanged(async (address) => {
+  //   if (address) {
+  //     // await Moralis.link(address);
+  //     commit("setUser", Moralis.User.current());
+  //     commit("setUserAddress", address);
+  //     dispatch("getUserData");
+  //   } else {
+  //     commit("setUserAddress");
+  //     return dispatch("logOut");
+  //   }
+  // });
 
   Moralis.onConnect((provider) => {
     commit("setProvider", provider);

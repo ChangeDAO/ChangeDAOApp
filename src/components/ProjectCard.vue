@@ -2,42 +2,54 @@
   <q-card>
     <img
       src="~assets/ChangeDAO-sample-cover.png"
-      style="width: 100%;"
+      style="width: 100%"
       class="shadow-4"
     />
     <div class="absolute-bottom q-pa-md caption">
       <div class="row items-center">
-        <q-avatar size="sm" color="grey-9" class="q-my-sm q-mr-sm" square />
+        <AddrAvatar :address="project.createdByWalletAddress" class="q-mr-sm" />
         <div class="text-subtitle2 text-weight-bold ellipsis">
-          @changemakerhandle
+          {{ shortAddr(project.createdByWalletAddress) }}
         </div>
       </div>
       <div class="text-caption text-weight-bold ellipsis">
-        Title of the drop
+        {{ project.name }}
       </div>
       <div class="row justify-between">
         <div class="text-caption text-uppercase q-mr-sm ellipsis">
-          Movement Name
+          {{ project.movement.name }}
         </div>
         <div class="text-caption text-grey-6 text-right">
-          ## of #### minted
+          {{ project.numMintsBought }} of {{ project.numMints }} minted
         </div>
       </div>
     </div>
   </q-card>
 </template>
 
+<style lang="scss">
+.caption {
+  background: rgba(0, 0, 0, 0.47);
+}
+</style>
+
 <script>
 import { shortAddr } from "../util/formatting";
 
+import AddrAvatar from "./AddrAvatar";
+
 export default {
   name: "ProjectCard",
+
+  components: { AddrAvatar },
+
   props: {
     project: Object,
-    minimal: Boolean
+    minimal: Boolean,
   },
+
   methods: {
-    shortAddr
-  }
+    shortAddr,
+  },
 };
 </script>

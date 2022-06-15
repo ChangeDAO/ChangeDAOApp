@@ -86,8 +86,18 @@
 
       <div class="flex flex-center q-pa-xl q-pt-xl q-gutter-y-lg q-gutter-x-xl">
         <q-btn-group outline>
-          <q-btn label="Featured Projects" color="accent" outline />
-          <q-btn label="All Projects" color="accent" outline />
+          <q-btn
+            :label="$t('Featured Projects')"
+            :to="{ name: 'projects-featured' }"
+            color="accent"
+            outline
+          />
+          <q-btn
+            :label="$t('All Projects')"
+            :to="{ name: 'projects' }"
+            color="accent"
+            outline
+          />
         </q-btn-group>
       </div>
     </q-card-section>
@@ -259,10 +269,6 @@
     .q-field__control {
       background-color: rgba(#000, 60%) !important;
     }
-  }
-
-  .caption {
-    background: rgba(0, 0, 0, 0.47);
   }
 
   .stories-of-change {

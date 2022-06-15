@@ -16,6 +16,16 @@ const routes = [
         component: () => import("pages/Claims.vue"),
       },
       {
+        name: "projects",
+        path: "projects",
+        component: () => import("pages/ProjectList.vue"),
+      },
+      {
+        name: "projects-featured",
+        path: "projects/featured",
+        component: () => import("pages/ProjectList.vue"),
+      },
+      {
         name: "project-new",
         path: "projects/new",
         props: true,
