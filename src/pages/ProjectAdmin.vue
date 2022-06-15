@@ -7,7 +7,7 @@
       </div>
       <div class="text-h5 q-ma-md">
         <template v-if="project">
-          <router-link :to="{ name: 'mint' }">
+          <router-link :to="{ name: 'project-mint' }">
             {{ project.name }}
           </router-link>
         </template>
@@ -144,9 +144,6 @@
         {{ $t("Project has pending changes") }}
       </div>
     </div>
-    <div v-else class="q-layout-padding">
-      <LogInDialog />
-    </div>
   </q-page>
 </template>
 
@@ -158,7 +155,6 @@ import { useStore } from "vuex";
 
 import { TX_WAIT } from "../util/constants";
 import { notifyError, notifySuccess, notifyTx } from "../util/notify";
-import LogInDialog from "../components/LogInDialog";
 import AddrInput from "../components/AddrInput";
 import RelativeTime from "../components/RelativeTime";
 
@@ -171,7 +167,7 @@ import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.jso
 export default {
   name: "PageProjectAdmin",
 
-  components: { LogInDialog, AddrInput, RelativeTime },
+  components: { AddrInput, RelativeTime },
 
   props: ["projectID"],
 

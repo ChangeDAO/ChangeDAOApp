@@ -19,9 +19,6 @@
               </q-item-label>
             </q-item-section>
           </q-item>
-          <q-item v-else>
-            <LogInDialog />
-          </q-item>
 
           <q-item>
             <q-item-section>
@@ -159,7 +156,6 @@ import Moralis from "moralis";
 import { notifyError, notifySuccess } from "../util/notify";
 import { shortAddr } from "../util/formatting";
 import AddrAvatar from "../components/AddrAvatar";
-import LogInDialog from "../components/LogInDialog";
 
 const LOCALSTORAGE_KEY = "changemakerSignup";
 
@@ -182,7 +178,7 @@ const REQUEST = {
 export default {
   name: "PageChangemakerSignup",
 
-  components: { AddrAvatar, LogInDialog },
+  components: { AddrAvatar },
 
   setup() {
     const store = useStore();

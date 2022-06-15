@@ -35,9 +35,6 @@
         </q-item-section>
       </q-item>
     </div>
-    <div v-else class="q-layout-padding">
-      <LogInDialog />
-    </div>
   </q-page>
 </template>
 
@@ -58,12 +55,11 @@ import ProjectPart2 from "./ProjectPart2";
 import { TX_WAIT } from "../util/constants";
 import { notifyError, notifySuccess, notifyTx } from "../util/notify";
 import { createMerkleRootRainbow } from "../util/merkle";
-import LogInDialog from "../components/LogInDialog";
 
 export default {
   name: "PageProjectEdit",
 
-  components: { ProjectPart1, ProjectPart2, LogInDialog },
+  components: { ProjectPart1, ProjectPart2 },
 
   setup() {
     const router = useRouter();

@@ -6,7 +6,7 @@
       <div class="page-col col q-col-6">
         <div class="sticky header-top">
           <!-- Connect Wallet -->
-          <LogInDialog
+          <LogIn
             v-if="!user"
             class="full-width q-mb-lg"
             :label="$t('Connect Wallet')"
@@ -92,7 +92,7 @@
             :label="$t('Mint NFT')"
             color="primary"
           />
-          <LogInDialog v-else :label="$t('Connect Wallet')" />
+          <LogIn v-else :label="$t('Connect Wallet')" />
         </div>
       </div>
     </div>
@@ -153,7 +153,7 @@ import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 
-import LogInDialog from "../components/LogInDialog";
+import LogIn from "../components/LogIn";
 import ProjectInfo from "../components/ProjectInfo";
 import ProjectSplit from "../components/ProjectSplit";
 import SecondarySplit from "../components/SecondarySplit";
@@ -164,10 +164,10 @@ export default defineComponent({
   props: ["projectID"],
 
   components: {
-    LogInDialog,
+    LogIn,
     ProjectInfo,
     ProjectSplit,
-    SecondarySplit
+    SecondarySplit,
   },
 
   setup(props, context) {
@@ -185,12 +185,12 @@ export default defineComponent({
     });
 
     // Fetch the project
-    store.dispatch("getProject", props.projectID).catch(message => {
+    store.dispatch("getProject", props.projectID).catch((message) => {
       $q.notify({
         message,
         type: "negative",
         icon: "error",
-        position: "top-right"
+        position: "top-right",
       });
     });
 
@@ -206,8 +206,8 @@ export default defineComponent({
       project,
       backgroundImage,
       user,
-      mint
+      mint,
     };
-  }
+  },
 });
 </script>

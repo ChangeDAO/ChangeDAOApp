@@ -30,6 +30,16 @@ export async function init({ commit, dispatch, state }) {
   return dispatch("logIn");
 }
 
+// Enable Web3
+export async function enable({ state, dispatch }) {
+  return Moralis.enableWeb3({ provider: state.provider || "metamask" }).then(
+    (result) => {
+      dispatch("getUserData");
+      return result;
+    }
+  );
+}
+
 // Log In
 export async function logIn({ state, commit, dispatch }, provider) {
   let user = Moralis.User.current();
@@ -48,7 +58,6 @@ export async function logIn({ state, commit, dispatch }, provider) {
   }
 
   if (Moralis.User.current()) {
-    Moralis.enableWeb3({ provider: state.provider || "metamask" });
     commit("setUser", user);
     dispatch("getUserData");
   } else {
@@ -74,6 +83,10 @@ export async function getUserData({ commit, state }) {
   const address = state.userAddress;
 
   commit("setUserRoles", await getRoles());
+
+  if (!Moralis.isWeb3Enabled()) {
+    return;
+  }
 
   const balances = {};
 

@@ -31,7 +31,7 @@
         </template>
 
         <!-- Non-Changemaker -->
-        <q-item v-else :to="{ name: 'cm-signup' }" clickable v-ripple>
+        <q-item v-else :to="{ name: 'signup' }" clickable v-ripple>
           <q-item-section avatar>
             <q-icon name="admin" />
           </q-item-section>

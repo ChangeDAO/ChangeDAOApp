@@ -146,9 +146,6 @@
         </div>
       </div>
     </div>
-    <div v-else class="q-layout-padding">
-      <LogInDialog />
-    </div>
   </q-page>
 </template>
 
@@ -161,7 +158,6 @@ import { useStore } from "vuex";
 import { TX_WAIT } from "../util/constants";
 import { createLeafRainbow, createMerkleProofRainbow } from "../util/merkle";
 import { notifyError, notifySuccess, notifyTx } from "../util/notify";
-import LogInDialog from "../components/LogInDialog";
 import RelativeTime from "../components/RelativeTime";
 import SmoothReflow from "../components/SmoothReflow";
 
@@ -180,7 +176,7 @@ const ETH_BUFFER = 0.01;
 export default {
   name: "PageProjectMint",
 
-  components: { LogInDialog, RelativeTime, SmoothReflow },
+  components: { RelativeTime, SmoothReflow },
 
   props: ["projectID"],
 

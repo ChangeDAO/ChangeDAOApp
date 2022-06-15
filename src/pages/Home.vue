@@ -5,20 +5,14 @@
       <q-card-section class="col-12 col-sm-6">
         <img
           src="~assets/ChangeDAO-sample-cover.png"
-          style="width: 100%;"
+          style="width: 100%"
           class="shadow-4"
         />
       </q-card-section>
       <q-card-section class="col-12 col-sm-6">
-        <p class="text-h2">
-          CHANGEMAKER NAME
-        </p>
-        <p class="text-h4">
-          Title of the drop
-        </p>
-        <p class="text-caption">
-          MOVEMENT NAME
-        </p>
+        <p class="text-h2">CHANGEMAKER NAME</p>
+        <p class="text-h4">Title of the drop</p>
+        <p class="text-caption">MOVEMENT NAME</p>
         <div class="q-pt-md">
           <q-btn
             label="Discover"
@@ -54,7 +48,7 @@
           placeholder="Your email"
           bg-color="dark-accent"
           class="q-mx-auto"
-          style="max-width: 40em;"
+          style="max-width: 40em"
           filled
           dense
         >
@@ -113,7 +107,7 @@
             <div class="col-sm-4">
               <img
                 src="~assets/ChangeDAO-sample-cover.png"
-                style="width: 100%;"
+                style="width: 100%"
                 class="shadow-4"
               />
             </div>
@@ -146,7 +140,7 @@
             <div class="col-sm-4">
               <img
                 src="~assets/ChangeDAO-sample-cover.png"
-                style="width: 100%;"
+                style="width: 100%"
                 class="shadow-4"
               />
             </div>
@@ -179,7 +173,7 @@
             <div class="col-sm-4">
               <img
                 src="~assets/ChangeDAO-sample-cover.png"
-                style="width: 100%;"
+                style="width: 100%"
                 class="shadow-4"
               />
             </div>
@@ -216,7 +210,7 @@
           bg-color="dark-accent"
           placeholder="Your email"
           class="q-mx-auto"
-          style="max-width: 40em;"
+          style="max-width: 40em"
           filled
           dense
         >
@@ -350,7 +344,7 @@ export default {
   name: "PageHome",
 
   components: {
-    ProjectCard
+    ProjectCard,
   },
 
   setup() {
@@ -366,7 +360,7 @@ export default {
             method: "POST",
             mode: "cors",
             cache: "no-cache",
-            body: JSON.stringify({})
+            body: JSON.stringify({}),
           }
         );
         email.value = "";
@@ -396,8 +390,8 @@ export default {
       submitEmail,
       blog,
       podcast,
-      events
+      events,
     };
-  }
+  },
 };
 </script>

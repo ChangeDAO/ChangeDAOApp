@@ -240,7 +240,7 @@ export default defineComponent({
         notifySuccess("Success");
         isPurchasing.value = false;
         router.replace({
-          name: "mintTx",
+          name: "mint-tx",
           params: { txID: "transactionIDgoesHERE" }
         });
       } catch (error) {

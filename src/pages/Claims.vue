@@ -18,7 +18,7 @@
               <AddrAvatar
                 @click="
                   $router.push({
-                    name: 'mint',
+                    name: 'project-mint',
                     params: { projectID: project.id },
                   })
                 "
@@ -121,9 +121,6 @@
         </q-expansion-item>
       </q-list>
     </div>
-    <div v-else class="q-layout-padding">
-      <LogInDialog />
-    </div>
   </q-page>
 </template>
 
@@ -137,7 +134,6 @@ import { notifyError, notifySuccess, notifyTx } from "../util/notify";
 import { shortAddr } from "../util/formatting";
 import AddrAvatar from "../components/AddrAvatar";
 import RelativeTime from "../components/RelativeTime";
-import LogInDialog from "../components/LogInDialog";
 
 import Moralis from "moralis";
 import PaymentSplitter from "../../contracts/deployments/rinkeby/PaymentSplitter.json";
@@ -145,7 +141,7 @@ import PaymentSplitter from "../../contracts/deployments/rinkeby/PaymentSplitter
 export default {
   name: "PageClaims",
 
-  components: { AddrAvatar, RelativeTime, LogInDialog },
+  components: { AddrAvatar, RelativeTime },
 
   setup() {
     const store = useStore();
