@@ -14,6 +14,14 @@ export async function setUser(state, user) {
   }
 }
 
+export function setInitializing(state, value) {
+  state.initializing = Boolean(value);
+}
+
+export function setInitialized(state, value) {
+  state.initialized = Boolean(value);
+}
+
 export function setChain(state, chain) {
   state.chain = chain || null;
 }

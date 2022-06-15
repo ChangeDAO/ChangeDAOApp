@@ -148,7 +148,7 @@ const REQUEST = {
   areaOfChange: "",
 };
 
-const LOCALSTORAGE_KEY = "projectPart1";
+import { LOCALSTORAGE_KEY1 } from "./ProjectEdit";
 
 export default {
   name: "PageProjectPart1",
@@ -211,12 +211,12 @@ export default {
 
     const reset = (clear = false, complete = false) => {
       if (complete) {
-        return LocalStorage.remove(LOCALSTORAGE_KEY);
+        return LocalStorage.remove(LOCALSTORAGE_KEY1);
       } else if (clear) {
         data.value = cloneDeep(defaultModel.value);
       } else {
         data.value =
-          LocalStorage.getItem(LOCALSTORAGE_KEY) ||
+          LocalStorage.getItem(LOCALSTORAGE_KEY1) ||
           cloneDeep(defaultModel.value);
       }
     };
@@ -252,9 +252,9 @@ export default {
       (value, oldValue) => {
         if (isEqual(value, defaultModel.value)) {
           // Remove if default
-          LocalStorage.remove(LOCALSTORAGE_KEY);
+          LocalStorage.remove(LOCALSTORAGE_KEY1);
         } else {
-          LocalStorage.set(LOCALSTORAGE_KEY, {
+          LocalStorage.set(LOCALSTORAGE_KEY1, {
             ...value,
           });
         }

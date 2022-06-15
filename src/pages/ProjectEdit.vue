@@ -6,10 +6,14 @@
         {{ $t(isNew ? "New Project" : "Edit Project") }}
       </div>
 
-      <ProjectPart1 ref="part1" v-show="!isPart1Complete" v-model="data1" />
-      <ProjectPart2 ref="part2" v-show="isPart1Complete" v-model="data2" />
-
-      <q-separator spaced />
+      <q-stepper v-model="step" header-class="text-h5" vertical flat animated>
+        <q-step :name="1" :title="$t('project.step1')" :done="isPart1Complete">
+          <ProjectPart1 ref="part1" v-model="data1" />
+        </q-step>
+        <q-step :name="2" :title="$t('project.step2')">
+          <ProjectPart2 ref="part2" v-model="data2" />
+        </q-step>
+      </q-stepper>
 
       <q-item class="q-my-xl">
         <q-item-section>
@@ -39,9 +43,10 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { LocalStorage } from "quasar";
 import { pickBy } from "lodash";
 import Controller from "../../contracts/deployments/rinkeby/Controller.json";
 import ChangeDaoNFTFactory from "../../contracts/deployments/rinkeby/ChangeDaoNFTFactory.json";
@@ -55,6 +60,9 @@ import ProjectPart2 from "./ProjectPart2";
 import { TX_WAIT } from "../util/constants";
 import { notifyError, notifySuccess, notifyTx } from "../util/notify";
 import { createMerkleRootRainbow } from "../util/merkle";
+
+export const LOCALSTORAGE_KEY1 = "projectPart1";
+export const LOCALSTORAGE_KEY2 = "projectPart2";
 
 export default {
   name: "PageProjectEdit",
@@ -72,16 +80,18 @@ export default {
     const part2 = ref(null);
 
     // Form data
-    const data1 = ref(null);
-    const data2 = ref(null);
+    const data1 = ref(LocalStorage.getItem(LOCALSTORAGE_KEY1));
+    const data2 = ref(LocalStorage.getItem(LOCALSTORAGE_KEY2));
 
     const isNew = computed(
       () => router.currentRoute.value.name === "project-new"
     );
 
-    const isPart1Complete = computed(() =>
-      Boolean(data2.value && data2.value._changeDaoNFTClone)
-    );
+    const isPart1Complete = computed(() => {
+      return Boolean(data2.value && data2.value._changeDaoNFTClone);
+    });
+
+    const step = computed(() => (isPart1Complete.value ? 2 : 1));
 
     const isValid = computed(() =>
       isPart1Complete.value
@@ -90,13 +100,10 @@ export default {
     );
 
     // Reset
-    const reset = (clear = false, complete = false) => {
+    const reset = (clear = false) => {
       if (!isPart1Complete.value) {
         part1.value.reset(clear);
         part2.value.reset(true);
-      } else if (complete) {
-        part1.value.reset(true, true);
-        part2.value.reset(true, true);
       } else {
         part2.value.reset(clear);
       }
@@ -225,10 +232,9 @@ export default {
           );
 
           goToAdmin();
-          reset(true, true);
+          LocalStorage.remove(LOCALSTORAGE_KEY1);
+          LocalStorage.remove(LOCALSTORAGE_KEY2);
         }
-
-        notifySuccess("Success");
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -247,6 +253,7 @@ export default {
     return {
       part1,
       part2,
+      step,
       isPart1Complete,
       address,
       data1,

@@ -8,6 +8,7 @@ export default {
   delete: "mdi-delete",
   discord: "mdi-discord",
   disconnect: "mdi-wallet-outline",
+  edit: "mdi-pencil",
   error: "mdi-alert-circle",
   info: "mdi-information",
   keyboard_arrow_down: "mdi-chevron-down",

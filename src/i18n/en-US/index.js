@@ -54,6 +54,7 @@ export default {
   "Making Change By": "Making Change By",
   Mint: "Mint",
   "Mint NFT": "Mint NFT",
+  "Minting Ended": "Minting has ended",
   Movement: "Movement",
   "n Mints Remaining": "{count} Mint Remaining | {count} Mints Remaining",
   Name: "Name",
@@ -132,6 +133,11 @@ export default {
       "Show up and experience what it's like to be heard.<br/><br/>We build meaningful connections through our IRL and metaverse events.",
   },
 
+  project: {
+    step1: "Step 1",
+    step2: "Step 2",
+  },
+
   psTypes: {
     funding: "Funding",
     royalties: "Royalties",
@@ -170,5 +176,9 @@ export default {
 
   warning: {},
 
-  hint: {},
+  hint: {
+    max: "Maximum {count}",
+    min: "Minimum {count}",
+    rainbowAddresses: "Separate addresses by commas or spaces/linebreaks",
+  },
 };

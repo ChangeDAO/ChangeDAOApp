@@ -17,7 +17,6 @@ export const notifyTx = (hash) => {
       {
         label: t("View"),
         color: "primary",
-        noDismiss: true,
         handler() {
           openURL(TX_URL + hash);
         },

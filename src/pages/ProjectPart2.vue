@@ -1,24 +1,30 @@
 <template>
   <q-list v-if="data">
     <!-- Mint Price -->
-    <q-input
-      v-model.number="data._mintPrice"
-      :label="'Mint Price (USD)'"
-      :rules="[Boolean]"
-      :min="0"
-      prefix="$"
-      item-aligned
-    />
+    <q-item>
+      <q-item-section>
+        <q-input
+          v-model.number="data._mintPrice"
+          :label="'Mint Price (USD)'"
+          :rules="[(a) => a >= 0]"
+          :min="0"
+          prefix="$"
+        />
+      </q-item-section>
+    </q-item>
 
     <!-- Total Mints -->
-    <q-input
-      v-model.number="data._totalMints"
-      :label="'Total Mints'"
-      :rules="[Boolean]"
-      type="number"
-      :min="1"
-      item-aligned
-    />
+    <q-item>
+      <q-item-section>
+        <q-input
+          v-model.number="data._totalMints"
+          :label="'Total Mints'"
+          :rules="[Boolean]"
+          type="number"
+          :min="1"
+        />
+      </q-item-section>
+    </q-item>
 
     <!-- Max Mint Amount Public -->
     <q-item>
@@ -26,11 +32,11 @@
         <q-input
           v-model.number="data._maxMintAmountPublic"
           :label="'Max Mints per Transaction'"
-          :rules="[(a) => a > 0 && a <= 20]"
+          :rules="[(a) => a > 0 && a <= 20 && a <= data._totalMints]"
           type="number"
           :min="1"
-          :max="20"
-          hint="Max 20"
+          :max="Math.min(20, data._totalMints)"
+          :hint="$tc('hint.max', Math.min(20, data._totalMints || 20))"
         />
       </q-item-section>
     </q-item>
@@ -48,25 +54,32 @@
     <SmoothReflow>
       <div v-if="data.hasRainbow">
         <!-- Max Mint Amount Rainbow -->
-        <q-input
-          v-model.number="data._maxMintAmountRainbow"
-          :label="'Max Mints per Transaction for Rainbow List'"
-          :rules="[(a) => a > 0 && a <= 20]"
-          type="number"
-          :min="1"
-          :max="20"
-          item-aligned
-        />
+        <q-item>
+          <q-item-section>
+            <q-input
+              v-model.number="data._maxMintAmountRainbow"
+              :label="'Max Mints per Transaction for Rainbow List'"
+              :rules="[(a) => a > 0 && a <= 20 && a <= data._totalMints]"
+              type="number"
+              :min="1"
+              :max="Math.min(20, data._totalMints)"
+              :hint="$tc('hint.max', Math.min(20, data._totalMints || 20))"
+            />
+          </q-item-section>
+        </q-item>
 
         <!-- Rainbow Duration -->
-        <q-input
-          type="number"
-          v-model.number="data._rainbowDuration"
-          :label="'Rainbow Period Duration (hours)'"
-          :rules="[(a) => a >= 0]"
-          :min="0"
-          item-aligned
-        />
+        <q-item>
+          <q-item-section>
+            <q-input
+              type="number"
+              v-model.number="data._rainbowDuration"
+              :label="'Rainbow Period Duration (hours)'"
+              :rules="[(a) => a >= 0]"
+              :min="0"
+            />
+          </q-item-section>
+        </q-item>
 
         <!-- Rainbow Addresses -->
         <q-item>
@@ -76,21 +89,24 @@
               v-model="rainbowAddresses"
               :label="'Rainbow List Addresses'"
               :rules="[Boolean, () => rainbowAddrValid]"
-              hint="Separate addresses by commas or spaces"
+              :hint="$t('hint.rainbowAddresses')"
             />
           </q-item-section>
         </q-item>
       </div>
       <div v-else>
         <!-- Courtesy Mint Duration -->
-        <q-input
-          type="number"
-          v-model.number="data._rainbowDuration"
-          :label="'Courtesy Mint Duration (hours)'"
-          :rules="[(a) => a >= 0]"
-          :min="0"
-          item-aligned
-        />
+        <q-item>
+          <q-item-section>
+            <q-input
+              type="number"
+              v-model.number="data._rainbowDuration"
+              :label="'Courtesy Mint Duration (hours)'"
+              :rules="[(a) => a >= 0]"
+              :min="0"
+            />
+          </q-item-section>
+        </q-item>
       </div>
     </SmoothReflow>
   </q-list>
@@ -98,7 +114,6 @@
 
 <script>
 import { computed, onMounted, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
 import { cloneDeep, isEqual } from "lodash";
@@ -121,7 +136,7 @@ const REQUEST = {
   hasRainbow: false,
 };
 
-const LOCALSTORAGE_KEY = "projectPart2";
+import { LOCALSTORAGE_KEY2 } from "./ProjectEdit";
 
 export default {
   name: "PageProjectPart2",
@@ -130,7 +145,6 @@ export default {
 
   props: ["modelValue"],
   setup(props, { emit }) {
-    const { t } = useI18n({ useScope: "global" });
     const store = useStore();
 
     const address = computed(() => store.state.web3.userAddress);
@@ -165,10 +179,14 @@ export default {
         Boolean(data.value._fundingPSClone) &&
         data.value._mintPrice >= 0 &&
         Boolean(data.value._totalMints) &&
-        Boolean(data.value._maxMintAmountPublic) &&
+        data.value._maxMintAmountPublic > 0 &&
+        data.value._maxMintAmountPublic <= 20 &&
+        data.value._maxMintAmountPublic <= data.value._totalMints &&
         data.value._rainbowDuration >= 0 &&
         (!data.value.hasRainbow ||
-          (data.value._maxMintAmountRainbow &&
+          (data.value._maxMintAmountRainbow > 0 &&
+            data.value._maxMintAmountRainbow <= 20 &&
+            data.value._maxMintAmountRainbow <= data.value._totalMints &&
             data.value.rainbowAddresses.length &&
             rainbowAddrValid.value))
     );
@@ -179,11 +197,11 @@ export default {
     const reset = (clear = false, complete = false) => {
       let newData;
       if (complete) {
-        return LocalStorage.remove(LOCALSTORAGE_KEY);
+        return LocalStorage.remove(LOCALSTORAGE_KEY2);
       } else if (clear) {
         newData = cloneDeep(defaultModel.value);
       } else {
-        newData = LocalStorage.getItem(LOCALSTORAGE_KEY);
+        newData = LocalStorage.getItem(LOCALSTORAGE_KEY2);
         if (newData) {
           // Preserve data from Part 1
           if (newData.projectId) {
@@ -205,6 +223,9 @@ export default {
       }
       if (newData) {
         rainbowAddresses.value = newData.rainbowAddresses.join("\n") || "";
+        rainbowAddrValid.value = newData.rainbowAddresses.every((addr) =>
+          Moralis.web3Library.utils.isAddress(addr)
+        );
       }
       data.value = newData;
     };
@@ -219,9 +240,9 @@ export default {
       (newData) => {
         if (isEqual(newData, REQUEST)) {
           // Remove if default
-          LocalStorage.remove(LOCALSTORAGE_KEY);
+          LocalStorage.remove(LOCALSTORAGE_KEY2);
         } else {
-          LocalStorage.set(LOCALSTORAGE_KEY, {
+          LocalStorage.set(LOCALSTORAGE_KEY2, {
             ...newData,
           });
 

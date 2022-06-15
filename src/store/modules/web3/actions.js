@@ -31,10 +31,13 @@ export async function init({ commit, dispatch, state }) {
 }
 
 // Enable Web3
-export async function enableWeb3({ state, dispatch }) {
+export async function enableWeb3({ state, commit, dispatch }) {
+  commit("setInitializing", true);
   return Moralis.enableWeb3({ provider: state.provider || "metamask" }).then(
-    (result) => {
-      dispatch("getUserData");
+    async (result) => {
+      await dispatch("getUserData");
+      commit("setInitializing", false);
+      commit("setInitialized", true);
       return result;
     }
   );

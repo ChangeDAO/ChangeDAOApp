@@ -1,5 +1,7 @@
-export default function() {
+export default function () {
   return {
+    initializing: false,
+    initialized: false,
     chain: null,
     provider: null,
     user: null,
@@ -7,6 +9,6 @@ export default function() {
     userENS: "",
     userNFTs: [],
     userRoles: [],
-    userBalances: {}
+    userBalances: {},
   };
 }

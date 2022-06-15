@@ -2,7 +2,10 @@
   <q-page class="page-project-admin">
     <div
       v-if="
-        userAddress && project && userAddress === project.createdByWalletAddress
+        !isLoading &&
+        userAddress &&
+        project &&
+        userAddress === project.createdByWalletAddress
       "
       class="q-layout-padding page-col col"
     >
@@ -18,10 +21,7 @@
         </template>
         <q-skeleton v-else type="text" width="15em" />
         <p v-if="!isPending" class="text-caption">
-          <q-skeleton v-if="isLoading" type="text" width="10em" />
-          <template v-else>
-            {{ $tc("n Mints Remaining", mintable - minted) }}
-          </template>
+          {{ $tc("n Mints Remaining", mintable - minted) }}
         </p>
       </div>
 
@@ -56,7 +56,6 @@
               label="Set"
               color="primary"
               :disable="
-                isLoading ||
                 (!rainbowDuration && rainbowDuration !== 0) ||
                 rainbowDuration < 0
               "
@@ -76,7 +75,6 @@
           v-else
           v-model="zeroMintAddress"
           label="Recipient Address"
-          :disable="isLoading"
           item-aligned
         >
           <template v-slot:after>
@@ -85,76 +83,77 @@
               :label="$t('Mint')"
               color="primary"
               :loading="isMintingZero"
-              :disable="isLoading"
+              :disable="!isAddress(zeroMintAddress)"
             />
           </template>
         </AddrInput>
 
-        <!-- Courtesy Mint -->
-        <q-item-label header>
-          {{ $t("Courtesy Mint") }}
-          <div v-if="isRainbowPeriod" class="text-caption">
-            <RelativeTime
-              before="Rainbow period ends"
-              :value="remainingRainbow"
-              text-only
-            />
-          </div>
-        </q-item-label>
-        <q-item v-if="!isRainbowPeriod">
-          <q-item-section>
-            <q-skeleton type="text" v-if="isLoading" width="15em" />
-            <q-item-label v-else>{{ $t("Rainbow Period Ended") }}</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item v-else>
-          <q-item-section>
-            <AddrInput
-              v-model="courtesyMintAddress"
-              label="Recipient Address"
-            />
-          </q-item-section>
-          <q-item-section side>
-            <q-item-label>
-              <q-input
-                v-model="courtesyMintAmount"
-                :label="'Qty'"
-                :rules="[Boolean]"
-                type="number"
-                :min="1"
-                :max="20"
-                hide-bottom-space
+        <template v-if="mintable > minted">
+          <!-- Courtesy Mint -->
+          <q-item-label header>
+            {{ $t("Courtesy Mint") }}
+            <div v-if="isRainbowPeriod" class="text-caption">
+              <RelativeTime
+                before="Rainbow period ends"
+                :value="remainingRainbow"
+                text-only
               />
-            </q-item-label>
-          </q-item-section>
-          <q-item-section side>
-            <q-btn
-              @click="courtesyMint"
-              :label="$t('Mint')"
-              color="primary"
-              :loading="isMintingCourtesy"
-            />
-          </q-item-section>
-        </q-item>
+            </div>
+          </q-item-label>
+          <q-item v-if="!isRainbowPeriod">
+            <q-item-section>
+              <q-item-label>{{ $t("Rainbow Period Ended") }}</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item v-else>
+            <q-item-section>
+              <AddrInput
+                v-model="courtesyMintAddress"
+                label="Recipient Address"
+              />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label>
+                <q-input
+                  v-model="courtesyMintAmount"
+                  :label="'Qty'"
+                  :rules="[Boolean]"
+                  type="number"
+                  :min="1"
+                  :max="Math.min(20, mintable - minted)"
+                  hide-bottom-space
+                />
+              </q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-btn
+                @click="courtesyMint"
+                :label="$t('Mint')"
+                color="primary"
+                :loading="isMintingCourtesy"
+              />
+            </q-item-section>
+          </q-item>
 
-        <!-- Pause/Unpause -->
-        <q-item>
-          <q-item-section>
-            <q-item-label header class="q-pl-none">
-              Pause/Unpause Minting
-            </q-item-label>
-          </q-item-section>
-          <q-item-section side>
-            <q-btn
-              @click="togglePause"
-              :label="isPaused ? 'Unpause' : 'Pause'"
-              :loading="isLoading || isPausing"
-              color="primary"
-            />
-          </q-item-section>
-        </q-item>
+          <!-- Pause/Unpause -->
+          <q-item>
+            <q-item-section>
+              <q-item-label header class="q-pl-none">
+                Pause/Unpause Minting
+              </q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-btn
+                @click="togglePause"
+                :label="isPaused ? 'Unpause' : 'Pause'"
+                :loading="isPausing"
+                color="primary"
+              />
+            </q-item-section>
+          </q-item>
+        </template>
       </q-list>
-      <div v-else>
+      <div v-else class="q-ma-md">
         {{ $t("Project has pending changes") }}
       </div>
     </div>
@@ -162,17 +161,16 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { Loading } from "quasar";
 
 import { TX_WAIT } from "../util/constants";
 import { notifyError, notifySuccess, notifyTx } from "../util/notify";
 import AddrInput from "../components/AddrInput";
 import RelativeTime from "../components/RelativeTime";
-
-import { pickBy } from "lodash";
 
 import Moralis from "moralis";
 import ChangeDaoNFT from "../../contracts/deployments/rinkeby/ChangeDaoNFT.json";
@@ -254,6 +252,7 @@ export default {
     };
 
     const zeroMintAddress = ref(userAddress.value);
+    const isAddress = Moralis.web3Library.utils.isAddress;
     const isMintingZero = ref(false);
     const zeroMint = async () => {
       try {
@@ -306,7 +305,7 @@ export default {
         await Moralis.Cloud.run("courtesyMint", {
           projectId: props.projectID,
           recipientAddress: courtesyMintAddress.value,
-          numMints: courtesyMintAmount.value.toNumber(),
+          numMints: parseInt(courtesyMintAmount.value, 10),
           transactionHash: tx.hash,
         });
 
@@ -342,9 +341,18 @@ export default {
       }
     };
 
+    const isLoading = ref(true);
+    watch(isLoading, (isLoading) => {
+      if (isLoading) {
+        Loading.show();
+      } else {
+        Loading.hide();
+      }
+    });
+    Loading.show();
+
     const hasZeroMinted = ref(false);
     const isRainbowPeriod = ref(false);
-    const isLoading = ref(true);
     const isPaused = ref(false);
     const minted = ref(null);
     const mintable = ref(null);
@@ -405,7 +413,8 @@ export default {
         project.value.rainbowDurationInMS / 36e5
       );
 
-      hasZeroMinted.value = project.value.isZeroMintMinted;
+      // hasZeroMinted.value = project.value.isZeroMintMinted;
+      hasZeroMinted.value = await sharedFundingClone.callStatic.hasZeroMinted();
 
       const rainbowExpiration =
         mintedOn.value + project.value.rainbowDurationInMS;
@@ -428,6 +437,7 @@ export default {
       setRainbowDuration,
       hasZeroMinted,
       zeroMintAddress,
+      isAddress,
       zeroMint,
       minted,
       mintable,

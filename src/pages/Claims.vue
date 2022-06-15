@@ -184,20 +184,24 @@ export default {
       if (userAddress.value) {
         try {
           Loading.show();
-          projects.value = (
-            await Moralis.Cloud.run("getUserBalances")
-          ).projects.map((project) => {
-            let total = project.paymentSplitters.reduce(
-              (total, ps) => {
-                total.eth += ps.balances.eth;
-                total.dai += ps.balances.dai;
-                total.usdc += ps.balances.usdc;
-                return total;
-              },
-              { eth: 0, dai: 0, usdc: 0 }
+          projects.value = (await Moralis.Cloud.run("getUserBalances")).projects
+            .map((project) => {
+              let total = project.paymentSplitters.reduce(
+                (total, ps) => {
+                  total.eth += ps.balances.eth;
+                  total.dai += ps.balances.dai;
+                  total.usdc += ps.balances.usdc;
+                  return total;
+                },
+                { eth: 0, dai: 0, usdc: 0 }
+              );
+              return { ...project, total };
+            })
+            .sort(
+              (a, b) =>
+                b.paymentSplitters[0].createdAt -
+                a.paymentSplitters[0].createdAt
             );
-            return { ...project, total };
-          });
         } catch (error) {
           console.error(error);
           notifyError(error.error || error);

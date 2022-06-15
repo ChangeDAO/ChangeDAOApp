@@ -1,6 +1,6 @@
 <template>
   <q-page class="page-project-mint">
-    <div v-if="userAddress" class="q-layout-padding page-col col">
+    <div v-if="!isLoading && userAddress" class="q-layout-padding page-col col">
       <div class="q-gutter-lg">
         <!-- Title -->
         <div class="text-h4 q-my-md">
@@ -24,7 +24,10 @@
           <q-skeleton v-else type="text" width="15em" />
         </div>
 
-        <template v-if="!isPending">
+        <div v-if="mintable <= minted">
+          {{ $t("Minting Ended") }}
+        </div>
+        <template v-else-if="!isPending">
           <!-- Cost per Mint -->
           <div class="row">
             <span class="text-subtitle col-grow">{{
@@ -40,10 +43,7 @@
                 {{ $t("Number of Mints") }}
               </div>
               <p class="text-caption">
-                <q-skeleton v-if="isLoading" type="text" width="10em" />
-                <template v-else>
-                  {{ $tc("n Mints Remaining", mintable - minted) }}
-                </template>
+                {{ $tc("n Mints Remaining", mintable - minted) }}
               </p>
             </div>
             <q-input
@@ -52,6 +52,7 @@
               :min="1"
               :max="maxQuantity"
               :rules="[(q) => q > 0 && q <= maxQuantity]"
+              :readonly="maxQuantity === 1"
               dense
               outlined
             />
@@ -154,6 +155,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { Loading } from "quasar";
 
 import { TX_WAIT } from "../util/constants";
 import { createLeafRainbow, createMerkleProofRainbow } from "../util/merkle";
@@ -391,8 +393,17 @@ export default {
       }
     };
 
-    const cost = ref(0);
     const isLoading = ref(true);
+    watch(isLoading, (isLoading) => {
+      if (isLoading) {
+        Loading.show();
+      } else {
+        Loading.hide();
+      }
+    });
+    Loading.show();
+
+    const cost = ref(0);
     const minted = ref(null);
     const mintable = ref(null);
     const maxMintAmountPublic = ref(0);
@@ -434,9 +445,9 @@ export default {
     );
 
     const getMinted = async () => {
-      minted.value = (
-        await sharedFundingClone.callStatic.getMintedTokens()
-      ).toNumber();
+      minted.value = sharedFundingClone
+        ? (await sharedFundingClone.callStatic.getMintedTokens()).toNumber()
+        : null;
     };
 
     // Initialize
@@ -455,11 +466,13 @@ export default {
       }
 
       // Shared Funding Clone
-      sharedFundingClone = new ethers.Contract(
-        project.value.sharedFundingCloneAddress,
-        SharedFunding.abi,
-        provider
-      );
+      if (project.value.sharedFundingCloneAddress) {
+        sharedFundingClone = new ethers.Contract(
+          project.value.sharedFundingCloneAddress,
+          SharedFunding.abi,
+          provider
+        );
+      }
 
       cost.value = project.value.mintPriceInUsd;
       minted.value = project.value.numMintsBought;

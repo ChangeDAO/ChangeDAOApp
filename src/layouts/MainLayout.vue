@@ -182,13 +182,13 @@ export default defineComponent({
         attrs: { target: "_blank" },
       },
       {
-        label: "Blog",
-        href: URLS.BLOG,
+        label: "Podcast",
+        href: URLS.PODCAST,
         attrs: { target: "_blank" },
       },
       {
-        label: "Podcast",
-        href: URLS.PODCAST,
+        label: "Blog",
+        href: URLS.BLOG,
         attrs: { target: "_blank" },
       },
       {
