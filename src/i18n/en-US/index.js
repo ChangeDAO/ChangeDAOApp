@@ -22,6 +22,7 @@ export default {
   Created: "Created",
   Creator: "Creator | Creators",
   "Creating Change By": "Creating Change By...",
+  "Courtesy Mint": "Courtesy Mint",
   Currency: "Currency",
   Custom: "Custom",
   "Deployed Contracts": "Deployed Contracts",
@@ -77,6 +78,7 @@ export default {
   "Project Name": "Project Name",
   "Project Split": "Project Split",
   Purchase: "Purchase",
+  "Rainbow Period Ended": "The Rainbow Period has ended",
   "Ready to support?": "Ready to support this project?",
   Reapprove: "Reapprove",
   Reset: "Reset",
@@ -147,10 +149,14 @@ export default {
 
   error: {
     loadingProject: "There was a problem getting the project information",
+    "execution reverted: Invalid Merkle proof":
+      "Sorry, that address is not on the rainbow list",
   },
 
   success: {
     Success: "Success!",
+    Subscribed: "You're subscribed!",
+    TxComplete: "Transaction complete!",
     updateAvailable: "A new version is available",
   },
 

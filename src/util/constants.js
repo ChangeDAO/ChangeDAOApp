@@ -5,9 +5,10 @@ export const URLS = {
   PODCAST: "",
   BLOG: "https://medium.com/changedao",
   EVENTS: "",
+  NEWSLETTER_FORM: "https://getform.io/f/664280cb-7478-486f-8945-4cc9d819e88a",
 };
 
-export const TX_WAIT = 7;
+export const TX_WAIT = 1;
 export const TX_URL = "https://rinkeby.etherscan.io/tx/";
 
 export const ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";

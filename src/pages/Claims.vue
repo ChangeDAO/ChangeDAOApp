@@ -170,7 +170,7 @@ export default {
 
         const response = await tx.wait(TX_WAIT);
         getProjects();
-        notifySuccess("Success");
+        notifySuccess("TxComplete");
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);

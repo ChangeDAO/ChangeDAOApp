@@ -55,6 +55,7 @@ const routes = [
         name: "project-mint",
         path: "projects/:projectID/mint",
         props: true,
+        meta: { requiresWeb3: true },
         component: () => import("pages/ProjectMintMVP.vue"),
         // children: [
         //   {

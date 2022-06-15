@@ -377,7 +377,7 @@ export default {
         const response = await tx.wait(TX_WAIT);
         getMinted();
 
-        notifySuccess("Success");
+        notifySuccess("TxComplete");
 
         // router.replace({
         //   name: "mintTx",
@@ -427,6 +427,7 @@ export default {
     const isPending = computed(() =>
       Boolean(
         project.value &&
+          project.value.pendingChanges &&
           (project.value.pendingChanges.paymentSplitters.length ||
             project.value.pendingChanges.project.length)
       )

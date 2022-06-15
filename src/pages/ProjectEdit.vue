@@ -131,6 +131,7 @@ export default {
 
           // Transaction Complete
           const response = await tx.wait(TX_WAIT);
+          notifySuccess("TxComplete");
 
           // Get NFT Clone Address
           const changeDaoNFTFactory = new ethers.Contract(
@@ -214,6 +215,7 @@ export default {
 
           // Transaction Complete
           const response = await tx.wait(TX_WAIT);
+          notifySuccess("TxComplete");
 
           // Get Shared Funding Clone Address
           const sharedFundingFactory = new ethers.Contract(

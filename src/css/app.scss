@@ -32,8 +32,33 @@ p {
   line-height: 29.09px;
 }
 
-.text-subtitle, .q-btn__content {
+.text-subtitle,
+.q-btn__content {
   font-weight: 600;
+}
+
+.text-hl {
+  color: rgba($grey-1, 0.5);
+}
+
+.bg-gradient {
+  background-image: radial-gradient(
+      110% 50vh at 50% 10vh,
+      $primary 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      100% 80vh at 0 80vh,
+      $accent 0%,
+      transparent 50%,
+      transparent
+    ),
+    radial-gradient(
+      100% 80vh at 100% 160vh,
+      $accent 0%,
+      transparent 50%,
+      transparent
+    );
 }
 
 .q-layout-container {

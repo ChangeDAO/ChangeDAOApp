@@ -59,7 +59,7 @@ export async function logIn({ state, commit, dispatch }, provider) {
 
   if (Moralis.User.current()) {
     commit("setUser", user);
-    dispatch("getUserData");
+    dispatch("enableWeb3");
   } else {
     commit("setUser", null);
   }

@@ -163,7 +163,7 @@ export default {
         Boolean(address.value) &&
         Boolean(data.value._changeDaoNFTClone) &&
         Boolean(data.value._fundingPSClone) &&
-        Boolean(data.value._mintPrice) &&
+        data.value._mintPrice >= 0 &&
         Boolean(data.value._totalMints) &&
         Boolean(data.value._maxMintAmountPublic) &&
         data.value._rainbowDuration >= 0 &&

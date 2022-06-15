@@ -1,6 +1,11 @@
 <template>
   <q-page class="page-project-admin">
-    <div v-if="userAddress" class="q-layout-padding page-col col">
+    <div
+      v-if="
+        userAddress && project && userAddress === project.createdByWalletAddress
+      "
+      class="q-layout-padding page-col col"
+    >
       <!-- Title -->
       <div class="text-h4 q-ma-md">
         {{ $t("Project Administration") }}
@@ -22,7 +27,7 @@
 
       <q-list v-if="!isPending">
         <!-- Base URI -->
-        <q-input v-model="baseURI" label="Base URI" item-aligned>
+        <!-- <q-input v-model="baseURI" label="Base URI" item-aligned>
           <template v-slot:after>
             <q-btn
               @click="setBaseURI"
@@ -31,10 +36,10 @@
               :loading="isSettingBaseURI"
             />
           </template>
-        </q-input>
+        </q-input> -->
 
         <!-- Rainbow Period -->
-        <q-input
+        <!-- <q-input
           type="number"
           v-model="rainbowDuration"
           :label="'Rainbow Period Duration (hours)'"
@@ -58,7 +63,7 @@
               :loading="isSettingRainbowDuration"
             />
           </template>
-        </q-input>
+        </q-input> -->
 
         <!-- Zero Mint -->
         <q-item-label header>Zero Mint</q-item-label>
@@ -86,11 +91,20 @@
         </AddrInput>
 
         <!-- Courtesy Mint -->
-        <q-item-label header>Courtesy Mint</q-item-label>
+        <q-item-label header>
+          {{ $t("Courtesy Mint") }}
+          <div v-if="isRainbowPeriod" class="text-caption">
+            <RelativeTime
+              before="Rainbow period ends"
+              :value="remainingRainbow"
+              text-only
+            />
+          </div>
+        </q-item-label>
         <q-item v-if="!isRainbowPeriod">
           <q-item-section>
             <q-skeleton type="text" v-if="isLoading" width="15em" />
-            <q-item-label v-else> The Rainbow Period has ended </q-item-label>
+            <q-item-label v-else>{{ $t("Rainbow Period Ended") }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item v-else>
@@ -198,7 +212,7 @@ export default {
         });
         notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
-        notifySuccess("Success");
+        notifySuccess("TxComplete");
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -230,7 +244,7 @@ export default {
         });
         notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
-        notifySuccess("Success");
+        notifySuccess("TxComplete");
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -261,7 +275,7 @@ export default {
 
         const response = await tx.wait(TX_WAIT);
         hasZeroMinted.value = true;
-        notifySuccess("Success");
+        notifySuccess("TxComplete");
         getMinted();
       } catch (error) {
         console.error(error);
@@ -297,7 +311,7 @@ export default {
         });
 
         const response = await tx.wait(TX_WAIT);
-        notifySuccess("Success");
+        notifySuccess("TxComplete");
         getMinted();
       } catch (error) {
         console.error(error);
@@ -319,7 +333,7 @@ export default {
         notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
         isPaused.value = !isPaused.value;
-        notifySuccess("Success");
+        notifySuccess("TxComplete");
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);

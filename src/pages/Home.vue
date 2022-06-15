@@ -79,9 +79,19 @@
         Featured Projects
       </p>
       <div class="row flex-center q-gutter-xl q-px-lg">
-        <ProjectCard class="col-sm-3" />
-        <ProjectCard class="col-sm-3" />
-        <ProjectCard class="col-sm-3" />
+        <ProjectCard
+          class="col-sm-3 cursor-pointer"
+          v-for="(project, i) in featuredProjects"
+          :key="i"
+          :project="project"
+          @click="
+            $router.push({
+              name: 'project-mint',
+              params: { projectID: project.id },
+            })
+          "
+          v-ripple
+        />
       </div>
 
       <div class="flex flex-center q-pa-xl q-pt-xl q-gutter-y-lg q-gutter-x-xl">
@@ -338,11 +348,14 @@
 </style>
 
 <script>
+import Moralis from "moralis";
 import { computed, ref } from "vue";
-import { EMAIL_FORMAT } from "../util/formatting";
 import { openURL } from "quasar";
-import { URLS } from "../util/constants";
+import { shuffle } from "lodash";
+
 import { notifyError, notifySuccess } from "../util/notify";
+import { EMAIL_FORMAT } from "../util/formatting";
+import { URLS } from "../util/constants";
 
 import ProjectCard from "../components/ProjectCard";
 
@@ -360,17 +373,14 @@ export default {
     const submitEmail = async () => {
       try {
         isSubmitting.value = true;
-        await fetch(
-          "https://getform.io/f/664280cb-7478-486f-8945-4cc9d819e88a",
-          {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
-            body: JSON.stringify({}),
-          }
-        );
+        await fetch(URLS.NEWSLETTER_FORM, {
+          method: "POST",
+          mode: "cors",
+          cache: "no-cache",
+          body: JSON.stringify({}),
+        });
         email.value = "";
-        notifySuccess("You're subscribed!");
+        notifySuccess("Subscribed");
       } catch (error) {
         console.error(error);
         notifyError(error);
@@ -389,10 +399,16 @@ export default {
       openURL(URLS.EVENTS);
     };
 
+    const featuredProjects = ref([]);
+    Moralis.Cloud.run("getProjects", { isFeatured: true }).then((result) => {
+      featuredProjects.value = shuffle(result.projects).slice(0, 3);
+    });
+
     return {
       email,
       isEmailValid,
       isSubmitting,
+      featuredProjects,
       submitEmail,
       blog,
       podcast,
