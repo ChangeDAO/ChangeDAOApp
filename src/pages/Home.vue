@@ -241,7 +241,7 @@
 
   .proof-of-change {
     padding: 10em 0 2em;
-    background-image: url("assets/ChangeDAO-sample-cover-01.png");
+    background-image: url("assets/ProofOfChange.png");
     background-position: 50%;
     background-repeat: no-repeat;
     background-size: cover;
