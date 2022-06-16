@@ -6,7 +6,13 @@
         {{ $t(isNew ? "New Project" : "Edit Project") }}
       </div>
 
-      <q-stepper v-model="step" header-class="text-h5" vertical flat animated>
+      <q-stepper
+        v-model="step"
+        header-class="text-h5"
+        :vertical="$q.screen.gt.xs"
+        flat
+        animated
+      >
         <q-step :name="1" :title="$t('project.step1')" :done="isPart1Complete">
           <ProjectPart1 ref="part1" v-model="data1" />
         </q-step>
