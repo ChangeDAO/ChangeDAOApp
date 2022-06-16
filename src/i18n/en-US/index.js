@@ -177,8 +177,10 @@ export default {
   warning: {},
 
   hint: {
+    ethBuffer: "We use a 0.01ETH buffer which will be refunded on completion",
     max: "Maximum {count}",
     min: "Minimum {count}",
     rainbowAddresses: "Separate addresses by commas or spaces/linebreaks",
+    stablecoinApproval: "This is a two-transaction process",
   },
 };

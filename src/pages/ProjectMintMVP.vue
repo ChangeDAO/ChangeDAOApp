@@ -78,6 +78,7 @@
             />
             <SmoothReflow>
               <q-input
+                class="q-mt-sm"
                 v-show="tip === 'custom'"
                 v-model.number="customTip"
                 type="number"
@@ -113,12 +114,15 @@
               color="primary"
               inline
             />
-            <div
+            <p v-if="currencyHint" class="text-caption">
+              {{ $t(currencyHint) }}
+            </p>
+            <p
               v-if="disabledCurrencies.length"
               class="text-caption text-italic"
             >
               {{ $t("Not enough X", { X: disabledCurrencies.join(", ") }) }}
-            </div>
+            </p>
           </div>
 
           <q-separator />
@@ -190,13 +194,17 @@ export default {
     // Form
     const quantity = ref(1);
     const subtotal = computed(() => cost.value * quantity.value);
-    const tips = [
+    const tips = computed(() => [
       { value: 0, label: t("No Tip") },
-      { value: 10, label: "10%" },
-      { value: 20, label: "20%" },
-      { value: 30, label: "30%" },
+      ...(cost.value > 0
+        ? [
+            { value: 10, label: "10%" },
+            { value: 20, label: "20%" },
+            { value: 30, label: "30%" },
+          ]
+        : []),
       { value: "custom", label: t("Custom") },
-    ];
+    ]);
     const tip = ref(0);
     const customTip = ref(5);
     const tipMultiplier = computed(() => {
@@ -231,6 +239,14 @@ export default {
       ];
     });
     const currency = ref(ETH_ADDRESS);
+
+    const currencyHint = computed(() =>
+      currency.value === ETH_ADDRESS
+        ? "hint.ethBuffer"
+        : [DAI_ADDRESS, USDC_ADDRESS].includes(currency.value)
+        ? "hint.stablecoinApproval"
+        : ""
+    );
 
     const disabledCurrencies = computed(() => {
       const output = [];
@@ -279,9 +295,11 @@ export default {
           _value: Moralis.Units.ETH(total.value.toString()),
         },
       });
-      const response = await tx
-        .wait(TX_WAIT)
-        .then(() => (isDAIApproved.value = true));
+      notifyTx(tx.hash);
+      const response = await tx.wait(TX_WAIT).then(() => {
+        isDAIApproved.value = true;
+        notifySuccess("TxComplete");
+      });
     };
 
     const isUSDCApproved = ref(false);
@@ -295,9 +313,11 @@ export default {
           _value: Moralis.Units.ETH(total.value.toString()),
         },
       });
-      const response = await tx
-        .wait()
-        .then(() => (isUSDCApproved.value = true));
+      notifyTx(tx.hash);
+      const response = await tx.wait().then(() => {
+        isUSDCApproved.value = true;
+        notifySuccess("TxComplete");
+      });
     };
 
     const isPurchasing = ref(false);
@@ -509,6 +529,7 @@ export default {
       total,
       currencies,
       currency,
+      currencyHint,
       disabledCurrencies,
       isPurchasing,
       purchase,
