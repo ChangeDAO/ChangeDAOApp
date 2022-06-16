@@ -126,7 +126,7 @@
           <div class="row reverse q-col-gutter-md">
             <div class="col-sm-4">
               <img
-                src="~assets/ChangeDAO-sample-cover.png"
+                src="~assets/podcast.png"
                 style="width: 100%"
                 class="shadow-4"
               />
@@ -151,7 +151,7 @@
           <div class="row reverse q-col-gutter-md">
             <div class="col-sm-4">
               <img
-                src="~assets/ChangeDAO-sample-cover.png"
+                src="~assets/blog.png"
                 style="width: 100%"
                 class="shadow-4"
               />
@@ -176,7 +176,7 @@
           <div class="row reverse q-col-gutter-md">
             <div class="col-sm-4">
               <img
-                src="~assets/ChangeDAO-sample-cover.png"
+                src="~assets/events.png"
                 style="width: 100%"
                 class="shadow-4"
               />

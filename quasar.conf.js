@@ -10,7 +10,7 @@
 const ESLintPlugin = require("eslint-webpack-plugin");
 const { configure } = require("quasar/wrappers");
 
-module.exports = configure(function(ctx) {
+module.exports = configure(function (ctx) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
@@ -36,7 +36,7 @@ module.exports = configure(function(ctx) {
       // "line-awesome",
       // "roboto-font-latin-ext", // this or either 'roboto-font', NEVER both!
 
-      "roboto-font" // optional, you are not bound to it
+      "roboto-font", // optional, you are not bound to it
       // "material-icons" // optional, you are not bound to it
     ],
 
@@ -72,14 +72,14 @@ module.exports = configure(function(ctx) {
         chain
           .plugin("eslint-webpack-plugin")
           .use(ESLintPlugin, [{ extensions: ["js", "vue"] }]);
-      }
+      },
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
       https: false,
       port: 8080,
-      open: true // opens browser window automatically
+      open: true, // opens browser window automatically
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
@@ -97,7 +97,7 @@ module.exports = configure(function(ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["LocalStorage", "Notify"]
+      plugins: ["Cookies", "LocalStorage", "Notify"],
     },
 
     // animations: 'all', // --- includes all animations
@@ -125,8 +125,8 @@ module.exports = configure(function(ctx) {
 
       middlewares: [
         ctx.prod ? "compression" : "",
-        "render" // keep this as last one
-      ]
+        "render", // keep this as last one
+      ],
     },
 
     // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
@@ -158,25 +158,25 @@ module.exports = configure(function(ctx) {
           {
             src: "icons/icon-128x128.png",
             sizes: "128x128",
-            type: "image/png"
+            type: "image/png",
           },
           {
             src: "icons/icon-96x96.png",
             sizes: "96x96",
-            type: "image/png"
+            type: "image/png",
           },
           {
             src: "icons/icon-32x32.png",
             sizes: "32x32",
-            type: "image/png"
+            type: "image/png",
           },
           {
             src: "icons/icon-16x16.png",
             sizes: "16x16",
-            type: "image/png"
-          }
-        ]
-      }
+            type: "image/png",
+          },
+        ],
+      },
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/developing-cordova-apps/configuring-cordova
@@ -186,7 +186,7 @@ module.exports = configure(function(ctx) {
 
     // Full list of options: https://quasar.dev/quasar-cli/developing-capacitor-apps/configuring-capacitor
     capacitor: {
-      hideSplashscreen: true
+      hideSplashscreen: true,
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/developing-electron-apps/configuring-electron
@@ -207,7 +207,7 @@ module.exports = configure(function(ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: "change-dao-app"
+        appId: "change-dao-app",
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
@@ -222,7 +222,7 @@ module.exports = configure(function(ctx) {
         chain
           .plugin("eslint-webpack-plugin")
           .use(ESLintPlugin, [{ extensions: ["js"] }]);
-      }
-    }
+      },
+    },
   };
 });
