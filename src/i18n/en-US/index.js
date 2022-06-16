@@ -127,10 +127,10 @@ export default {
 
   home: {
     podcast:
-      "Proof of Change is dedicated to elevating the stories of changemakers using NFTs as a Force for Change™.<br/><br/>Change starts with a story. Listen in and be a part of our stories of change.",
-    blog: "Stay informed on the happenings in our community.<br/><br/>Follow along on Medium and join our movement of change.",
+      "Proof of Change is dedicated to elevating the stories of changemakers using NFTs as a Force for Change™.\n\nChange starts with a story. Listen in and be a part of our stories of change.",
+    blog: "Stay informed on the happenings in our community.\n\nFollow along on Medium and join our movement of change.",
     events:
-      "Show up and experience what it's like to be heard.<br/><br/>We build meaningful connections through our IRL and metaverse events.",
+      "Show up and experience what it's like to be heard.\n\nWe build meaningful connections through our IRL and metaverse events.",
   },
 
   project: {

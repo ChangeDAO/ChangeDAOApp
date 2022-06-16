@@ -6,7 +6,7 @@
         <div class="text-h4 q-my-md">
           {{ isRainbowPeriod ? "Rainbow Mint" : $t("Mint NFT") }}
           <div v-if="isRainbowPeriod" class="text-caption">
-            <RelativeTime before="ends" :value="remainingRainbow" text-only />
+            <RelativeTime before="ends" :value="rainbowExpiration" text-only />
           </div>
         </div>
         <div class="text-h5 q-my-md">
@@ -426,6 +426,9 @@ export default {
     const cost = ref(0);
     const minted = ref(null);
     const mintable = ref(null);
+    const mintedOn = ref(null);
+    const isRainbowPeriod = ref(false);
+    const rainbowExpiration = ref(null);
     const maxMintAmountPublic = ref(0);
     const maxMintAmountRainbow = ref(0);
     const maxQuantity = computed(() => {
@@ -434,18 +437,6 @@ export default {
         ? maxMintAmountRainbow.value
         : maxMintAmountPublic.value;
       return Math.min(remaining, allowed);
-    });
-
-    const rainbowExpiration = computed(() => {
-      return project.value
-        ? project.value.deployTimeInMS + project.value.rainbowDurationInMS
-        : null;
-    });
-    const remainingRainbow = computed(() => {
-      return rainbowExpiration.value ? new Date(rainbowExpiration.value) : null;
-    });
-    const isRainbowPeriod = computed(() => {
-      return remainingRainbow.value > new Date();
     });
 
     const isValid = computed(
@@ -492,19 +483,26 @@ export default {
           SharedFunding.abi,
           provider
         );
+        getMinted();
       }
 
       cost.value = project.value.mintPriceInUsd;
       minted.value = project.value.numMintsBought;
       mintable.value = project.value.numMints;
-      getMinted();
+      mintedOn.value = project.value.deployTimeInMS;
+      maxMintAmountRainbow.value = project.value.numMintsRainbowCanBuy;
+      maxMintAmountPublic.value = project.value.numMintsPublicCanBuy;
 
+      // Rainbow Period
+      const now = new Date().getTime();
+      rainbowExpiration.value = new Date(
+        mintedOn.value + project.value.rainbowDurationInMS
+      );
+      isRainbowPeriod.value = rainbowExpiration.value > now;
       if (isRainbowPeriod.value) {
-        // Rainbow Mint
-        maxMintAmountRainbow.value = project.value.numMintsRainbowCanBuy;
-      } else {
-        // Public Mint
-        maxMintAmountPublic.value = project.value.numMintsPublicCanBuy;
+        setTimeout(() => {
+          isRainbowPeriod.value = false;
+        }, rainbowExpiration.value - now);
       }
       isLoading.value = false;
     });
@@ -518,7 +516,7 @@ export default {
       minted,
       mintable,
       isRainbowPeriod,
-      remainingRainbow,
+      rainbowExpiration,
       maxQuantity,
       quantity,
       subtotal,

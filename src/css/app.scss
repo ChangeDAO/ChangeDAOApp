@@ -41,6 +41,10 @@ p {
   color: rgba($grey-1, 0.5);
 }
 
+.pre-line {
+  white-space: pre-line;
+}
+
 .bg-gradient {
   background-image: radial-gradient(
       110% 50vh at 50% 10vh,

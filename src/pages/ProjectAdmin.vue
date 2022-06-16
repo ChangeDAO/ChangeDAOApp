@@ -47,8 +47,8 @@
           :min="0"
           item-aligned
         >
-          <template v-slot:append v-if="remainingRainbow">
-            <RelativeTime :value="remainingRainbow" />
+          <template v-slot:append v-if="isRainbowPeriod">
+            <RelativeTime :value="rainbowExpiration" />
           </template>
           <template v-slot:after>
             <q-btn
@@ -95,7 +95,7 @@
             <div v-if="isRainbowPeriod" class="text-caption">
               <RelativeTime
                 before="Rainbow period ends"
-                :value="remainingRainbow"
+                :value="rainbowExpiration"
                 text-only
               />
             </div>
@@ -110,6 +110,7 @@
               <AddrInput
                 v-model="courtesyMintAddress"
                 label="Recipient Address"
+                hide-bottom-space
               />
             </q-item-section>
             <q-item-section side>
@@ -222,11 +223,6 @@ export default {
     const rainbowDuration = ref(null);
     const isSettingRainbowDuration = ref(false);
     const mintedOn = ref(null);
-    const remainingRainbow = computed(() => {
-      return rainbowDuration.value
-        ? new Date(mintedOn.value + rainbowDuration.value * 36e5)
-        : null;
-    });
     const setRainbowDuration = async () => {
       try {
         isSettingRainbowDuration.value = true;
@@ -353,6 +349,7 @@ export default {
 
     const hasZeroMinted = ref(false);
     const isRainbowPeriod = ref(false);
+    const rainbowExpiration = ref(null);
     const isPaused = ref(false);
     const minted = ref(null);
     const mintable = ref(null);
@@ -363,13 +360,7 @@ export default {
       ).toNumber());
     };
 
-    const isPending = computed(() =>
-      Boolean(
-        project.value &&
-          (project.value.pendingChanges.paymentSplitters.length ||
-            project.value.pendingChanges.project.length)
-      )
-    );
+    const isPending = ref(false);
 
     onMounted(async () => {
       const provider = ethers.getDefaultProvider(process.env.chain);
@@ -390,37 +381,54 @@ export default {
         return notifyError("loadingProject");
       }
 
-      // Shared Funding Clone
-      sharedFundingClone = new ethers.Contract(
-        project.value.sharedFundingCloneAddress,
-        SharedFunding.abi,
-        provider
-      );
-
-      // ChangeDAO NFT
-      changeDaoNFTClone = new ethers.Contract(
-        project.value.ethAddress,
-        ChangeDaoNFT.abi,
-        provider
-      );
-
       baseURI.value = project.value.baseURI;
       mintedOn.value = project.value.deployTimeInMS;
       mintable.value = project.value.numMints;
-      await getMinted();
 
+      // Rainbow Period
+      const now = new Date().getTime();
+      rainbowExpiration.value = new Date(
+        mintedOn.value + project.value.rainbowDurationInMS
+      );
+      isRainbowPeriod.value = rainbowExpiration.value > now;
       rainbowDuration.value = Math.round(
         project.value.rainbowDurationInMS / 36e5
       );
+      if (isRainbowPeriod.value) {
+        setTimeout(() => {
+          isRainbowPeriod.value = false;
+        }, rainbowExpiration.value - now);
+      }
 
-      // hasZeroMinted.value = project.value.isZeroMintMinted;
-      hasZeroMinted.value = await sharedFundingClone.callStatic.hasZeroMinted();
+      // Shared Funding Clone
+      if (project.value.sharedFundingCloneAddress) {
+        sharedFundingClone = new ethers.Contract(
+          project.value.sharedFundingCloneAddress,
+          SharedFunding.abi,
+          provider
+        );
+        await getMinted();
 
-      const rainbowExpiration =
-        mintedOn.value + project.value.rainbowDurationInMS;
-      isRainbowPeriod.value = rainbowExpiration > new Date().getTime();
+        // hasZeroMinted.value = project.value.isZeroMintMinted;
+        hasZeroMinted.value =
+          await sharedFundingClone.callStatic.hasZeroMinted();
 
-      isPaused.value = await sharedFundingClone.callStatic.paused();
+        isPaused.value = await sharedFundingClone.callStatic.paused();
+      } else {
+        isPending.value = true;
+      }
+
+      // ChangeDAO NFT
+      if (project.value.sharedFundingCloneAddress) {
+        changeDaoNFTClone = new ethers.Contract(
+          project.value.ethAddress,
+          ChangeDaoNFT.abi,
+          provider
+        );
+      } else {
+        isPending.value = true;
+      }
+
       isLoading.value = false;
     });
 
@@ -432,7 +440,7 @@ export default {
       setBaseURI,
       isSettingBaseURI,
       rainbowDuration,
-      remainingRainbow,
+      rainbowExpiration,
       isSettingRainbowDuration,
       setRainbowDuration,
       hasZeroMinted,

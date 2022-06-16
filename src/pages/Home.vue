@@ -133,7 +133,7 @@
             </div>
 
             <div class="col-sm-8">
-              <p v-html="$t('home.podcast')" />
+              <p class="pre-line">{{ $t("home.podcast") }}</p>
               <q-btn
                 @click="podcast"
                 label="Listen"
@@ -158,7 +158,7 @@
             </div>
 
             <div class="col-sm-8">
-              <p v-html="$t('home.blog')" />
+              <p class="pre-line">{{ $t("home.blog") }}</p>
               <q-btn
                 @click="blog"
                 label="Read"
@@ -183,7 +183,7 @@
             </div>
 
             <div class="col-sm-8">
-              <p v-html="$t('home.events')" />
+              <p class="pre-line">{{ $t("home.events") }}</p>
 
               <q-btn
                 @click="events"

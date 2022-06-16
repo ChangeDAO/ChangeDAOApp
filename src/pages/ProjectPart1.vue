@@ -134,21 +134,7 @@ import { AREAS_OF_CHANGE } from "../util/constants";
 import AddrInputs from "../components/AddrInputs";
 import PaymentSplitInput from "../components/PaymentSplitInput";
 
-const REQUEST = {
-  _movementName: "",
-  _projectName: "",
-  _creators: [],
-  _baseURI: "",
-  _royaltiesPayees: [],
-  _royaltiesShares: [],
-  _fundingPayees: [],
-  _fundingShares: [],
-  transactionHash: "",
-  description: "",
-  areaOfChange: "",
-};
-
-import { LOCALSTORAGE_KEY1 } from "./ProjectEdit";
+import { LOCALSTORAGE_KEY1, REQUEST1 } from "./ProjectEdit";
 
 export default {
   name: "PageProjectPart1",
@@ -198,7 +184,7 @@ export default {
 
     // Reset
     const defaultModel = computed(() => {
-      const data = cloneDeep(REQUEST);
+      const data = cloneDeep(REQUEST1);
       if (address.value) {
         data._creators[0] = address.value;
         data._fundingPayees[0] = address.value;

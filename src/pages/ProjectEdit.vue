@@ -15,7 +15,7 @@
         </q-step>
       </q-stepper>
 
-      <q-item class="q-my-xl">
+      <q-item class="q-mb-xl">
         <q-item-section>
           <q-item-label>
             <div class="row q-gutter-md justify-end">
@@ -47,7 +47,7 @@ import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
-import { pickBy } from "lodash";
+import { cloneDeep, pickBy } from "lodash";
 import Controller from "../../contracts/deployments/rinkeby/Controller.json";
 import ChangeDaoNFTFactory from "../../contracts/deployments/rinkeby/ChangeDaoNFTFactory.json";
 import PaymentSplitterFactory from "../../contracts/deployments/rinkeby/PaymentSplitterFactory.json";
@@ -63,6 +63,35 @@ import { createMerkleRootRainbow } from "../util/merkle";
 
 export const LOCALSTORAGE_KEY1 = "projectPart1";
 export const LOCALSTORAGE_KEY2 = "projectPart2";
+
+export const REQUEST1 = {
+  _movementName: "",
+  _projectName: "",
+  _creators: [],
+  _baseURI: "",
+  _royaltiesPayees: [],
+  _royaltiesShares: [],
+  _fundingPayees: [],
+  _fundingShares: [],
+  transactionHash: "",
+  description: "",
+  areaOfChange: "",
+};
+
+export const REQUEST2 = {
+  _changeDaoNFTClone: "", // From Part 1 event
+  _fundingPSClone: "", // From Part 1 event
+  _mintPrice: null, // Dollars
+  _totalMints: null, // 1-Infinity
+  _maxMintAmountRainbow: null, // 1-20
+  _maxMintAmountPublic: null, // 1-20
+  _rainbowDuration: null, // Seconds
+  _rainbowMerkleRoot: "",
+  projectId: "",
+  rainbowAddresses: [],
+  transactionHash: "",
+  hasRainbow: false,
+};
 
 export default {
   name: "PageProjectEdit",
@@ -80,16 +109,19 @@ export default {
     const part2 = ref(null);
 
     // Form data
-    const data1 = ref(LocalStorage.getItem(LOCALSTORAGE_KEY1));
-    const data2 = ref(LocalStorage.getItem(LOCALSTORAGE_KEY2));
-
+    const data1 = ref(
+      LocalStorage.getItem(LOCALSTORAGE_KEY1) || cloneDeep(REQUEST1)
+    );
+    const data2 = ref(
+      LocalStorage.getItem(LOCALSTORAGE_KEY2) || cloneDeep(REQUEST2)
+    );
     const isNew = computed(
       () => router.currentRoute.value.name === "project-new"
     );
 
-    const isPart1Complete = computed(() => {
-      return Boolean(data2.value && data2.value._changeDaoNFTClone);
-    });
+    const isPart1Complete = computed(() =>
+      Boolean(data2.value && data2.value._changeDaoNFTClone)
+    );
 
     const step = computed(() => (isPart1Complete.value ? 2 : 1));
 
@@ -167,11 +199,10 @@ export default {
           )[0].args.fundingPSClone;
 
           // Set data for Part 2
-          Object.assign(data2.value, {
-            _changeDaoNFTClone,
-            _fundingPSClone,
-          });
           data2.value.projectId = data1.value.projectId;
+          data2.value._changeDaoNFTClone = _changeDaoNFTClone;
+          data2.value._fundingPSClone = _fundingPSClone;
+          LocalStorage.set(LOCALSTORAGE_KEY2, data2.value);
         } else {
           // Part 2
 

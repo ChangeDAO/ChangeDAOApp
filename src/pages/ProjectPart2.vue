@@ -121,22 +121,7 @@ import Moralis from "moralis";
 
 import SmoothReflow from "../components/SmoothReflow";
 
-const REQUEST = {
-  _changeDaoNFTClone: "", // From Part 1 event
-  _fundingPSClone: "", // From Part 1 event
-  _mintPrice: null, // Dollars
-  _totalMints: null, // 1-Infinity
-  _maxMintAmountRainbow: null, // 1-20
-  _maxMintAmountPublic: null, // 1-20
-  _rainbowDuration: null, // Seconds
-  _rainbowMerkleRoot: "",
-  projectId: "",
-  rainbowAddresses: [],
-  transactionHash: "",
-  hasRainbow: false,
-};
-
-import { LOCALSTORAGE_KEY2 } from "./ProjectEdit";
+import { LOCALSTORAGE_KEY2, REQUEST2 } from "./ProjectEdit";
 
 export default {
   name: "PageProjectPart2",
@@ -192,7 +177,7 @@ export default {
     );
 
     // Reset
-    const defaultModel = ref(cloneDeep(REQUEST));
+    const defaultModel = ref(cloneDeep(REQUEST2));
 
     const reset = (clear = false, complete = false) => {
       let newData;
@@ -215,7 +200,7 @@ export default {
           }
         } else {
           // Restore data from Part 1
-          newData = cloneDeep(REQUEST);
+          newData = cloneDeep(REQUEST2);
           newData.projectId = defaultModel.value.projectId;
           newData._changeDaoNFTClone = defaultModel.value._changeDaoNFTClone;
           newData._fundingPSClone = defaultModel.value._fundingPSClone;
@@ -238,7 +223,7 @@ export default {
     watch(
       data,
       (newData) => {
-        if (isEqual(newData, REQUEST)) {
+        if (isEqual(newData, REQUEST2)) {
           // Remove if default
           LocalStorage.remove(LOCALSTORAGE_KEY2);
         } else {
