@@ -1,5 +1,5 @@
 <template>
-  <q-card>
+  <q-card v-bind="$attrs">
     <img
       src="~assets/ChangeDAO-sample-cover.png"
       style="width: 100%"
@@ -9,7 +9,7 @@
       <div class="row items-center">
         <AddrAvatar :address="project.createdByWalletAddress" class="q-mr-sm" />
         <div class="text-subtitle2 text-weight-bold ellipsis">
-          {{ shortAddr(project.createdByWalletAddress) }}
+          {{ project.changemaker.displayName }}
         </div>
       </div>
       <div class="text-caption text-weight-bold ellipsis">
@@ -20,7 +20,12 @@
           {{ project.movement.name }}
         </div>
         <div class="text-caption text-grey-6 text-right">
-          {{ project.numMintsBought }} of {{ project.numMints }} minted
+          {{
+            $t("n of m minted", {
+              n: project.numMintsBought,
+              m: project.numMints,
+            })
+          }}
         </div>
       </div>
     </div>
@@ -34,8 +39,6 @@
 </style>
 
 <script>
-import { shortAddr } from "../util/formatting";
-
 import AddrAvatar from "./AddrAvatar";
 
 export default {
@@ -46,10 +49,6 @@ export default {
   props: {
     project: Object,
     minimal: Boolean,
-  },
-
-  methods: {
-    shortAddr,
   },
 };
 </script>

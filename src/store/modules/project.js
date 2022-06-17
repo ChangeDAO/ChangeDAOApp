@@ -9,26 +9,26 @@ export default {
   state: {},
 
   mutations: {
-    setProject(state, project, id) {
+    setProject(state, { project, id }) {
       state[id] = deepFreeze(project);
-    }
+    },
   },
 
   actions: {
     async getProject({ state, commit }, projectId) {
       try {
         if (!state[projectId]) {
-          const response = await Moralis.Cloud.run("getProject", {
-            projectId
+          const result = await Moralis.Cloud.run("getProject", {
+            projectId,
           });
 
-          commit("setProject", response.project, projectId);
+          commit("setProject", { project: result.project, id: projectId });
         }
         return state[projectId];
       } catch (error) {
         console.error(error);
         throw t("error.loadingProject");
       }
-    }
-  }
+    },
+  },
 };

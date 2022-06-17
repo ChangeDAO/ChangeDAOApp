@@ -161,7 +161,6 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { Loading } from "quasar";
 
-import { TX_WAIT } from "../util/constants";
 import { createLeafRainbow, createMerkleProofRainbow } from "../util/merkle";
 import { notifyError, notifySuccess, notifyTx } from "../util/notify";
 import RelativeTime from "../components/RelativeTime";
@@ -174,10 +173,10 @@ import {
   ETH_ADDRESS,
   DAI_ADDRESS,
   USDC_ADDRESS,
+  ETH_BUFFER,
   ERC20_ABI,
+  TX_WAIT,
 } from "../util/constants";
-
-const ETH_BUFFER = 0.01;
 
 export default {
   name: "PageProjectMint",

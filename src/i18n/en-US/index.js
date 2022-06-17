@@ -1,3 +1,5 @@
+import { ETH_BUFFER } from "../../util/constants";
+
 export default {
   "About Us": "About Us",
   Add: "Add",
@@ -20,6 +22,7 @@ export default {
   Copyright: "© Copyright 2022 ChangeDAO LLC. All rights reserved.",
   "Cost per Mint": "Cost per Mint",
   Created: "Created",
+  "Creating Change": "Creating Change",
   Creator: "Creator | Creators",
   "Creating Change By": "Creating Change By...",
   "Courtesy Mint": "Courtesy Mint",
@@ -51,12 +54,13 @@ export default {
   Instagram: "Instagram",
   "Last Name": "Last Name",
   "Long Bio": "Long Bio",
-  "Making Change By": "Making Change By",
   Mint: "Mint",
   "Mint NFT": "Mint NFT",
   "Minting Ended": "Minting has ended",
   Movement: "Movement",
   "n Mints Remaining": "{count} Mint Remaining | {count} Mints Remaining",
+  "n of m minted": "{n} of {m} minted",
+  "n of m": "{n} of {m}",
   Name: "Name",
   "Need help?": "Need help?",
   "New Project": "New Project",
@@ -68,6 +72,7 @@ export default {
   "Please and thankyou":
     "Your gift powers the mission and vision of ChangeDAO. If you support the work we're doing, please consider adding a tip.",
   Podcast: "Podcast",
+  "Public minting begins": "Public minting begins",
   "Price per Token": "Price per Token",
   "Primary Split Caption":
     "100% of all primary sales will be split as follows:",
@@ -75,11 +80,13 @@ export default {
   "Processing Transaction": "Processing Transaction",
   "Project Administration": "Project Administration",
   "Project has pending changes":
-    "This project has pending changes.\nPlease wait.",
+    "This project is still syncing.\nPlease wait...",
   "Project Name": "Project Name",
   "Project Split": "Project Split",
   Purchase: "Purchase",
-  "Rainbow Period Ended": "The Rainbow Period has ended",
+  "Rainbow Mint": "Rainbow Mint",
+  "Rainbow period ended": "The rainbow period has ended",
+  "Rainbow period ends": "The rainbow period ends",
   "Ready to support?": "Ready to support this project?",
   Reapprove: "Reapprove",
   Reset: "Reset",
@@ -94,7 +101,7 @@ export default {
   "Short Bio": "Short Bio",
   Submit: "Submit",
   Subtotal: "Subtotal",
-  "Supported Causes": "Supported Causes",
+  "Supported Nonprofits": "Supported Nonprofits",
   Terms: "Terms",
   "This will open wallet": "This will open your wallet for authorization.",
   "This will take time": "This may take a few minutes.",
@@ -177,7 +184,7 @@ export default {
   warning: {},
 
   hint: {
-    ethBuffer: "We use a 0.01ETH buffer which will be refunded on completion",
+    ethBuffer: `We use a ${ETH_BUFFER} ETH buffer which will be refunded on completion`,
     max: "Maximum {count}",
     min: "Minimum {count}",
     rainbowAddresses: "Separate addresses by commas or spaces/linebreaks",

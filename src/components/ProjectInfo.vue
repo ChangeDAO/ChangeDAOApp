@@ -2,13 +2,23 @@
   <div>
     <!-- Project Name -->
     <p class="text-h3">
-      {{ project._projectName }}<br />
+      {{ project.name }}
+      <q-btn
+        v-if="editable && project.createdByWalletAddress === userAddress"
+        :to="{ name: 'project-admin' }"
+        color="primary"
+        icon="admin"
+        round
+        flat
+      />
+      <br />
 
       <!-- Changemaker Name -->
       <span class="text-accent text-h4">
-        <q-avatar size="sm" color="grey-5" class="q-my-sm q-mr-sm" square />{{
-          shortAddr(project._creators[0])
-        }}
+        <AddrAvatar
+          :address="project.createdByWalletAddress"
+          class="q-mr-sm"
+        />{{ project.changemaker.displayName }}
       </span>
       <!-- <router-link
         class="text-h4"
@@ -25,17 +35,17 @@
       <span>{{ $t("Movement") }}</span>
       <br />
       <span class="text-accent">
-        {{ project._movementName }}
+        {{ project.movement.name }}
       </span>
 
       <br />
     </p>
 
-    <template v-if="!minimal">
-      <!-- Supported Causes -->
-      <!-- <p>
-        <span>{{ $t("Supported Causes") }}</span>
-        <template v-for="(cause, i) in project.supportedCauses" :key="i">
+    <template v-if="!minimal && project.nonprofits.length">
+      <!-- Supported Nonprofits -->
+      <p>
+        <span>{{ $t("Supported Nonprofits") }}</span>
+        <template v-for="(nonprofit, i) in project.nonprofits" :key="i">
           <br />
           <span class="text-accent">
             <q-avatar
@@ -43,10 +53,10 @@
               color="grey-5"
               class="q-my-sm q-mr-sm"
               square
-            />{{ cause }}
+            />{{ nonprofit }}
           </span>
         </template>
-      </p> -->
+      </p>
 
       <!-- Area of Change -->
       <p>{{ $t("Area of Change") }}</p>
@@ -64,16 +74,20 @@
 </template>
 
 <script>
-import { shortAddr } from "../util/formatting";
+import AddrAvatar from "./AddrAvatar.vue";
 
 export default {
   name: "ProjectInfo",
   props: {
     project: Object,
-    minimal: Boolean
+    minimal: Boolean,
+    editable: Boolean,
   },
-  methods: {
-    shortAddr
-  }
+  computed: {
+    userAddress() {
+      return this.$store.state.web3.userAddress;
+    },
+  },
+  components: { AddrAvatar },
 };
 </script>

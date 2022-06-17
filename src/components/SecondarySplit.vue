@@ -13,9 +13,12 @@
 <script>
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
+import { colors, getCssVar } from "quasar";
+const { lighten } = colors;
 
 import Chart from "./Chart";
 
+import { CHANGEDAO_WALLET } from "../util/constants";
 import { shortAddr } from "../util/formatting";
 
 export default defineComponent({
@@ -26,23 +29,33 @@ export default defineComponent({
   props: {
     project: {
       required: true,
-      type: Object
-    }
+      type: Object,
+    },
   },
 
   setup(props, context) {
     const { t } = useI18n({ useScope: "global" });
 
     const names = {
-      changeDao: "ChangeDAO"
+      [CHANGEDAO_WALLET]: "ChangeDAO",
     };
-    props.project._creators.forEach((addr, i) => {
-      names[i] = shortAddr(addr);
-    });
+    const primaryColor = getCssVar("primary");
+    const accentColor = getCssVar("accent");
+    const colors = {
+      [CHANGEDAO_WALLET]: primaryColor,
+    };
 
-    const splitData = { changeDao: 2000 };
-    props.project._royaltiesPayees.forEach((addr, i) => {
-      splitData[i] = props.project._royaltiesShares[i];
+    const splitData = {};
+    props.project.royaltiesPaymentSplitters.forEach((splitter) => {
+      splitter.recipients.forEach((recipient, i) => {
+        splitData[recipient.ethAddress] = recipient.shares;
+        if (!(recipient.ethAddress in names)) {
+          names[recipient.ethAddress] = shortAddr(recipient.ethAddress);
+        }
+        if (!(recipient.ethAddress in colors)) {
+          colors[recipient.ethAddress] = lighten(accentColor, i * -10);
+        }
+      });
     });
 
     for (let id in names) {
@@ -53,32 +66,27 @@ export default defineComponent({
       donut: {
         width: 40,
         label: {
-          show: false
+          show: false,
         },
-        title: t("Secondary Sales")
+        title: t("Secondary Sales"),
       },
       data: {
         type: "donut",
         json: splitData,
         names,
-        colors: {
-          changeDao: "#8001FB",
-          0: "#2EBAD3",
-          1: "#137C8E",
-          2: "#005A6A"
-        }
+        colors,
       },
       tooltip: {
-        show: false
+        show: false,
       },
       legend: {
-        show: false
-      }
+        show: false,
+      },
     };
 
     return {
-      options
+      options,
     };
-  }
+  },
 });
 </script>

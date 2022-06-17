@@ -99,7 +99,7 @@
           </q-item-label>
           <q-item v-if="!isRainbowPeriod">
             <q-item-section>
-              <q-item-label>{{ $t("Rainbow Period Ended") }}</q-item-label>
+              <q-item-label>{{ $t("Rainbow period ended") }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-item v-else>
@@ -447,8 +447,10 @@ export default {
             console.log("Deleted", change);
             delete pendingChanges[change.entityId];
             if (Object.keys(pendingChanges).length === 0) {
-              console.log("Deleted", change);
+              console.log("Finished");
               init();
+            } else {
+              console.log(pendingChanges, Object.keys(pendingChanges).length);
             }
           },
         });

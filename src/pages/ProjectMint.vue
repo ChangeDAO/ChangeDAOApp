@@ -7,14 +7,14 @@
         <div class="sticky header-top">
           <!-- Connect Wallet -->
           <LogIn
-            v-if="!user"
+            v-if="!userAddress"
             class="full-width q-mb-lg"
             :label="$t('Connect Wallet')"
           />
 
           <!-- Mint NFT -->
           <q-btn
-            v-if="user"
+            v-if="userAddress && (!isRainbowPeriod || isOnRainbowList)"
             @click="mint"
             :label="$t('Mint NFT')"
             class="full-width q-mb-lg"
@@ -27,7 +27,7 @@
       </div>
 
       <div class="page-col col q-col-6">
-        <ProjectInfo :project="project" />
+        <ProjectInfo :project="project" editable />
 
         <q-separator class="q-my-lg" />
 
@@ -36,13 +36,13 @@
         <p class="text-subtitle">
           {{ $t("Artwork Description") }}
         </p>
-        <p>{{ project.description }}</p>
+        <p class="pre-line">{{ project.description }}</p>
         <br />
 
-        <!-- <p class="text-subtitle">
-          {{ $t("Making Change By") }}
+        <p class="text-subtitle">
+          {{ $t("Creating Change") }}
         </p>
-        <p>{{ project.how }}</p> -->
+        <p class="pre-line">{{ project.changemaker.creatingChangeBy }}</p>
 
         <q-separator class="q-my-lg" />
 
@@ -54,7 +54,9 @@
             <p class="text-subtitle">
               {{ $t("Total Minted") }}
             </p>
-            <p>{{ project.minted }} {{ $t("of") }} {{ project._totalMints }}</p>
+            <p>
+              {{ $t("n of m", { n: minted, m: project.numMints }) }}
+            </p>
           </div>
 
           <!-- Goal -->
@@ -72,7 +74,7 @@
             {{ $t("Price per Token") }}
           </p>
           <p>
-            {{ $n(project._mintPrice, "compactUSD") }} USD
+            {{ $n(project.mintPriceInUsd, "compactUSD") }} USD
             {{ $t("via [PaymentMethods]") }}
           </p>
         </div>
@@ -85,14 +87,29 @@
             {{ $t("Ready to support?") }}
           </div>
 
-          <!-- Connect Wallet -->
+          <p v-if="isRainbowPeriod">
+            <RelativeTime
+              :before="
+                $t(
+                  isOnRainbowList
+                    ? 'Rainbow period ends'
+                    : 'Public minting begins'
+                )
+              "
+              :value="rainbowExpiration"
+              text-only
+            />
+          </p>
+
+          <!-- Mint -->
           <q-btn
-            v-if="user"
+            v-if="userAddress && (!isRainbowPeriod || isOnRainbowList)"
             @click="mint"
             :label="$t('Mint NFT')"
             color="primary"
           />
-          <LogIn v-else :label="$t('Connect Wallet')" />
+          <!-- Connect Wallet -->
+          <LogIn v-if="!userAddress" :label="$t('Connect Wallet')" />
         </div>
       </div>
     </div>
@@ -122,8 +139,8 @@
     </div>
 
     <router-view
-      v-if="user"
-      :project="project"
+      v-if="userAddress && project.numMintsBought < project.numMints"
+      :projectID="projectID"
       :model-value="true"
       no-route-dismiss
       @hide="$router.back()"
@@ -148,15 +165,25 @@
 </style>
 
 <script>
-import { defineComponent, ref, computed, onMounted, nextTick } from "vue";
+import {
+  defineComponent,
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+} from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
-import { useQuasar } from "quasar";
+import { Loading, useQuasar } from "quasar";
 
 import LogIn from "../components/LogIn";
 import ProjectInfo from "../components/ProjectInfo";
 import ProjectSplit from "../components/ProjectSplit";
 import SecondarySplit from "../components/SecondarySplit";
+import RelativeTime from "../components/RelativeTime";
+
+import Moralis from "moralis";
+import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
 
 export default defineComponent({
   name: "PageProjectMint",
@@ -168,6 +195,7 @@ export default defineComponent({
     ProjectInfo,
     ProjectSplit,
     SecondarySplit,
+    RelativeTime,
   },
 
   setup(props, context) {
@@ -184,29 +212,87 @@ export default defineComponent({
         : null;
     });
 
-    // Fetch the project
-    store.dispatch("getProject", props.projectID).catch((message) => {
-      $q.notify({
-        message,
-        type: "negative",
-        icon: "error",
-        position: "top-right",
-      });
-    });
-
     // Web3
-    const user = computed(() => store.state.web3.user);
+    const userAddress = computed(() => store.state.web3.userAddress);
+    const ethers = Moralis.web3Library;
+    let sharedFundingClone;
+
+    const minted = ref(null);
+    const mintedOn = ref(null);
+    const isRainbowPeriod = ref(false);
+    const isOnRainbowList = computed(() => {
+      return (
+        userAddress.value &&
+        project.value &&
+        project.value.rainbowAddresses.includes(userAddress.value.toLowerCase())
+      );
+    });
+    const rainbowExpiration = ref(null);
+
+    const getMinted = async () => {
+      minted.value = sharedFundingClone
+        ? (await sharedFundingClone.callStatic.getMintedTokens()).toNumber()
+        : null;
+    };
 
     const mint = () => {
       router.push({ name: "mint-checkout" });
     };
 
+    // Initialize
+    onMounted(async () => {
+      const provider = ethers.getDefaultProvider(process.env.chain);
+      if (!project.value) {
+        try {
+          Loading.show();
+          await store.dispatch("getProject", props.projectID);
+        } catch (error) {
+          console.error(error);
+          notifyError(error.error || error);
+        }
+      }
+
+      // Shared Funding Clone
+      if (project.value.sharedFundingCloneAddress) {
+        sharedFundingClone = new ethers.Contract(
+          project.value.sharedFundingCloneAddress,
+          SharedFunding.abi,
+          provider
+        );
+        getMinted();
+      }
+
+      minted.value = project.value.numMintsBought;
+      mintedOn.value = project.value.deployTimeInMS;
+
+      // Rainbow Period
+      const now = new Date().getTime();
+      rainbowExpiration.value = new Date(
+        mintedOn.value + project.value.rainbowDurationInMS
+      );
+      isRainbowPeriod.value = rainbowExpiration.value > now;
+      if (isRainbowPeriod.value) {
+        setTimeout(() => {
+          isRainbowPeriod.value = false;
+        }, rainbowExpiration.value - now);
+      }
+      Loading.hide();
+    });
+
+    onBeforeUnmount(() => {
+      Loading.hide();
+    });
+
     return {
       doubleColumn,
       project,
       backgroundImage,
-      user,
+      userAddress,
       mint,
+      minted,
+      rainbowExpiration,
+      isRainbowPeriod,
+      isOnRainbowList,
     };
   },
 });

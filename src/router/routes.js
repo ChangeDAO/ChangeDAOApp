@@ -55,19 +55,19 @@ const routes = [
         name: "project-mint",
         path: "projects/:projectID/mint",
         props: true,
-        meta: { requiresWeb3: true },
-        component: () => import("pages/ProjectMintMVP.vue"),
-        // children: [
-        //   {
-        //     name: "mint-checkout",
-        //     path: "checkout",
-        //     component: () => import("pages/MintCheckout.vue")
-        //   }
-        // ]
+        component: () => import("pages/ProjectMint.vue"),
+        children: [
+          {
+            name: "mint-checkout",
+            path: "checkout",
+            meta: { requiresWeb3: true },
+            component: () => import("pages/MintCheckout.vue"),
+          },
+        ],
       },
       {
         name: "mint-tx",
-        path: "projects/:projectID/mint/tx/:txID",
+        path: "projects/:projectID/mint/:mintID",
         props: true,
         component: () => import("pages/MintTx.vue"),
       },

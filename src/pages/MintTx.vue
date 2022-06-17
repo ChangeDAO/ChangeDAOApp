@@ -1,12 +1,15 @@
 <template>
-  <q-page v-if="project" class="page-mint-tx" :class="{ doubleColumn }" padding>
+  <q-page
+    v-if="project && mint"
+    class="page-mint-tx"
+    :class="{ doubleColumn }"
+    padding
+  >
     <!-- Page Title -->
     <p class="text-h3">{{ $t("Processing Transaction") }}</p>
 
     <!-- Progress (Single Column) -->
-    <div v-if="!doubleColumn">
-      <q-linear-progress indeterminate />
-    </div>
+    <q-linear-progress v-if="isPending && !doubleColumn" indeterminate />
 
     <div class="row" :class="{ 'q-col-gutter-xl': doubleColumn }">
       <!-- Info column -->
@@ -20,9 +23,7 @@
       <!-- Info column -->
       <div class="info-column page-col col q-col-9 q-gutter-lg">
         <!-- Progress (Double Column) -->
-        <div v-if="doubleColumn">
-          <q-linear-progress indeterminate />
-        </div>
+        <q-linear-progress v-if="isPending && doubleColumn" indeterminate />
 
         <!-- Project Info -->
         <ProjectInfo :project="project" />
@@ -55,7 +56,7 @@
             </q-item-section>
             <q-item-section side>
               <q-item-label>
-                {{ $n(project.tokenPriceUSD, "USD") }} USD
+                {{ $n(project.mintPriceInUsd, "USD") }} USD
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -64,7 +65,7 @@
               <q-item-label>{{ $t("Number of Mints") }}</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-item-label>{{ 2 }}</q-item-label>
+              <q-item-label>{{ mint.tokenIds.length }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-item>
@@ -80,7 +81,12 @@
               <q-item-label>{{ $t("Total") }}</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-item-label>{{ $n(525, "USD") }} USD</q-item-label>
+              <q-item-label
+                >{{
+                  $n(project.mintPriceInUsd * mint.tokenIds.length, "USD")
+                }}
+                USD</q-item-label
+              >
             </q-item-section>
           </q-item>
           <q-item>
@@ -88,7 +94,7 @@
               <q-item-label>{{ $t("Currency") }}</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-item-label>ETH</q-item-label>
+              <q-item-label>{{ mint.paymentType.toUpperCase() }}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -118,56 +124,109 @@
 </style>
 
 <script>
-import { defineComponent, computed } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useStore } from "vuex";
-import { useRouter, useRoute } from "vue-router";
-import { useQuasar } from "quasar";
+import { Loading, useQuasar } from "quasar";
 
 import ProjectInfo from "../components/ProjectInfo";
 
-export default defineComponent({
+import { TX_URL } from "../util/constants";
+import { notifyError, listenPending } from "../util/notify";
+
+import Moralis from "moralis";
+
+export default {
   name: "PageMintTx",
 
   components: { ProjectInfo },
 
-  props: ["projectID", "txID"],
+  props: ["projectID", "mintID"],
 
   setup(props, context) {
     const store = useStore();
-    const router = useRouter();
-    const route = useRoute();
     const $q = useQuasar();
 
     const doubleColumn = computed(() => $q.screen.width > 584);
     const project = computed(() => store.state.projects[props.projectID]);
+    const mint = ref(null);
     const backgroundImage = computed(() => {
       return project.value && project.value.img
         ? `url(${project.value.img})`
         : null;
     });
 
-    // Fetch the project
-    store.dispatch("getProject", props.projectID).catch(message => {
-      $q.notify({
-        message,
-        type: "negative",
-        icon: "error",
-        position: "top-right"
+    // Initialize
+    let subscription = null;
+    let pendingChanges = {};
+    const isPending = ref(false);
+    onMounted(async () => {
+      Loading.show();
+
+      if (!project.value) {
+        try {
+          await store.dispatch("getProject", props.projectID);
+        } catch (error) {
+          console.error(error);
+          notifyError(error.error || error);
+        }
+      }
+
+      try {
+        mint.value = (
+          await Moralis.Cloud.run("getMint", { mintId: props.mintID })
+        ).mint;
+      } catch (error) {
+        console.error(error);
+        notifyError(error);
+      }
+
+      let result = await listenPending({
+        params: {
+          entityType: "Mint",
+          entityId: props.mintID,
+        },
+        onDeletion(change) {
+          console.log("Deleted", change);
+          delete pendingChanges[change.entityId];
+          if (Object.keys(pendingChanges).length === 0) {
+            console.log("Finished");
+            isPending.value = false;
+          } else {
+          }
+        },
       });
+      subscription = result.subscription;
+      pendingChanges = result.initialPendingChanges;
+      isPending.value = Object.keys(pendingChanges).length > 0;
+
+      Loading.hide();
+    });
+
+    onBeforeUnmount(() => {
+      Loading.hide();
+      if (subscription) {
+        // Unlisten
+        Moralis.LiveQuery.close();
+        subscription = null;
+      }
     });
 
     // Web3
     const user = computed(() => store.state.web3.user);
 
-    const etherscanURL = "https://etherscan.io/";
+    const etherscanURL = computed(() =>
+      mint.value ? TX_URL + mint.value.creationTransactionHash : ""
+    );
 
     return {
       doubleColumn,
+      isPending,
       project,
       backgroundImage,
       user,
-      etherscanURL
+      mint,
+      etherscanURL,
     };
-  }
-});
+  },
+};
 </script>

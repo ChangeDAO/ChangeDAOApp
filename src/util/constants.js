@@ -11,6 +11,9 @@ export const URLS = {
 export const TX_WAIT = 1;
 export const TX_URL = "https://rinkeby.etherscan.io/tx/";
 
+export const ETH_BUFFER = 0.01;
+
+export const CHANGEDAO_WALLET = "0xee911a1e8e25997a152e337f45648f9e070fc509";
 export const ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
 export const DAI_ADDRESS = "0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea";
 export const USDC_ADDRESS = "0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b";

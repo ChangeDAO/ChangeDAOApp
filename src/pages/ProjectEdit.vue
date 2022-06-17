@@ -254,7 +254,10 @@ export default {
           if (data2.value._maxMintAmountRainbow === null) {
             data2.value._maxMintAmountRainbow = 1;
           }
-
+          if (!data2.value._rainbowDuration) {
+            data2.value._rainbowDuration = 0;
+          }
+          
           // Call Cloud Function
           await Moralis.Cloud.run("createProjectPartTwo", data2.value);
 

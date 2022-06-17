@@ -4,9 +4,12 @@
 
 <script>
 import { defineComponent } from "vue";
+import { colors, getCssVar } from "quasar";
+const { lighten } = colors;
 
 import Chart from "./Chart";
 
+import { CHANGEDAO_WALLET } from "../util/constants";
 import { shortAddr } from "../util/formatting";
 
 export default defineComponent({
@@ -17,21 +20,31 @@ export default defineComponent({
   props: {
     project: {
       required: true,
-      type: Object
-    }
+      type: Object,
+    },
   },
 
   setup(props, context) {
     const names = {
-      changeDao: "ChangeDAO"
+      [CHANGEDAO_WALLET]: "ChangeDAO",
     };
-    props.project._creators.forEach((addr, i) => {
-      names[i] = shortAddr(addr);
-    });
+    const primaryColor = getCssVar("primary");
+    const accentColor = getCssVar("accent");
+    const colors = {
+      [CHANGEDAO_WALLET]: primaryColor,
+    };
 
-    const splitData = { changeDao: 200 };
-    props.project._fundingPayees.forEach((addr, i) => {
-      splitData[i] = props.project._fundingShares[i];
+    const splitData = {};
+    props.project.fundingPaymentSplitters.forEach((splitter) => {
+      splitter.recipients.forEach((recipient, i) => {
+        splitData[recipient.ethAddress] = recipient.shares;
+        if (!(recipient.ethAddress in names)) {
+          names[recipient.ethAddress] = shortAddr(recipient.ethAddress);
+        }
+        if (!(recipient.ethAddress in colors)) {
+          colors[recipient.ethAddress] = lighten(accentColor, i * -10);
+        }
+      });
     });
 
     for (let id in names) {
@@ -41,31 +54,26 @@ export default defineComponent({
     const options = {
       pie: {
         label: {
-          show: false
-        }
+          show: false,
+        },
       },
       data: {
         type: "pie",
         json: splitData,
         names,
-        colors: {
-          changeDao: "#8001FB",
-          0: "#2EBAD3",
-          1: "#137C8E",
-          2: "#005A6A"
-        }
+        colors,
       },
       tooltip: {
-        show: false
+        show: false,
       },
       legend: {
-        show: false
-      }
+        show: false,
+      },
     };
 
     return {
-      options
+      options,
     };
-  }
+  },
 });
 </script>

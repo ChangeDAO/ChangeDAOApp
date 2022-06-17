@@ -154,6 +154,8 @@ export const listenPending = async ({
     eventName: pendingChange.get("eventName"),
     entityType: pendingChange.get("entityType"),
     entityId: pendingChange.get("entityId"),
+    dataFromUI: pendingChange.get("dataFromUI"),
+    dataFromChain: pendingChange.get("dataFromChain"),
   });
 
   if (onCreation)
