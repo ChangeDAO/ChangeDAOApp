@@ -1,3 +1,4 @@
+import Moralis from "moralis";
 import { Notify, openURL } from "quasar";
 import { i18n } from "../boot/i18n";
 import { TX_URL } from "../util/constants";
@@ -9,7 +10,7 @@ export const notifyTx = (hash) => {
   return Notify.create({
     message: t("Transaction Pending"),
     type: "warning",
-    icon: "pending",
+    spinner: true,
     timeout: 0,
     position: "top-right",
     multiLine: false,
@@ -131,4 +132,59 @@ export const formatHint = (hint) => {
       return hint;
     }
   }
+};
+
+export const listenPending = async ({
+  params,
+  onCreation,
+  onUpdate,
+  onNewlyMatched,
+  onNewlyUnmatched,
+  onDeletion,
+}) => {
+  const Pending = Moralis.Object.extend("Pending");
+  const query = new Moralis.Query(Pending);
+  Object.entries(params).forEach(([key, value]) => {
+    if (Array.isArray(value)) query.containedIn(key, value);
+    else query.equalTo(key, value);
+  });
+  const subscription = await query.subscribe();
+
+  const formatPendingChange = (pendingChange) => ({
+    eventName: pendingChange.get("eventName"),
+    entityType: pendingChange.get("entityType"),
+    entityId: pendingChange.get("entityId"),
+  });
+
+  if (onCreation)
+    subscription.on("create", (pendingChange) =>
+      onCreation(formatPendingChange(pendingChange))
+    );
+  if (onUpdate)
+    subscription.on("update", (pendingChange) =>
+      onUpdate(formatPendingChange(pendingChange))
+    );
+  if (onNewlyMatched)
+    subscription.on("enter", (pendingChange) =>
+      onNewlyMatched(formatPendingChange(pendingChange))
+    );
+  if (onNewlyUnmatched)
+    subscription.on("leave", (pendingChange) =>
+      onNewlyUnmatched(formatPendingChange(pendingChange))
+    );
+  if (onDeletion)
+    subscription.on("delete", (pendingChange) =>
+      onDeletion(formatPendingChange(pendingChange))
+    );
+
+  const initialPendingChanges = Object.fromEntries(
+    (await query.find()).map((pendingChange) => [
+      pendingChange.id,
+      formatPendingChange(pendingChange),
+    ])
+  );
+  return {
+    subscription,
+    initialPendingChanges,
+  };
 };

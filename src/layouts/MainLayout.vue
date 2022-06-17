@@ -138,8 +138,6 @@ import { URLS } from "../util/constants";
 import LogInDialog from "../components/LogInDialog";
 import UserMenu from "../components/UserMenu";
 
-import Moralis from "moralis";
-
 export default defineComponent({
   name: "MainLayout",
 
@@ -168,7 +166,8 @@ export default defineComponent({
       if (
         to.meta.requiresWeb3 &&
         isLoggedIn.value &&
-        !Moralis.isWeb3Enabled()
+        !store.state.web3.initialized &&
+        !store.state.web3.initializing
       ) {
         await store.dispatch("enableWeb3");
       }
@@ -215,7 +214,8 @@ export default defineComponent({
     if (
       router.currentRoute.value.meta.requiresWeb3 &&
       isLoggedIn.value &&
-      !Moralis.isWeb3Enabled()
+      !store.state.web3.initialized &&
+      !store.state.web3.initializing
     ) {
       store.dispatch("enableWeb3").then(() => {
         isInitialized.value = true;

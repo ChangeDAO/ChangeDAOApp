@@ -75,7 +75,7 @@ export default {
   "Processing Transaction": "Processing Transaction",
   "Project Administration": "Project Administration",
   "Project has pending changes":
-    "This project has pending changes. Please refresh in a few minutes.",
+    "This project has pending changes.\nPlease wait.",
   "Project Name": "Project Name",
   "Project Split": "Project Split",
   Purchase: "Purchase",

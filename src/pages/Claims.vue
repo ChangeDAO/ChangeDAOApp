@@ -166,11 +166,12 @@ export default {
           paymentSplitterId,
           transactionHash: tx.hash,
         });
-        notifyTx(tx.hash);
+        let dismiss = notifyTx(tx.hash);
 
         const response = await tx.wait(TX_WAIT);
         getProjects();
         notifySuccess("TxComplete");
+        dismiss();
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);

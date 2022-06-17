@@ -295,10 +295,11 @@ export default {
           _value: Moralis.Units.ETH(total.value.toString()),
         },
       });
-      notifyTx(tx.hash);
+      let dismiss = notifyTx(tx.hash);
       const response = await tx.wait(TX_WAIT).then(() => {
         isDAIApproved.value = true;
         notifySuccess("TxComplete");
+        dismiss();
       });
     };
 
@@ -313,10 +314,11 @@ export default {
           _value: Moralis.Units.ETH(total.value.toString()),
         },
       });
-      notifyTx(tx.hash);
+      let dismiss = notifyTx(tx.hash);
       const response = await tx.wait().then(() => {
         isUSDCApproved.value = true;
         notifySuccess("TxComplete");
+        dismiss();
       });
     };
 
@@ -395,11 +397,12 @@ export default {
             transactionHash: tx.hash,
           });
         }
-        notifyTx(tx.hash);
+        let dismiss = notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
         getMinted();
 
         notifySuccess("TxComplete");
+        dismiss();
 
         // router.replace({
         //   name: "mintTx",

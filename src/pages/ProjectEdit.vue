@@ -166,7 +166,7 @@ export default {
             functionName: "createNFTAndPSClones",
             params: pickBy(data1.value, (value, key) => key.startsWith("_")),
           });
-          notifyTx(tx.hash);
+          let dismiss = notifyTx(tx.hash);
           data1.value.transactionHash = tx.hash;
 
           // Call Cloud Function
@@ -177,6 +177,7 @@ export default {
           // Transaction Complete
           const response = await tx.wait(TX_WAIT);
           notifySuccess("TxComplete");
+          dismiss();
 
           // Get NFT Clone Address
           const changeDaoNFTFactory = new ethers.Contract(
@@ -248,7 +249,7 @@ export default {
               _rainbowMerkleRoot: data2.value._rainbowMerkleRoot,
             },
           });
-          notifyTx(tx.hash);
+          let dismiss = notifyTx(tx.hash);
           data2.value.transactionHash = tx.hash;
           if (data2.value._maxMintAmountRainbow === null) {
             data2.value._maxMintAmountRainbow = 1;
@@ -260,6 +261,7 @@ export default {
           // Transaction Complete
           const response = await tx.wait(TX_WAIT);
           notifySuccess("TxComplete");
+          dismiss();
 
           // Get Shared Funding Clone Address
           const sharedFundingFactory = new ethers.Contract(

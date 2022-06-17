@@ -1,11 +1,8 @@
 <template>
-  <q-page class="page-project-admin">
+  <q-page v-if="!isPending" class="page-project-admin">
     <div
       v-if="
-        !isLoading &&
-        userAddress &&
-        project &&
-        userAddress === project.createdByWalletAddress
+        userAddress && project && userAddress === project.createdByWalletAddress
       "
       class="q-layout-padding page-col col"
     >
@@ -154,22 +151,28 @@
           </q-item>
         </template>
       </q-list>
-      <div v-else class="q-ma-md">
-        {{ $t("Project has pending changes") }}
-      </div>
     </div>
+  </q-page>
+  <q-page class="flex flex-center text-center pre-line" v-else>
+    <q-inner-loading
+      :showing="isPending"
+      :label="$t('Project has pending changes')"
+    />
   </q-page>
 </template>
 
 <script>
-import { computed, onMounted, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { Loading } from "quasar";
 
 import { TX_WAIT } from "../util/constants";
-import { notifyError, notifySuccess, notifyTx } from "../util/notify";
+import {
+  notifyError,
+  notifySuccess,
+  notifyTx,
+  listenPending,
+} from "../util/notify";
 import AddrInput from "../components/AddrInput";
 import RelativeTime from "../components/RelativeTime";
 
@@ -185,8 +188,6 @@ export default {
   props: ["projectID"],
 
   setup(props) {
-    const { t } = useI18n({ useScope: "global" });
-    const router = useRouter();
     const store = useStore();
 
     const ethers = Moralis.web3Library;
@@ -209,9 +210,10 @@ export default {
           functionName: "setBaseURI",
           params: { _newBaseURI: baseURI.value },
         });
-        notifyTx(tx.hash);
+        let dismiss = notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
         notifySuccess("TxComplete");
+        dismiss();
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -236,9 +238,10 @@ export default {
             ),
           },
         });
-        notifyTx(tx.hash);
+        let dismiss = notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
         notifySuccess("TxComplete");
+        dismiss();
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -259,7 +262,7 @@ export default {
           functionName: "zeroMint",
           params: { _recipient: zeroMintAddress.value },
         });
-        notifyTx(tx.hash);
+        let dismiss = notifyTx(tx.hash);
 
         // Call Cloud Function
         await Moralis.Cloud.run("zeroMint", {
@@ -271,6 +274,7 @@ export default {
         const response = await tx.wait(TX_WAIT);
         hasZeroMinted.value = true;
         notifySuccess("TxComplete");
+        dismiss();
         getMinted();
       } catch (error) {
         console.error(error);
@@ -295,7 +299,7 @@ export default {
             _mintAmount: courtesyMintAmount.value,
           },
         });
-        notifyTx(tx.hash);
+        let dismiss = notifyTx(tx.hash);
 
         // Call Cloud Function
         await Moralis.Cloud.run("courtesyMint", {
@@ -307,6 +311,7 @@ export default {
 
         const response = await tx.wait(TX_WAIT);
         notifySuccess("TxComplete");
+        dismiss();
         getMinted();
       } catch (error) {
         console.error(error);
@@ -325,10 +330,11 @@ export default {
           abi: SharedFunding.abi,
           functionName: isPaused.value ? "unPause" : "pause",
         });
-        notifyTx(tx.hash);
+        let dismiss = notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
         isPaused.value = !isPaused.value;
         notifySuccess("TxComplete");
+        dismiss();
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -361,8 +367,10 @@ export default {
     };
 
     const isPending = ref(false);
+    let subscription = null;
+    let pendingChanges = {};
 
-    onMounted(async () => {
+    const init = async () => {
       const provider = ethers.getDefaultProvider(process.env.chain);
       try {
         const response = await Moralis.Cloud.run("getProject", {
@@ -429,7 +437,37 @@ export default {
         isPending.value = true;
       }
 
+      if (isPending.value) {
+        let result = await listenPending({
+          params: {
+            entityType: "Project",
+            entityId: props.projectID,
+          },
+          onDeletion(change) {
+            console.log("Deleted", change);
+            delete pendingChanges[change.entityId];
+            if (Object.keys(pendingChanges).length === 0) {
+              console.log("Deleted", change);
+              init();
+            }
+          },
+        });
+        subscription = result.subscription;
+        pendingChanges = result.initialPendingChanges;
+        console.log("Initial Pending Changes", pendingChanges);
+      }
+
       isLoading.value = false;
+    };
+    onMounted(init);
+
+    onBeforeUnmount(() => {
+      Loading.hide();
+      if (subscription) {
+        // Unlisten
+        Moralis.LiveQuery.close();
+        subscription = null;
+      }
     });
 
     return {
