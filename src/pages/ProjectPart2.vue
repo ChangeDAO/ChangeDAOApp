@@ -121,7 +121,7 @@ import Moralis from "moralis";
 
 import SmoothReflow from "../components/SmoothReflow";
 
-import { LOCALSTORAGE_KEY2, REQUEST2 } from "./ProjectEdit";
+import { LOCALSTORAGE_KEY2, REQUEST2 } from "./ProjectCreate";
 
 export default {
   name: "PageProjectPart2",

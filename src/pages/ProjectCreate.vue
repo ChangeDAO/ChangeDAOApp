@@ -100,7 +100,7 @@ export const REQUEST2 = {
 };
 
 export default {
-  name: "PageProjectEdit",
+  name: "PageProjectCreate",
 
   components: { ProjectPart1, ProjectPart2 },
 
@@ -257,7 +257,7 @@ export default {
           if (!data2.value._rainbowDuration) {
             data2.value._rainbowDuration = 0;
           }
-          
+
           // Call Cloud Function
           await Moralis.Cloud.run("createProjectPartTwo", data2.value);
 

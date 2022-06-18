@@ -12,7 +12,7 @@
       </div>
       <div class="text-h5 q-ma-md">
         <template v-if="project">
-          <router-link :to="{ name: 'project-mint' }">
+          <router-link :to="{ name: 'project-view' }">
             {{ project.name }}
           </router-link>
         </template>

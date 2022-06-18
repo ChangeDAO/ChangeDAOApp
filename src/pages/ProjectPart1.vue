@@ -134,7 +134,7 @@ import { AREAS_OF_CHANGE } from "../util/constants";
 import AddrInputs from "../components/AddrInputs";
 import PaymentSplitInput from "../components/PaymentSplitInput";
 
-import { LOCALSTORAGE_KEY1, REQUEST1 } from "./ProjectEdit";
+import { LOCALSTORAGE_KEY1, REQUEST1 } from "./ProjectCreate";
 
 export default {
   name: "PageProjectPart1",

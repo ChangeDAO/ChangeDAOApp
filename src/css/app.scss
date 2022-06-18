@@ -11,6 +11,10 @@ p {
   line-height: 24px;
 }
 
+.overlay {
+  background: rgba(#000, 0.47);
+}
+
 .text-h1 {
   font-weight: bold;
   font-size: 92px;
@@ -47,22 +51,25 @@ p {
 
 .bg-gradient {
   background-image: radial-gradient(
-      110% 50vh at 50% 10vh,
+      110% 50vh at 50% 25vh,
       $primary 0%,
       transparent 50%
     ),
     radial-gradient(
-      100% 80vh at 0 80vh,
+      100% 80vh at 0 90vh,
       $accent 0%,
       transparent 50%,
       transparent
     ),
     radial-gradient(
-      100% 80vh at 100% 160vh,
+      100% 80vh at 100% 180vh,
       $accent 0%,
       transparent 50%,
       transparent
     );
+  background-repeat: repeat-y;
+  background-size: 100% 260vh;
+  background-position: 50% -15vh;
 }
 
 .q-layout-container {

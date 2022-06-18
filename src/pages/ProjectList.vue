@@ -18,7 +18,7 @@
         :project="project"
         @click="
           $router.push({
-            name: 'project-mint',
+            name: 'project-view',
             params: { projectID: project.id },
           })
         "

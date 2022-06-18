@@ -55,7 +55,12 @@
               {{ $t("Total Minted") }}
             </p>
             <p>
-              {{ $t("n of m", { n: minted, m: project.numMints }) }}
+              {{
+                $t("n of m", {
+                  n: $n(minted || 0, "n8"),
+                  m: $n(project.numMints || 0, "n8"),
+                })
+              }}
             </p>
           </div>
 
@@ -73,9 +78,12 @@
           <p class="text-subtitle">
             {{ $t("Price per Token") }}
           </p>
-          <p>
+          <p v-if="project.mintPriceInUsd > 0">
             {{ $n(project.mintPriceInUsd, "compactUSD") }} USD
             {{ $t("via [PaymentMethods]") }}
+          </p>
+          <p v-else>
+            {{ $t("Free") }}
           </p>
         </div>
 
@@ -186,7 +194,7 @@ import Moralis from "moralis";
 import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
 
 export default defineComponent({
-  name: "PageProjectMint",
+  name: "PageProjectView",
 
   props: ["projectID"],
 
@@ -236,7 +244,7 @@ export default defineComponent({
     };
 
     const mint = () => {
-      router.push({ name: "mint-checkout" });
+      router.push({ name: "project-mint" });
     };
 
     // Initialize

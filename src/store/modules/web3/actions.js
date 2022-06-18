@@ -33,14 +33,22 @@ export async function init({ commit, dispatch, state }) {
 // Enable Web3
 export async function enableWeb3({ state, commit, dispatch }) {
   commit("setInitializing", true);
-  return Moralis.enableWeb3({ provider: state.provider || "metamask" }).then(
-    async (result) => {
-      await dispatch("getUserData");
-      commit("setInitializing", false);
+  let result;
+  try {
+    result = Moralis.enableWeb3({ provider: state.provider || "metamask" });
+    commit("setInitialized", true);
+  } catch (error) {
+    console.warn(error);
+    try {
+      result = Moralis.enableWeb3({ provider: state.provider || "metamask" });
       commit("setInitialized", true);
-      return result;
+    } catch (error) {
+      console.warn(error);
     }
-  );
+  }
+  commit("setInitializing", false);
+  await dispatch("getUserData");
+  return result;
 }
 
 // Log In

@@ -1,22 +1,25 @@
 <template>
-  <q-page
-    v-if="project && mint"
-    class="page-mint-tx"
-    :class="{ doubleColumn }"
-    padding
-  >
+  <q-page class="page-mint-tx" :class="{ doubleColumn }" padding>
     <!-- Page Title -->
-    <p class="text-h3">{{ $t("Processing Transaction") }}</p>
+    <p v-if="isPending" class="text-h3">{{ $t("Processing Transaction") }}</p>
 
     <!-- Progress (Single Column) -->
     <q-linear-progress v-if="isPending && !doubleColumn" indeterminate />
 
-    <div class="row" :class="{ 'q-col-gutter-xl': doubleColumn }">
+    <div
+      v-if="project && mint"
+      class="row"
+      :class="{ 'q-col-gutter-xl': doubleColumn }"
+    >
       <!-- Info column -->
       <div class="image-column page-col col q-col-3">
         <div>
-          <!-- Image -->
-          <div class="square q-mb-lg" :style="{ backgroundImage }" />
+          <!-- Images -->
+          <TokenCarousel
+            class="full-width full-height q-mb-lg"
+            :baseURI="project.baseURI"
+            :token-ids="mint.tokenIds"
+          />
         </div>
       </div>
 
@@ -50,7 +53,7 @@
               </q-item-label>
             </q-item-section>
           </q-item>
-          <q-item>
+          <q-item v-if="project.mintPriceInUsd">
             <q-item-section>
               <q-item-label>{{ $t("Cost per Mint") }}</q-item-label>
             </q-item-section>
@@ -60,20 +63,22 @@
               </q-item-label>
             </q-item-section>
           </q-item>
-          <q-item>
+          <q-item v-if="mint.numMints || mint.tokenIds">
             <q-item-section>
               <q-item-label>{{ $t("Number of Mints") }}</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-item-label>{{ mint.tokenIds.length }}</q-item-label>
+              <q-item-label>{{
+                mint.numMints || mint.tokenIds ? mint.tokenIds.length : 0
+              }}</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item>
+          <q-item v-if="mint.tipAmountInUsd">
             <q-item-section>
               <q-item-label>ChangeDAO {{ $t("Tip") }}</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-item-label>tip</q-item-label>
+              <q-item-label>{{ $n(mint.tipAmountInUsd, "USD") }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-item>
@@ -83,13 +88,16 @@
             <q-item-section side>
               <q-item-label
                 >{{
-                  $n(project.mintPriceInUsd * mint.tokenIds.length, "USD")
+                  $n(
+                    (mint.totalPriceInUsd || 0) + (mint.tipAmountInUsd || 0),
+                    "USD"
+                  )
                 }}
                 USD</q-item-label
               >
             </q-item-section>
           </q-item>
-          <q-item>
+          <q-item v-if="mint.paymentType">
             <q-item-section>
               <q-item-label>{{ $t("Currency") }}</q-item-label>
             </q-item-section>
@@ -108,18 +116,6 @@
   &.doubleColumn > .row > .image-column {
     max-width: 350px;
   }
-
-  .square {
-    background-color: $grey-9;
-    background-image: url(~assets/chest.png);
-    background-size: contain;
-
-    &:after {
-      content: "";
-      display: block;
-      padding-bottom: 100%;
-    }
-  }
 }
 </style>
 
@@ -129,6 +125,7 @@ import { useStore } from "vuex";
 import { Loading, useQuasar } from "quasar";
 
 import ProjectInfo from "../components/ProjectInfo";
+import TokenCarousel from "../components/TokenCarousel";
 
 import { TX_URL } from "../util/constants";
 import { notifyError, listenPending } from "../util/notify";
@@ -138,7 +135,7 @@ import Moralis from "moralis";
 export default {
   name: "PageMintTx",
 
-  components: { ProjectInfo },
+  components: { ProjectInfo, TokenCarousel },
 
   props: ["projectID", "mintID"],
 
@@ -149,11 +146,6 @@ export default {
     const doubleColumn = computed(() => $q.screen.width > 584);
     const project = computed(() => store.state.projects[props.projectID]);
     const mint = ref(null);
-    const backgroundImage = computed(() => {
-      return project.value && project.value.img
-        ? `url(${project.value.img})`
-        : null;
-    });
 
     // Initialize
     let subscription = null;
@@ -172,32 +164,38 @@ export default {
       }
 
       try {
-        mint.value = (
-          await Moralis.Cloud.run("getMint", { mintId: props.mintID })
-        ).mint;
+        let result = await Moralis.Cloud.run("getMint", {
+          mintId: props.mintID,
+        });
+        mint.value = result.mint;
+
+        result = await listenPending({
+          params: {
+            entityType: "Mint",
+            entityId: props.mintID,
+          },
+          onDeletion(change) {
+            console.log("Deleted", change);
+            delete pendingChanges[change.entityId];
+            if (Object.keys(pendingChanges).length === 0) {
+              console.log("Finished");
+              isPending.value = false;
+            }
+          },
+        });
+        subscription = result.subscription;
+        pendingChanges = result.initialPendingChanges;
+        isPending.value = Object.keys(pendingChanges).length > 0;
+        if (isPending.value) {
+          Object.assign(
+            mint.value,
+            ...Object.values(pendingChanges).map((c) => c.dataFromChain)
+          );
+        }
       } catch (error) {
         console.error(error);
         notifyError(error);
       }
-
-      let result = await listenPending({
-        params: {
-          entityType: "Mint",
-          entityId: props.mintID,
-        },
-        onDeletion(change) {
-          console.log("Deleted", change);
-          delete pendingChanges[change.entityId];
-          if (Object.keys(pendingChanges).length === 0) {
-            console.log("Finished");
-            isPending.value = false;
-          } else {
-          }
-        },
-      });
-      subscription = result.subscription;
-      pendingChanges = result.initialPendingChanges;
-      isPending.value = Object.keys(pendingChanges).length > 0;
 
       Loading.hide();
     });
@@ -222,7 +220,6 @@ export default {
       doubleColumn,
       isPending,
       project,
-      backgroundImage,
       user,
       mint,
       etherscanURL,

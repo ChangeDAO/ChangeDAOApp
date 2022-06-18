@@ -30,19 +30,21 @@ const routes = [
         path: "projects/new",
         props: true,
         meta: { requiresWeb3: true },
-        component: () => import("pages/ProjectEdit.vue"),
+        component: () => import("pages/ProjectCreate.vue"),
       },
       {
         name: "project-view",
         path: "projects/:projectID",
         props: true,
-        component: () => import("pages/ProjectEdit.vue"),
-      },
-      {
-        name: "project-edit",
-        path: "projects/:projectID/edit",
-        props: true,
-        component: () => import("pages/ProjectEdit.vue"),
+        component: () => import("pages/ProjectView.vue"),
+        children: [
+          {
+            name: "project-mint",
+            path: "mint",
+            meta: { requiresWeb3: true },
+            component: () => import("pages/MintCheckout.vue"),
+          },
+        ],
       },
       {
         name: "project-admin",
@@ -50,20 +52,6 @@ const routes = [
         props: true,
         meta: { requiresWeb3: true },
         component: () => import("pages/ProjectAdmin.vue"),
-      },
-      {
-        name: "project-mint",
-        path: "projects/:projectID/mint",
-        props: true,
-        component: () => import("pages/ProjectMint.vue"),
-        children: [
-          {
-            name: "mint-checkout",
-            path: "checkout",
-            meta: { requiresWeb3: true },
-            component: () => import("pages/MintCheckout.vue"),
-          },
-        ],
       },
       {
         name: "mint-tx",

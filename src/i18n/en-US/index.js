@@ -44,6 +44,7 @@ export default {
   Featured: "Featured",
   "Featured Projects": "Featured Projects",
   "First Name": "First Name",
+  Free: "Free",
   "From ChangeDAO": "From ChangeDAO",
   "From Collaborators": "From Collaborators",
   "From Creator": "From Creator",

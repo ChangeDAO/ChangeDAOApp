@@ -10,6 +10,7 @@ export const URLS = {
 
 export const TX_WAIT = 1;
 export const TX_URL = "https://rinkeby.etherscan.io/tx/";
+export const IPFS_GATEWAY = "https://dweb.link/ipfs/";
 
 export const ETH_BUFFER = 0.01;
 
