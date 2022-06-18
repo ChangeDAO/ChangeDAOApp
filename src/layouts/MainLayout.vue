@@ -93,14 +93,6 @@
               'q-pt-lg': !$q.screen.gt.xs,
             }"
           >
-            <!-- <q-btn
-          @click="discord"
-          icon="discord"
-          :label="$t('Discord')"
-          size="sm"
-          padding="sm"
-          outline
-          /> -->
             <q-btn
               @click="twitter"
               icon="twitter"
@@ -129,10 +121,11 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { openURL } from "quasar";
+import { useI18n } from "vue-i18n";
+import { Cookies, Notify, openURL } from "quasar";
 import { URLS } from "../util/constants";
 
 import LogInDialog from "../components/LogInDialog";
@@ -146,6 +139,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const store = useStore();
+    const { t } = useI18n({ useScope: "global" });
 
     const discord = () => {
       openURL(URLS.DISCORD);
@@ -223,6 +217,31 @@ export default defineComponent({
     } else {
       isInitialized.value = true;
     }
+
+    onMounted(() => {
+      if (!Cookies.has("privacy")) {
+        Notify.create({
+          message: t("warning.cookies"),
+          timeout: 0,
+          position: "bottom",
+          multiLine: true,
+          actions: [
+            {
+              label: t("View"),
+              color: "accent",
+              noDismiss: true,
+              handler() {
+                router.push({ name: "privacy" });
+              },
+            },
+            { label: t("Accept"), color: "accent" },
+          ],
+          onDismiss: () => {
+            Cookies.set("privacy", "accepted");
+          },
+        });
+      }
+    });
 
     return {
       discord,

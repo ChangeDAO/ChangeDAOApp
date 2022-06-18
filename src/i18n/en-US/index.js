@@ -2,6 +2,7 @@ import { ETH_BUFFER } from "../../util/constants";
 
 export default {
   "About Us": "About Us",
+  Accept: "Accept",
   Add: "Add",
   "Add a Tip": "Add a Tip",
   "All Projects": "All Projects",
@@ -181,7 +182,10 @@ export default {
     updateAvailable: "A new version is available",
   },
 
-  warning: {},
+  warning: {
+    cookies:
+      "We use cookies to enhance your experience and improve our technology platform to better meet the needs of our community. By continuing to use ChangeDAO, you agree to our use of cookies. To learn more about cookies and how we use them, view our privacy policy.",
+  },
 
   hint: {
     ethBuffer: `We use a ${ETH_BUFFER} ETH buffer which will be refunded on completion`,
