@@ -149,7 +149,7 @@
 <script>
 import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { LocalStorage } from "quasar";
+import { debounce, LocalStorage } from "quasar";
 import { isEqual } from "lodash";
 import Moralis from "moralis";
 
@@ -198,7 +198,7 @@ export default {
 
     watch(
       data,
-      (value) => {
+      debounce((value) => {
         if (isEqual(value, REQUEST)) {
           LocalStorage.remove(LOCALSTORAGE_KEY);
         } else {
@@ -207,7 +207,7 @@ export default {
             address: address.value,
           });
         }
-      },
+      }, 300),
       { deep: true }
     );
 

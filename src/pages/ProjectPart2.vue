@@ -115,7 +115,7 @@
 <script>
 import { computed, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { LocalStorage } from "quasar";
+import { debounce, LocalStorage } from "quasar";
 import { cloneDeep, isEqual } from "lodash";
 import Moralis from "moralis";
 
@@ -222,7 +222,7 @@ export default {
     // Backup unsaved form data
     watch(
       data,
-      (newData) => {
+      debounce((newData) => {
         if (isEqual(newData, REQUEST2)) {
           // Remove if default
           LocalStorage.remove(LOCALSTORAGE_KEY2);
@@ -242,7 +242,7 @@ export default {
             defaultModel.value._fundingPSClone = newData._fundingPSClone;
           }
         }
-      },
+      }, 300),
       { deep: true }
     );
 

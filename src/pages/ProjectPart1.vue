@@ -125,7 +125,7 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
-import { LocalStorage } from "quasar";
+import { debounce, LocalStorage } from "quasar";
 import { cloneDeep, isEqual } from "lodash";
 import FundingAllocations from "../../contracts/deployments/rinkeby/FundingAllocations.json";
 import Moralis from "moralis";
@@ -235,7 +235,7 @@ export default {
     // Backup unsaved form data
     watch(
       data,
-      (value, oldValue) => {
+      debounce((value, oldValue) => {
         if (isEqual(value, defaultModel.value)) {
           // Remove if default
           LocalStorage.remove(LOCALSTORAGE_KEY1);
@@ -244,7 +244,7 @@ export default {
             ...value,
           });
         }
-      },
+      }, 300),
       { deep: true }
     );
 
