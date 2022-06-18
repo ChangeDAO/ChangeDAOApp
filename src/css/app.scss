@@ -195,3 +195,10 @@ body.desktop {
     background: transparent;
   }
 }
+
+.q-markdown--link {
+  &.q-markdown--link-external:after {
+    content: "\F03CC";
+    font-family: "Material Design Icons";
+  }
+}

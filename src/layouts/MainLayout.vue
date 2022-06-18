@@ -125,7 +125,7 @@ import { defineComponent, computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
-import { Cookies, Notify, openURL } from "quasar";
+import { LocalStorage, Notify, openURL } from "quasar";
 import { URLS } from "../util/constants";
 
 import LogInDialog from "../components/LogInDialog";
@@ -219,7 +219,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      if (!Cookies.has("privacy")) {
+      if (!LocalStorage.has("privacy")) {
         Notify.create({
           message: t("warning.cookies"),
           timeout: 0,
@@ -227,17 +227,25 @@ export default defineComponent({
           multiLine: true,
           actions: [
             {
-              label: t("View"),
+              label: t("Privacy"),
               color: "accent",
               noDismiss: true,
               handler() {
                 router.push({ name: "privacy" });
               },
             },
-            { label: t("Accept"), color: "accent" },
+            {
+              label: t("Terms"),
+              color: "accent",
+              noDismiss: true,
+              handler() {
+                router.push({ name: "terms" });
+              },
+            },
+            { label: t("Accept"), color: "primary" },
           ],
           onDismiss: () => {
-            Cookies.set("privacy", "accepted");
+            LocalStorage.set("privacy", "accepted");
           },
         });
       }
