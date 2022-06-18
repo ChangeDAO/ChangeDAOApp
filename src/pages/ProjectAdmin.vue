@@ -433,6 +433,7 @@ export default {
           ChangeDaoNFT.abi,
           provider
         );
+        isPending.value = false;
       } else {
         isPending.value = true;
       }
@@ -444,19 +445,21 @@ export default {
             entityId: props.projectID,
           },
           onDeletion(change) {
-            console.log("Deleted", change);
-            delete pendingChanges[change.entityId];
+            delete pendingChanges[change.id];
+            console.info("Remaining pending changes", pendingChanges);
             if (Object.keys(pendingChanges).length === 0) {
-              console.log("Finished");
-              init();
-            } else {
-              console.log(pendingChanges, Object.keys(pendingChanges).length);
+              // Unlisten
+              if (subscription) {
+                Moralis.LiveQuery.close();
+                subscription = null;
+              }
+              return init();
             }
           },
         });
         subscription = result.subscription;
         pendingChanges = result.initialPendingChanges;
-        console.log("Initial Pending Changes", pendingChanges);
+        console.info("Initial pending changes", pendingChanges);
       }
 
       isLoading.value = false;

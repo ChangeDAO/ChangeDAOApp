@@ -151,6 +151,7 @@ export const listenPending = async ({
   const subscription = await query.subscribe();
 
   const formatPendingChange = (pendingChange) => ({
+    id: pendingChange.id,
     eventName: pendingChange.get("eventName"),
     entityType: pendingChange.get("entityType"),
     entityId: pendingChange.get("entityId"),
