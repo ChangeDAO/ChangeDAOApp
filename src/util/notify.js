@@ -38,15 +38,15 @@ export const notifyError = (error) => {
   });
 };
 
-export const notifySuccess = (success) => {
+export const notifySuccess = (success, timeout = 3e3) => {
   return Notify.create({
     message: formatSuccess(success),
     type: "positive",
     icon: "success",
-    timeout: 0,
     position: "top-right",
     multiLine: false,
     actions: [{ icon: "close", color: "grey-1" }],
+    timeout,
   });
 };
 
