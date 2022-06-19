@@ -191,6 +191,7 @@ import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { Loading, useQuasar } from "quasar";
 
+import { notifyError } from "../util/notify";
 import LogIn from "../components/LogIn";
 import ProjectInfo from "../components/ProjectInfo";
 import ProjectSplit from "../components/ProjectSplit";
@@ -222,8 +223,8 @@ export default defineComponent({
     const doubleColumn = computed(() => $q.screen.width > 584);
     const project = computed(() => store.state.projects[props.projectID]);
     const backgroundImage = computed(() => {
-      return project.value && project.value.img
-        ? `url(${project.value.img})`
+      return project.value && project.value.coverImageUrl
+        ? `url(${project.value.coverImageUrl})`
         : null;
     });
 

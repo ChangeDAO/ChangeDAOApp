@@ -1,3 +1,4 @@
+import { LocalStorage } from "quasar";
 import { deepFreeze } from "../../../util/misc";
 
 export async function setUser(state, user) {
@@ -33,6 +34,11 @@ export function setChain(state, chain) {
 
 export function setProvider(state, provider) {
   state.provider = provider || null;
+  if (provider) {
+    LocalStorage.set("provider", provider);
+  } else {
+    LocalStorage.remove("provider");
+  }
 }
 
 export function setUserAddress(state, address) {

@@ -14,6 +14,7 @@ export default {
   error: "mdi-alert-circle",
   fullscreen: "mdi-fullscreen",
   fullscreen_exit: "mdi-fullscreen-exit",
+  image: "mdi-file-image",
   info: "mdi-information",
   keyboard_arrow_down: "mdi-chevron-down",
   lens: "mdi-circle",

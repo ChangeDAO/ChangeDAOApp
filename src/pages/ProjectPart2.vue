@@ -115,8 +115,8 @@
 <script>
 import { computed, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { debounce, LocalStorage } from "quasar";
-import { cloneDeep, isEqual } from "lodash";
+import { LocalStorage } from "quasar";
+import { cloneDeep, debounce, isEqual } from "lodash";
 import Moralis from "moralis";
 
 import SmoothReflow from "../components/SmoothReflow";
@@ -242,7 +242,7 @@ export default {
             defaultModel.value._fundingPSClone = newData._fundingPSClone;
           }
         }
-      }, 300),
+      }, 1000),
       { deep: true }
     );
 

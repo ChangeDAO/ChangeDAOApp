@@ -84,6 +84,7 @@ export default {
   "Project Administration": "Project Administration",
   "Project has pending changes":
     "This project is still syncing.\nThis may take several minutes...",
+  "Project Image": "Project Image",
   "Project Name": "Project Name",
   "Project Split": "Project Split",
   Purchase: "Purchase",

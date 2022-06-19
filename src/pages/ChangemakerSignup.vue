@@ -149,8 +149,8 @@
 <script>
 import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { debounce, LocalStorage } from "quasar";
-import { isEqual } from "lodash";
+import { LocalStorage } from "quasar";
+import { debounce, isEqual } from "lodash";
 import Moralis from "moralis";
 
 import { notifyError, notifySuccess } from "../util/notify";
@@ -207,7 +207,7 @@ export default {
             address: address.value,
           });
         }
-      }, 300),
+      }, 1000),
       { deep: true }
     );
 

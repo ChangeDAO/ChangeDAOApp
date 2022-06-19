@@ -1,5 +1,9 @@
 <template>
   <q-list v-if="data">
+    <!-- Cover Image -->
+    <q-item-label header>{{ $t("Project Image") }}</q-item-label>
+    <ImageInput v-model="data.coverImage" :max-file-size="5242880" square />
+
     <!-- Name -->
     <q-input
       v-model="data._projectName"
@@ -125,13 +129,14 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
-import { debounce, LocalStorage } from "quasar";
-import { cloneDeep, isEqual } from "lodash";
+import { LocalStorage } from "quasar";
+import { cloneDeep, debounce, isEqual } from "lodash";
 import FundingAllocations from "../../contracts/deployments/rinkeby/FundingAllocations.json";
 import Moralis from "moralis";
 
 import { AREAS_OF_CHANGE } from "../util/constants";
 import AddrInputs from "../components/AddrInputs";
+import ImageInput from "../components/ImageInput";
 import PaymentSplitInput from "../components/PaymentSplitInput";
 
 import { LOCALSTORAGE_KEY1, REQUEST1 } from "./ProjectCreate";
@@ -139,7 +144,7 @@ import { LOCALSTORAGE_KEY1, REQUEST1 } from "./ProjectCreate";
 export default {
   name: "PageProjectPart1",
 
-  components: { AddrInputs, PaymentSplitInput },
+  components: { AddrInputs, ImageInput, PaymentSplitInput },
 
   props: ["modelValue"],
   setup(props, { emit }) {
@@ -158,6 +163,8 @@ export default {
         emit("update:modelValue", value);
       },
     });
+
+    const coverImage = ref(null);
 
     const isValid = computed(
       () =>
@@ -244,7 +251,7 @@ export default {
             ...value,
           });
         }
-      }, 300),
+      }, 1000),
       { deep: true }
     );
 
@@ -254,6 +261,7 @@ export default {
     return {
       address,
       data,
+      coverImage,
       reset,
       isValid,
       areasOfChange,

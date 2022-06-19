@@ -79,6 +79,7 @@ export const REQUEST1 = {
   _royaltiesShares: [],
   _fundingPayees: [],
   _fundingShares: [],
+  coverImage: "",
   transactionHash: "",
   description: "",
   areaOfChange: "",
