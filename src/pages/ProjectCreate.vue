@@ -141,7 +141,6 @@ export default {
     const reset = (clear = false) => {
       if (!isPart1Complete.value) {
         part1.value.reset(clear);
-        part2.value.reset(true);
       } else {
         part2.value.reset(clear);
       }

@@ -11,10 +11,6 @@ p {
   line-height: 24px;
 }
 
-.overlay {
-  background: rgba(#000, 0.47);
-}
-
 .text-h1 {
   font-weight: bold;
   font-size: 92px;
@@ -45,31 +41,18 @@ p {
   color: rgba($grey-1, 0.5);
 }
 
+.text-selectable {
+  user-select: text;
+}
+
 .pre-line {
   white-space: pre-line;
 }
 
-.bg-gradient {
-  background-image: radial-gradient(
-      110% 50vh at 50% 25vh,
-      $primary 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      100% 80vh at 0 90vh,
-      $accent 0%,
-      transparent 50%,
-      transparent
-    ),
-    radial-gradient(
-      100% 80vh at 100% 180vh,
-      $accent 0%,
-      transparent 50%,
-      transparent
-    );
-  background-repeat: repeat-y;
-  background-size: 100% 220vh;
-  background-position: 50% -15vh;
+.q-item--clickable,
+.q-date,
+.q-time {
+  user-select: none !important;
 }
 
 .q-layout-container {
@@ -141,6 +124,29 @@ p {
 
 .bg-dark-accent {
   background: $dark-accent !important;
+}
+
+.bg-gradient {
+  background-image: radial-gradient(
+      110% 50vh at 50% 25vh,
+      $primary 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      100% 80vh at 0 90vh,
+      $accent 0%,
+      transparent 50%,
+      transparent
+    ),
+    radial-gradient(
+      100% 80vh at 100% 180vh,
+      $accent 0%,
+      transparent 50%,
+      transparent
+    );
+  background-repeat: repeat-y;
+  background-size: 100% 220vh;
+  background-position: 50% -15vh;
 }
 
 .text-dark-accent {

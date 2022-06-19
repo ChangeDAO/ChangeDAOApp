@@ -26,7 +26,7 @@
       />
     </q-page-container>
 
-    <q-footer>
+    <q-footer class="non-selectable">
       <div
         :class="{
           'q-px-lg q-pt-lg q-pb-md': $q.screen.gt.xs,

@@ -23,7 +23,6 @@
           })
         "
         class="cursor-pointer"
-        v-ripple
       />
     </div>
   </q-page>

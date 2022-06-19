@@ -1,13 +1,10 @@
 <template>
   <q-carousel-slide
-    class="square overflow-hidden relative-position"
+    class="q-img__content square overflow-hidden relative-position"
     v-bind="$attrs"
     :img-src="imageURL"
   >
-    <div
-      v-if="!isLoading"
-      class="absolute-bottom overlay text-center q-pa-sm non-selectable"
-    >
+    <div v-if="!isLoading" class="absolute-bottom text-center non-selectable">
       <div class="text-h4">{{ nft.name }}</div>
       <div class="text-subtitle1">{{ nft.description }}</div>
     </div>

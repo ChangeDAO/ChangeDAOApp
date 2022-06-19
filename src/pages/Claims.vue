@@ -11,15 +11,15 @@
 
       <div class="projects row q-gutter-xl justify-center q-py-xl">
         <ProjectCard
+          class="cursor-pointer"
           style="max-width: 300px"
           v-for="project in projects"
           :key="project.id"
           :project="project"
-          class="cursor-pointer"
-          v-ripple
         >
           <div class="non-selectable">
-            <q-item>
+            <!-- Project Info -->
+            <q-item class="q-pa-none">
               <q-item-section side>
                 <q-btn
                   @click="
@@ -47,7 +47,9 @@
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-item>
+
+            <!-- Total Balances -->
+            <q-item class="q-pa-none">
               <q-item-section>
                 <q-item-label caption>ETH</q-item-label>
                 <q-item-label

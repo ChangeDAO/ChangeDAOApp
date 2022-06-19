@@ -90,7 +90,6 @@
               params: { projectID: project.id },
             })
           "
-          v-ripple
         />
       </div>
 

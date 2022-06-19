@@ -1,37 +1,34 @@
 <template>
-  <q-card v-bind="$attrs">
-    <img
-      src="~assets/ChangeDAO-sample-cover.png"
-      style="width: 100%"
-      class="shadow-4"
-    />
-    <div class="absolute-bottom overlay">
+  <q-img
+    src="~assets/ChangeDAO-sample-cover.png"
+    class="shadow-4"
+    v-bind="$attrs"
+  >
+    <div class="absolute-bottom">
       <slot>
-        <div class="q-pa-md">
-          <div class="row items-center">
-            <AddrAvatar
-              :address="project.createdByWalletAddress"
-              class="q-mr-sm"
-            />
-            <div class="text-subtitle2 text-weight-bold ellipsis">
-              {{ project.changemaker.displayName }}
-            </div>
+        <div class="row items-center">
+          <AddrAvatar
+            :address="project.createdByWalletAddress"
+            class="q-mr-sm"
+          />
+          <div class="text-subtitle2 text-weight-bold ellipsis">
+            {{ project.changemaker.displayName }}
           </div>
-          <div class="text-caption text-weight-bold ellipsis">
-            {{ project.name }}
+        </div>
+        <div class="text-caption text-weight-bold ellipsis">
+          {{ project.name }}
+        </div>
+        <div class="row justify-between">
+          <div class="text-caption text-uppercase q-mr-xs ellipsis">
+            {{ project.movement.name }}
           </div>
-          <div class="row justify-between">
-            <div class="text-caption text-uppercase q-mr-xs ellipsis">
-              {{ project.movement.name }}
-            </div>
-            <div class="text-caption text-grey-6 text-right">
-              {{
-                $t("n of m minted", {
-                  n: $n(project.numMintsBought || 0, "n8"),
-                  m: $n(project.numMints || 0, "n8"),
-                })
-              }}
-            </div>
+          <div class="text-caption text-grey-6 text-right">
+            {{
+              $t("n of m minted", {
+                n: $n(project.numMintsBought || 0, "n8"),
+                m: $n(project.numMints || 0, "n8"),
+              })
+            }}
           </div>
         </div>
       </slot>
@@ -40,7 +37,7 @@
     <q-menu v-if="$slots.menu">
       <slot name="menu" />
     </q-menu>
-  </q-card>
+  </q-img>
 </template>
 
 <script>
