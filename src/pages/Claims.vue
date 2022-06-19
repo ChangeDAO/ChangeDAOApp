@@ -1,125 +1,136 @@
 <template>
-  <q-page class="page-project-admin">
-    <div v-if="userAddress" class="q-layout-padding page-col col">
+  <q-page class="bg-gradient" padding>
+    <div v-if="userAddress">
       <!-- Title -->
-      <div class="text-h4 q-ma-md">
-        {{ $t("Claims") }}
+      <div class="q-my-md q-mx-auto text-center">
+        <div class="text-h4">{{ $t("Claims") }}</div>
+
+        <!-- Toggle all -->
+        <q-toggle v-model="showAll" :label="$t('Show All')" color="accent" />
       </div>
 
-      <q-list>
-        <!-- Projects -->
-        <q-expansion-item
+      <div class="projects row q-gutter-xl justify-center q-py-xl">
+        <ProjectCard
+          style="max-width: 300px"
           v-for="project in projects"
           :key="project.id"
-          expand-separator
+          :project="project"
+          class="cursor-pointer"
+          v-ripple
         >
-          <template v-slot:header>
-            <q-item-section avatar>
-              <AddrAvatar
-                @click="
-                  $router.push({
-                    name: 'project-view',
-                    params: { projectID: project.id },
-                  })
-                "
-                :address="project.ethAddress"
-              />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>
-                {{ project.name }}
-              </q-item-label>
-              <q-item-label caption>
-                <RelativeTime
-                  :value="project.paymentSplitters[0].createdAt"
-                  text-only
-                />
-              </q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <div class="row q-gutter-md text-caption">
-                <div>
-                  <q-item-label caption>ETH</q-item-label>
-                  <q-item-label
-                    :class="{ 'text-positive': project.total.eth > 0 }"
-                  >
-                    {{ $n(project.total.eth, "n6") }}
-                  </q-item-label>
-                </div>
-                <div>
-                  <q-item-label caption>DAI</q-item-label>
-                  <q-item-label
-                    :class="{ 'text-positive': project.total.dai > 0 }"
-                  >
-                    {{ $n(project.total.dai, "USD") }}
-                  </q-item-label>
-                </div>
-                <div>
-                  <q-item-label caption>USDC</q-item-label>
-                  <q-item-label
-                    :class="{ 'text-positive': project.total.usdc > 0 }"
-                  >
-                    {{ $n(project.total.usdc, "USD") }}
-                  </q-item-label>
-                </div>
-              </div>
-            </q-item-section>
-          </template>
+          <div class="non-selectable">
+            <q-item>
+              <q-item-section side>
+                <q-btn
+                  @click="
+                    $router.push({
+                      name: 'project-view',
+                      params: { projectID: project.id },
+                    })
+                  "
+                  dense
+                  round
+                  flat
+                >
+                  <AddrAvatar :address="project.ethAddress" />
+                </q-btn>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>
+                  {{ project.name }}
+                </q-item-label>
+                <q-item-label caption>
+                  <RelativeTime
+                    :value="project.paymentSplitters[0].createdAt"
+                    text-only
+                  />
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label caption>ETH</q-item-label>
+                <q-item-label
+                  :class="{ 'text-positive': project.total.eth > 0 }"
+                >
+                  {{ $n(project.total.eth, "n6") }}
+                </q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label caption>DAI</q-item-label>
+                <q-item-label
+                  :class="{ 'text-positive': project.total.dai > 0 }"
+                >
+                  {{ $n(project.total.dai, "USD") }}
+                </q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label caption>USDC</q-item-label>
+                <q-item-label
+                  :class="{ 'text-positive': project.total.usdc > 0 }"
+                >
+                  {{ $n(project.total.usdc, "USD") }}
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </div>
 
-          <!-- Payment Splitters -->
-          <q-item v-for="ps in project.paymentSplitters" :key="ps.id">
-            <q-item-section avatar>
-              <AddrAvatar :address="ps.ethAddress" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ shortAddr(ps.ethAddress) }}</q-item-label>
-              <q-item-label caption>{{
-                $t("psTypes." + ps.type)
-              }}</q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <!-- Balances -->
-              <div class="row q-gutter-md">
-                <div>
+          <template v-slot:menu>
+            <q-list>
+              <q-item
+                v-for="ps in project.paymentSplitters"
+                :key="ps.id"
+                @click="claim(ps)"
+                :clickable="hasBalance(ps)"
+                v-ripple="hasBalance(ps)"
+                class="non-selectable"
+                :class="{ disabled: !hasBalance(ps) }"
+              >
+                <q-item-section side>
+                  <AddrAvatar
+                    :address="ps.ethAddress"
+                    :tooltip="$t('psTypes.' + ps.type)"
+                  />
+                </q-item-section>
+                <q-item-section>
                   <q-item-label caption>ETH</q-item-label>
                   <q-item-label
+                    class="ellipsis"
                     :class="{ 'text-positive': ps.balances.eth > 0 }"
+                    caption
                   >
                     {{ $n(ps.balances.eth, "n6") }}
                   </q-item-label>
-                </div>
-                <div>
+                </q-item-section>
+                <q-item-section>
                   <q-item-label caption>DAI</q-item-label>
                   <q-item-label
+                    class="ellipsis"
                     :class="{ 'text-positive': ps.balances.dai > 0 }"
+                    caption
                   >
                     {{ $n(ps.balances.dai, "USD") }}
                   </q-item-label>
-                </div>
-                <div>
+                </q-item-section>
+                <q-item-section>
                   <q-item-label caption>USDC</q-item-label>
                   <q-item-label
+                    class="ellipsis"
                     :class="{ 'text-positive': ps.balances.usdc > 0 }"
+                    caption
                   >
                     {{ $n(ps.balances.usdc, "USD") }}
                   </q-item-label>
-                </div>
-              </div>
-            </q-item-section>
-            <q-item-section
-              v-if="ps.balances.eth || ps.balances.dai || ps.balances.usdc"
-              side
-            >
-              <q-btn
-                @click="claim(ps.id, ps.ethAddress)"
-                :label="$t('Claim')"
-                :loading="isClaiming[ps.id]"
-                color="primary"
-              />
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
-      </q-list>
+                </q-item-section>
+                <q-item-section v-if="hasBalance(ps)" side>
+                  <q-spinner v-if="isClaiming[ps.id]" size="1.7em" />
+                  <q-icon v-else name="claims" />
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </template>
+        </ProjectCard>
+      </div>
     </div>
   </q-page>
 </template>
@@ -132,6 +143,7 @@ import { Loading } from "quasar";
 import { TX_WAIT } from "../util/constants";
 import { notifyError, notifySuccess, notifyTx } from "../util/notify";
 import { shortAddr } from "../util/formatting";
+import ProjectCard from "../components/ProjectCard";
 import AddrAvatar from "../components/AddrAvatar";
 import RelativeTime from "../components/RelativeTime";
 
@@ -141,15 +153,22 @@ import PaymentSplitter from "../../contracts/deployments/rinkeby/PaymentSplitter
 export default {
   name: "PageClaims",
 
-  components: { AddrAvatar, RelativeTime },
+  components: { ProjectCard, AddrAvatar, RelativeTime },
 
   setup() {
     const store = useStore();
 
     const userAddress = computed(() => store.state.web3.userAddress);
 
+    const showAll = ref(false);
+
     const isClaiming = ref({});
-    const claim = async (paymentSplitterId, contractAddress) => {
+    const claim = async (ps) => {
+      if (!hasBalance(ps) || isClaiming.value[ps.id]) {
+        return;
+      }
+      const paymentSplitterId = ps.id;
+      const contractAddress = ps.ethAddress;
       try {
         isClaiming.value[paymentSplitterId] = true;
         const tx = await Moralis.executeFunction({
@@ -180,13 +199,24 @@ export default {
       }
     };
 
-    const projects = ref([]);
+    const hasBalance = (ps) =>
+      Boolean(ps.balances.eth || ps.balances.dai || ps.balances.usdc);
+
+    const allProjects = ref([]);
+    const projects = computed(() =>
+      showAll.value
+        ? allProjects.value
+        : allProjects.value.filter((p) => p.hasBalance)
+    );
     const getProjects = async () => {
       if (userAddress.value) {
         try {
           Loading.show();
-          projects.value = (await Moralis.Cloud.run("getUserBalances")).projects
+          allProjects.value = (
+            await Moralis.Cloud.run("getUserBalances")
+          ).projects
             .map((project) => {
+              let hasBalance = false;
               let total = project.paymentSplitters.reduce(
                 (total, ps) => {
                   total.eth += ps.balances.eth;
@@ -196,7 +226,10 @@ export default {
                 },
                 { eth: 0, dai: 0, usdc: 0 }
               );
-              return { ...project, total };
+              if (total.eth || total.dai || total.usdc) {
+                hasBalance = true;
+              }
+              return { ...project, total, hasBalance };
             })
             .sort(
               (a, b) =>
@@ -217,11 +250,13 @@ export default {
     });
 
     return {
+      claim,
       shortAddr,
+      hasBalance,
       userAddress,
+      showAll,
       projects,
       isClaiming,
-      claim,
     };
   },
 };

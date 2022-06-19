@@ -40,7 +40,9 @@ export async function enableWeb3({ state, commit, dispatch }) {
   } catch (error) {
     console.warn(error);
     try {
-      result = Moralis.enableWeb3({ provider: state.provider || "metamask" });
+      result = Moralis.enableWeb3({
+        provider: state.provider || "walletconnect",
+      });
       commit("setInitialized", true);
     } catch (error) {
       console.warn(error);
@@ -90,11 +92,21 @@ export async function getUserData({ commit, state }) {
     return;
   }
 
-  const user = state.user;
   const address = state.userAddress;
 
-  commit("setUserRoles", await getRoles());
+  const roles = await getRoles();
+  commit("setUserRoles", roles);
 
+  // Roles
+  const isAdmin = roles.includes("Admin");
+  commit("setAdmin", isAdmin);
+
+  const isChangemaker = roles.includes("Changemaker");
+  if (isChangemaker) {
+    this.dispatch("getChangemaker", address);
+  }
+
+  // Web3 required past this point
   if (!Moralis.isWeb3Enabled()) {
     return;
   }

@@ -4,6 +4,7 @@
 
 <script>
 import { defineComponent } from "vue";
+import { useStore } from "vuex";
 import { colors, getCssVar } from "quasar";
 const { lighten } = colors;
 
@@ -25,6 +26,8 @@ export default defineComponent({
   },
 
   setup(props, context) {
+    const store = useStore();
+
     const names = {
       [CHANGEDAO_WALLET]: "ChangeDAO",
     };
@@ -35,17 +38,34 @@ export default defineComponent({
     };
 
     const splitData = {};
+    const addresses = [];
     props.project.fundingPaymentSplitters.forEach((splitter) => {
       splitter.recipients.forEach((recipient, i) => {
-        splitData[recipient.ethAddress] = recipient.shares;
-        if (!(recipient.ethAddress in names)) {
-          names[recipient.ethAddress] = shortAddr(recipient.ethAddress);
+        let address = recipient.ethAddress;
+        splitData[address] = recipient.shares;
+        if (!(address in names)) {
+          let cm = store.state.changemakers[address.toLowerCase()];
+          if (cm) {
+            names[address] = cm.displayName;
+          } else {
+            names[address] = shortAddr(address);
+            addresses.push(address);
+          }
         }
-        if (!(recipient.ethAddress in colors)) {
-          colors[recipient.ethAddress] = lighten(accentColor, i * -10);
+        if (!(address in colors)) {
+          colors[address] = lighten(accentColor, i * -10);
         }
       });
     });
+
+    // Get changemaker info for unresolved addresses
+    // addresses.forEach((address) =>
+    //   store.dispatch("getChangemaker", address).then((cm) => {
+    //     if (cm) {
+    //       names[address] = `${splitData[address] / 100}% – ${cm.displayName}`;
+    //     }
+    //   })
+    // );
 
     for (let id in names) {
       names[id] = `${splitData[id] / 100}% – ${names[id]}`;

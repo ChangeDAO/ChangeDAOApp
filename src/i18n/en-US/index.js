@@ -74,6 +74,7 @@ export default {
   "Please and thankyou":
     "Your gift powers the mission and vision of ChangeDAO. If you support the work we're doing, please consider adding a tip.",
   Podcast: "Podcast",
+  "Public minting begun": "Public minting has begun.",
   "Public minting begins": "Public minting begins",
   "Price per Token": "Price per Token",
   "Primary Split Caption":
@@ -87,7 +88,7 @@ export default {
   "Project Split": "Project Split",
   Purchase: "Purchase",
   "Rainbow Mint": "Rainbow Mint",
-  "Rainbow period ended": "The rainbow period has ended",
+  "Rainbow period ended": "The rainbow period has ended.",
   "Rainbow period ends": "The rainbow period ends",
   "Ready to support?": "Ready to support this project?",
   Reapprove: "Reapprove",
@@ -101,6 +102,7 @@ export default {
   "Select Currency": "Select Currency",
   Share: "Share | Shares",
   "Short Bio": "Short Bio",
+  "Show All": "Show All",
   Submit: "Submit",
   Subtotal: "Subtotal",
   "Supported Nonprofits": "Supported Nonprofits",
@@ -171,9 +173,10 @@ export default {
   },
 
   error: {
+    loadingMint: "There was a problem getting the mint information",
     loadingProject: "There was a problem getting the project information",
     "execution reverted: Invalid Merkle proof":
-      "Sorry, that address is not on the rainbow list",
+      "Sorry, your wallet address is not on the rainbow list",
   },
 
   success: {

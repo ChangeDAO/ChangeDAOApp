@@ -169,7 +169,7 @@
 
   .square {
     background-color: $grey-9;
-    background-image: url(~assets/chest.png);
+    background-image: url(~assets/ChangeDAO-sample-cover.png);
     background-size: contain;
 
     &:after {

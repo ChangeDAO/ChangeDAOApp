@@ -1,10 +1,13 @@
 <template>
   <q-carousel-slide
-    class="square overflow-hidden"
+    class="square overflow-hidden relative-position"
     v-bind="$attrs"
     :img-src="imageURL"
   >
-    <div v-if="!isLoading" class="absolute-bottom overlay text-center q-pa-sm">
+    <div
+      v-if="!isLoading"
+      class="absolute-bottom overlay text-center q-pa-sm non-selectable"
+    >
       <div class="text-h4">{{ nft.name }}</div>
       <div class="text-subtitle1">{{ nft.description }}</div>
     </div>
@@ -16,6 +19,7 @@
 .square {
   background-color: $grey-9;
   background-size: contain;
+  background-repeat: no-repeat;
 
   &:after {
     content: "";
@@ -42,9 +46,7 @@ export default {
     const isLoading = ref(true);
     const nft = ref(null);
     const tokenURL = computed(() =>
-      props.baseURI && props.token
-        ? IPFS_GATEWAY + props.baseURI + "/" + props.token
-        : ""
+      props.baseURI ? IPFS_GATEWAY + props.baseURI + "/" + props.token : ""
     );
     const imageURL = computed(() =>
       nft.value ? nft.value.image.replace(/^ipfs:\/\//i, IPFS_GATEWAY) : null
@@ -55,6 +57,13 @@ export default {
         try {
           isLoading.value = true;
           nft.value = await (await fetch(tokenURL.value)).json();
+          if (nft.value && nft.value.image) {
+            await new Promise((resolve) => {
+              const image = new Image();
+              image.addEventListener("load", () => resolve(image));
+              image.src = imageURL.value;
+            });
+          }
         } catch (error) {
           console.error(error);
         } finally {

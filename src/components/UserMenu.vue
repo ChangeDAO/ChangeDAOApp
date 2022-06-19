@@ -1,7 +1,7 @@
 <template>
   <q-btn v-if="user" color="primary" class="q-pl-sm" no-caps rounded>
     <AddrAvatar :address="address" class="q-mr-md" />
-    {{ ens || shortAddr(address) }}
+    {{ displayName }}
     <q-menu auto-close>
       <q-list class="text-no-wrap">
         <!-- Claims -->
@@ -19,7 +19,7 @@
         <q-separator />
 
         <!-- Changemaker -->
-        <template v-if="roles.includes('Changemaker')">
+        <template v-if="changemaker">
           <q-item :to="{ name: 'project-new' }" clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="admin" />
@@ -62,7 +62,7 @@
 
         <q-separator />
 
-        <template v-if="roles.includes('Admin')">
+        <template v-if="isAdmin">
           <q-item :to="{ name: 'admin-deploy' }" clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="admin" />
@@ -136,29 +136,31 @@ export default defineComponent({
     ];
 
     const user = computed(() => store.state.web3.user);
-    const roles = computed(() => store.state.web3.userRoles);
+    const isAdmin = computed(() => store.state.web3.isAdmin);
+    const changemaker = computed(() => store.state.changemakers[address.value]);
 
     const balances = computed(() => store.state.web3.userBalances);
 
-    const address = computed(() => {
-      if (user.value) {
-        return store.state.web3.userAddress;
-      }
-      return "";
-    });
+    const address = computed(() =>
+      user.value ? store.state.web3.userAddress : ""
+    );
 
-    const ens = computed(() => store.state.web3.userENS);
+    const displayName = computed(() =>
+      changemaker.value
+        ? changemaker.value.displayName
+        : store.state.web3.userENS || shortAddr(address.value)
+    );
 
     return {
       logIn,
       logOut,
       providers,
       user,
-      roles,
+      isAdmin,
+      changemaker,
       balances,
       address,
-      shortAddr,
-      ens,
+      displayName,
     };
   },
 });

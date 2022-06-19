@@ -3,9 +3,6 @@
     <!-- Page Title -->
     <p v-if="isPending" class="text-h3">{{ $t("Processing Transaction") }}</p>
 
-    <!-- Progress (Single Column) -->
-    <q-linear-progress v-if="isPending && !doubleColumn" indeterminate />
-
     <div
       v-if="project && mint"
       class="row"
@@ -24,14 +21,17 @@
       </div>
 
       <!-- Info column -->
-      <div class="info-column page-col col q-col-9 q-gutter-lg">
-        <!-- Progress (Double Column) -->
-        <q-linear-progress v-if="isPending && doubleColumn" indeterminate />
-
+      <div
+        class="info-column page-col col q-col-9"
+        :class="{ 'q-gutter-lg': $q.screen.gt.sm }"
+      >
         <!-- Project Info -->
         <ProjectInfo :project="project" />
 
-        <q-separator color="white" />
+        <div v-if="isPending">
+          <q-linear-progress indeterminate />
+        </div>
+        <q-separator v-else color="white" />
 
         <!-- Transaction Details -->
 
@@ -63,13 +63,15 @@
               </q-item-label>
             </q-item-section>
           </q-item>
-          <q-item v-if="mint.numMints || mint.tokenIds">
+          <q-item
+            v-if="mint.numMints || (mint.tokenIds && mint.tokenIds.length)"
+          >
             <q-item-section>
               <q-item-label>{{ $t("Number of Mints") }}</q-item-label>
             </q-item-section>
             <q-item-section side>
               <q-item-label>{{
-                mint.numMints || mint.tokenIds ? mint.tokenIds.length : 0
+                mint.numMints || (mint.tokenIds ? mint.tokenIds.length : "?")
               }}</q-item-label>
             </q-item-section>
           </q-item>
@@ -144,61 +146,103 @@ export default {
     const $q = useQuasar();
 
     const doubleColumn = computed(() => $q.screen.width > 584);
-    const project = computed(() => store.state.projects[props.projectID]);
+    const project = ref(null);
     const mint = ref(null);
+
+    const getMint = async () => {
+      try {
+        mint.value = (
+          await Moralis.Cloud.run("getMint", {
+            mintId: props.mintID,
+          })
+        ).mint;
+        isPending.value = mint.value.tokenIds.length === 0;
+      } catch (error) {
+        console.error(error);
+        notifyError(error);
+      }
+    };
 
     // Initialize
     let subscription = null;
     let pendingChanges = {};
     const isPending = ref(false);
-    onMounted(async () => {
+    const init = async () => {
       Loading.show();
 
+      // Load project if necessary
       if (!project.value) {
         try {
-          await store.dispatch("getProject", props.projectID);
+          project.value = await store.dispatch("getProject", props.projectID);
         } catch (error) {
           console.error(error);
           notifyError(error.error || error);
         }
       }
 
-      try {
-        let result = await Moralis.Cloud.run("getMint", {
-          mintId: props.mintID,
-        });
-        mint.value = result.mint;
+      // Abort if project not loaded
+      if (!project.value) {
+        Loading.hide();
+        return notifyError("loadingProject");
+      }
 
-        result = await listenPending({
-          params: {
-            entityType: "Mint",
-            entityId: props.mintID,
-          },
-          onDeletion(change) {
-            console.log("Deleted", change);
-            delete pendingChanges[change.entityId];
-            if (Object.keys(pendingChanges).length === 0) {
-              console.log("Finished");
-              isPending.value = false;
-            }
-          },
-        });
-        subscription = result.subscription;
-        pendingChanges = result.initialPendingChanges;
-        isPending.value = Object.keys(pendingChanges).length > 0;
-        if (isPending.value) {
-          Object.assign(
-            mint.value,
-            ...Object.values(pendingChanges).map((c) => c.dataFromChain)
-          );
+      if (!mint.value) {
+        await getMint();
+      }
+
+      // Abort if mint not loaded
+      if (!mint.value) {
+        Loading.hide();
+        return notifyError("loadingMint");
+      }
+
+      // Listen for pending changes
+      if (!mint.value.tokenIds.length) {
+        isPending.value = true;
+        try {
+          let result = await listenPending({
+            params: {
+              entityType: "Mint",
+              entityId: props.mintID,
+            },
+            onDeletion(change) {
+              delete pendingChanges[change.id];
+              console.info("Remaining pending changes", pendingChanges);
+              if (Object.keys(pendingChanges).length === 0) {
+                // Unlisten
+                if (subscription) {
+                  Moralis.LiveQuery.close();
+                  subscription = null;
+                }
+                getMint();
+              }
+            },
+          });
+          subscription = result.subscription;
+          pendingChanges = result.initialPendingChanges;
+          console.info("Initial pending changes", pendingChanges);
+        } catch (error) {
+          console.error(error);
+          notifyError(error);
         }
-      } catch (error) {
-        console.error(error);
-        notifyError(error);
+      }
+
+      if (Object.values(pendingChanges).length) {
+        Object.assign(
+          mint.value,
+          ...Object.values(pendingChanges).map((c) => c.dataFromChain)
+        );
+      } else {
+        // Unlisten
+        if (subscription) {
+          Moralis.LiveQuery.close();
+          subscription = null;
+        }
       }
 
       Loading.hide();
-    });
+    };
+    onMounted(init);
 
     onBeforeUnmount(() => {
       Loading.hide();

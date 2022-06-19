@@ -17,13 +17,11 @@ export default {
   actions: {
     async getProject({ state, commit }, projectId) {
       try {
-        if (!state[projectId]) {
-          const result = await Moralis.Cloud.run("getProject", {
-            projectId,
-          });
+        const result = await Moralis.Cloud.run("getProject", {
+          projectId,
+        });
 
-          commit("setProject", { project: result.project, id: projectId });
-        }
+        commit("setProject", { project: result.project, id: projectId });
         return state[projectId];
       } catch (error) {
         console.error(error);

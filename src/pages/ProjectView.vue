@@ -5,21 +5,23 @@
 
       <div class="page-col col q-col-6">
         <div class="sticky header-top">
-          <!-- Connect Wallet -->
-          <LogIn
-            v-if="!userAddress"
-            class="full-width q-mb-lg"
-            :label="$t('Connect Wallet')"
-          />
+          <template v-if="isMintable">
+            <!-- Connect Wallet -->
+            <LogIn
+              v-if="!userAddress"
+              class="full-width q-mb-lg"
+              :label="$t('Connect Wallet')"
+            />
 
-          <!-- Mint NFT -->
-          <q-btn
-            v-if="userAddress && (!isRainbowPeriod || isOnRainbowList)"
-            @click="mint"
-            :label="$t('Mint NFT')"
-            class="full-width q-mb-lg"
-            color="primary"
-          />
+            <!-- Mint NFT -->
+            <q-btn
+              v-else
+              @click="mint"
+              :label="$t('Mint NFT')"
+              class="full-width q-mb-lg"
+              color="primary"
+            />
+          </template>
 
           <!-- Image -->
           <div class="square" :style="{ backgroundImage }" />
@@ -87,38 +89,43 @@
           </p>
         </div>
 
-        <q-separator class="q-mb-lg" />
-
-        <!-- Mint -->
-        <div class="text-h4">
-          <div class="col-grow q-mb-lg">
-            {{ $t("Ready to support?") }}
-          </div>
-
-          <p v-if="isRainbowPeriod">
-            <RelativeTime
-              :before="
-                $t(
-                  isOnRainbowList
-                    ? 'Rainbow period ends'
-                    : 'Public minting begins'
-                )
-              "
-              :value="rainbowExpiration"
-              text-only
-            />
-          </p>
+        <template v-if="!isPaused && minted < project.numMints">
+          <q-separator class="q-mb-lg" />
 
           <!-- Mint -->
-          <q-btn
-            v-if="userAddress && (!isRainbowPeriod || isOnRainbowList)"
-            @click="mint"
-            :label="$t('Mint NFT')"
-            color="primary"
-          />
-          <!-- Connect Wallet -->
-          <LogIn v-if="!userAddress" :label="$t('Connect Wallet')" />
-        </div>
+          <div class="text-h4">
+            <div class="col-grow q-mb-lg">
+              {{ $t("Ready to support?") }}
+            </div>
+
+            <p v-if="isRainbowPeriod">
+              <RelativeTime
+                class="text-accent text-subtitle1"
+                :before="
+                  $t(
+                    isOnRainbowList
+                      ? 'Rainbow period ends'
+                      : 'Public minting begins'
+                  )
+                "
+                :value="rainbowExpiration"
+              />
+            </p>
+
+            <!-- Mint -->
+            <!-- Connect Wallet -->
+            <LogIn v-if="!userAddress" :label="$t('Connect Wallet')" />
+
+            <!-- Mint Button -->
+            <q-btn
+              v-else-if="isMintable"
+              @click="mint"
+              :label="$t('Mint NFT')"
+              class="full-width"
+              color="primary"
+            />
+          </div>
+        </template>
       </div>
     </div>
 
@@ -160,7 +167,7 @@
 .page-project-mint {
   .square {
     background-color: $grey-9;
-    background-image: url(~assets/chest.png);
+    background-image: url(~assets/ChangeDAO-sample-cover.png);
     background-size: contain;
 
     &:after {
@@ -227,6 +234,7 @@ export default defineComponent({
 
     const minted = ref(null);
     const mintedOn = ref(null);
+    const isPaused = ref(null);
     const isRainbowPeriod = ref(false);
     const isOnRainbowList = computed(() => {
       return (
@@ -237,11 +245,13 @@ export default defineComponent({
     });
     const rainbowExpiration = ref(null);
 
-    const getMinted = async () => {
-      minted.value = sharedFundingClone
-        ? (await sharedFundingClone.callStatic.getMintedTokens()).toNumber()
-        : null;
-    };
+    const isMintable = computed(
+      () =>
+        project.value &&
+        !isPaused.value &&
+        minted.value < project.value.numMints &&
+        (!isRainbowPeriod.value || isOnRainbowList.value)
+    );
 
     const mint = () => {
       router.push({ name: "project-mint" });
@@ -267,10 +277,22 @@ export default defineComponent({
           SharedFunding.abi,
           provider
         );
-        getMinted();
       }
 
+      // Paused
+      isPaused.value = project.value.isPaused;
+      if (sharedFundingClone) {
+        isPaused.value = await sharedFundingClone.callStatic.paused();
+      }
+
+      // Minted
       minted.value = project.value.numMintsBought;
+      if (sharedFundingClone) {
+        minted.value = (
+          await sharedFundingClone.callStatic.getMintedTokens()
+        ).toNumber();
+      }
+
       mintedOn.value = project.value.deployTimeInMS;
 
       // Rainbow Period
@@ -299,8 +321,10 @@ export default defineComponent({
       mint,
       minted,
       rainbowExpiration,
+      isPaused,
       isRainbowPeriod,
       isOnRainbowList,
+      isMintable,
     };
   },
 });

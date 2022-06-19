@@ -11,7 +11,12 @@ export async function setUser(state, user) {
     state.userNFTs = [];
     state.userRoles = [];
     state.userBalances = [];
+    state.isAdmin = false;
   }
+}
+
+export function setAdmin(state, isAdmin) {
+  state.isAdmin = Boolean(isAdmin);
 }
 
 export function setInitializing(state, value) {

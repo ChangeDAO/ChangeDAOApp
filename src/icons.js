@@ -12,6 +12,8 @@ export default {
   disconnect: "mdi-wallet-outline",
   edit: "mdi-pencil",
   error: "mdi-alert-circle",
+  fullscreen: "mdi-fullscreen",
+  fullscreen_exit: "mdi-fullscreen-exit",
   info: "mdi-information",
   keyboard_arrow_down: "mdi-chevron-down",
   lens: "mdi-circle",

@@ -10,5 +10,7 @@ export default function () {
     userNFTs: [],
     userRoles: [],
     userBalances: {},
+    isAdmin: false,
+    changemaker: null,
   };
 }

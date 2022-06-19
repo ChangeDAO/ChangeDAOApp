@@ -63,11 +63,12 @@
 
         <!-- Zero Mint -->
         <q-item-label header>Zero Mint</q-item-label>
-        <q-item v-if="hasZeroMinted">
-          <q-item-section>
-            <q-item-label> Zero Mint has already been made </q-item-label>
-          </q-item-section>
-        </q-item>
+        <TokenCard
+          v-if="hasZeroMinted"
+          :baseURI="project.baseURI"
+          :token="0"
+          :name="0"
+        />
         <AddrInput
           v-else
           v-model="zeroMintAddress"
@@ -87,51 +88,49 @@
 
         <template v-if="mintable > minted">
           <!-- Courtesy Mint -->
-          <q-item-label header>
-            {{ $t("Courtesy Mint") }}
-            <div v-if="isRainbowPeriod" class="text-caption">
-              <RelativeTime
-                before="Rainbow period ends"
-                :value="rainbowExpiration"
-                text-only
-              />
-            </div>
-          </q-item-label>
-          <q-item v-if="!isRainbowPeriod">
-            <q-item-section>
-              <q-item-label>{{ $t("Rainbow period ended") }}</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item v-else>
-            <q-item-section>
-              <AddrInput
-                v-model="courtesyMintAddress"
-                label="Recipient Address"
-                hide-bottom-space
-              />
-            </q-item-section>
-            <q-item-section side>
-              <q-item-label>
-                <q-input
-                  v-model="courtesyMintAmount"
-                  :label="'Qty'"
-                  :rules="[Boolean]"
-                  type="number"
-                  :min="1"
-                  :max="Math.min(20, mintable - minted)"
+          <template v-if="isRainbowPeriod">
+            <q-item-label header>
+              {{ $t("Courtesy Mint") }}
+              <div class="text-caption">
+                <RelativeTime
+                  before="Rainbow period ends"
+                  :value="rainbowExpiration"
+                  text-only
+                />
+              </div>
+            </q-item-label>
+
+            <q-item>
+              <q-item-section>
+                <AddrInput
+                  v-model="courtesyMintAddress"
+                  label="Recipient Address"
                   hide-bottom-space
                 />
-              </q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-btn
-                @click="courtesyMint"
-                :label="$t('Mint')"
-                color="primary"
-                :loading="isMintingCourtesy"
-              />
-            </q-item-section>
-          </q-item>
+              </q-item-section>
+              <q-item-section side>
+                <q-item-label>
+                  <q-input
+                    v-model="courtesyMintAmount"
+                    :label="'Qty'"
+                    :rules="[Boolean]"
+                    type="number"
+                    :min="1"
+                    :max="Math.min(20, mintable - minted)"
+                    hide-bottom-space
+                  />
+                </q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn
+                  @click="courtesyMint"
+                  :label="$t('Mint')"
+                  color="primary"
+                  :loading="isMintingCourtesy"
+                />
+              </q-item-section>
+            </q-item>
+          </template>
 
           <!-- Pause/Unpause -->
           <q-item>
@@ -175,6 +174,7 @@ import {
 } from "../util/notify";
 import AddrInput from "../components/AddrInput";
 import RelativeTime from "../components/RelativeTime";
+import TokenCard from "../components/TokenCard";
 
 import Moralis from "moralis";
 import ChangeDaoNFT from "../../contracts/deployments/rinkeby/ChangeDaoNFT.json";
@@ -183,7 +183,7 @@ import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.jso
 export default {
   name: "PageProjectAdmin",
 
-  components: { AddrInput, RelativeTime },
+  components: { AddrInput, RelativeTime, TokenCard },
 
   props: ["projectID"],
 
@@ -192,7 +192,7 @@ export default {
 
     const ethers = Moralis.web3Library;
 
-    const project = ref(null);
+    const project = computed(() => store.state.projects[props.projectID]);
 
     let sharedFundingClone;
     let changeDaoNFTClone;
@@ -373,11 +373,7 @@ export default {
     const init = async () => {
       const provider = ethers.getDefaultProvider(process.env.chain);
       try {
-        const response = await Moralis.Cloud.run("getProject", {
-          projectId: props.projectID,
-        });
-
-        project.value = response.project;
+        await store.dispatch("getProject", props.projectID);
       } catch (error) {
         console.error(error);
         notifyError(error.error || error);
@@ -417,13 +413,14 @@ export default {
         );
         await getMinted();
 
-        // hasZeroMinted.value = project.value.isZeroMintMinted;
-        hasZeroMinted.value =
-          await sharedFundingClone.callStatic.hasZeroMinted();
+        hasZeroMinted.value = project.value.isZeroMintMinted;
+        if (!hasZeroMinted.value) {
+          hasZeroMinted.value =
+            await sharedFundingClone.callStatic.hasZeroMinted();
+        }
 
+        isPaused.value = project.value.isPaused;
         isPaused.value = await sharedFundingClone.callStatic.paused();
-      } else {
-        isPending.value = true;
       }
 
       // ChangeDAO NFT
@@ -433,11 +430,9 @@ export default {
           ChangeDaoNFT.abi,
           provider
         );
-        isPending.value = false;
-      } else {
-        isPending.value = true;
       }
 
+      isPending.value = project.value.creationStatus === "pending";
       if (isPending.value) {
         let result = await listenPending({
           params: {
@@ -453,7 +448,7 @@ export default {
                 Moralis.LiveQuery.close();
                 subscription = null;
               }
-              return init();
+              init();
             }
           },
         });

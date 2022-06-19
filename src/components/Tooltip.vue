@@ -19,8 +19,8 @@ export default {
   computed: {
     offset() {
       return this.$q.platform.has.touch ? [0, 20] : [0, 5];
-    }
-  }
+    },
+  },
 };
 </script>
 
