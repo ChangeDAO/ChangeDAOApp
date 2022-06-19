@@ -6,8 +6,8 @@
     persistent
     v-bind="$attrs"
   >
-    <q-card>
-      <dialog-header :title="$t('Connect')" icon="lock_open" />
+    <q-card class="non-selectable">
+      <dialog-header :title="$t('Connect')" icon="lock_open" v-bind="$attrs" />
 
       <q-list class="text-no-wrap">
         <!-- Wallet Providers -->

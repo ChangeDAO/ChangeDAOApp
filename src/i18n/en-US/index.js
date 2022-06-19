@@ -173,10 +173,11 @@ export default {
   },
 
   error: {
-    loadingMint: "There was a problem getting the mint information",
-    loadingProject: "There was a problem getting the project information",
     "execution reverted: Invalid Merkle proof":
       "Sorry, your wallet address is not on the rainbow list",
+    loadingMint: "There was a problem getting the mint information",
+    loadingProject: "There was a problem getting the project information",
+    notAdmin: "Your wallet address is not an admin.",
   },
 
   success: {

@@ -69,13 +69,13 @@ const routes = [
       {
         name: "admin-deploy",
         path: "admin/deploy",
-        meta: { requiresWeb3: true },
+        meta: { requiresWeb3: true, requiresAdmin: true },
         component: () => import("pages/DeploymentManagement.vue"),
       },
       {
         name: "admin-approve",
         path: "admin/approve",
-        meta: { requiresWeb3: true },
+        meta: { requiresWeb3: true, requiresAdmin: true },
         component: () => import("pages/ChangemakerManagement.vue"),
       },
       {

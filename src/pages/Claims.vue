@@ -162,6 +162,37 @@ export default {
 
     const showAll = ref(false);
 
+    const getAvailable = async (ps) => {
+      const paymentSplitterClone = new ethers.Contract(
+        ps.ethAddress,
+        PaymentSplitter.abi,
+        provider
+      );
+
+      if (!paymentSplitterClone) {
+        return;
+      }
+
+      let eth = await paymentSplitterClone.functions.pendingETHPayment(
+        userAddress.value
+      );
+      eth = ethers.utils.formatEther(eth[0]);
+
+      let dai = await paymentSplitterClone.functions.pendingERC20Payment(
+        DAI_ADDRESS,
+        userAddress.value
+      );
+      dai = parseInt(ethers.utils.formatUnits(dai[0], 18), 10);
+
+      let usdc = await paymentSplitterClone.functions.pendingERC20Payment(
+        USDC_ADDRESS,
+        userAddress.value
+      );
+      usdc = parseInt(ethers.utils.formatUnits(usdc[0], 6), 10);
+
+      return { eth, dai, usdc, isEmpty: !(eth + dai + usdc) };
+    };
+
     const isClaiming = ref({});
     const claim = async (ps) => {
       if (!hasBalance(ps) || isClaiming.value[ps.id]) {
@@ -188,7 +219,7 @@ export default {
         let dismiss = notifyTx(tx.hash);
 
         const response = await tx.wait(TX_WAIT);
-        getProjects();
+        // getAvailable(ps);
         notifySuccess("TxComplete");
         dismiss();
       } catch (error) {

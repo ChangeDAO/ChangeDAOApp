@@ -1,11 +1,11 @@
 <template>
-  <q-page v-if="!isPending" class="page-project-admin">
-    <div
-      v-if="
-        userAddress && project && userAddress === project.createdByWalletAddress
-      "
-      class="q-layout-padding page-col col"
-    >
+  <q-page v-if="!isPending" class="page-project-admin" padding>
+    <LogInDialog
+      v-if="project && !isOwner"
+      icon="lock"
+      :subtitle="$t('error.notAdmin')"
+    />
+    <div v-else class="q-layout-padding page-col col">
       <!-- Title -->
       <div class="text-h4 q-ma-md">
         {{ $t("Project Administration") }}
@@ -172,6 +172,7 @@ import {
   notifyTx,
   listenPending,
 } from "../util/notify";
+import LogInDialog from "../components/LogInDialog";
 import AddrInput from "../components/AddrInput";
 import RelativeTime from "../components/RelativeTime";
 import TokenCard from "../components/TokenCard";
@@ -183,7 +184,7 @@ import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.jso
 export default {
   name: "PageProjectAdmin",
 
-  components: { AddrInput, RelativeTime, TokenCard },
+  components: { LogInDialog, AddrInput, RelativeTime, TokenCard },
 
   props: ["projectID"],
 
@@ -198,6 +199,17 @@ export default {
     let changeDaoNFTClone;
 
     const userAddress = computed(() => store.state.web3.userAddress);
+    watch(userAddress, () => {
+      if (!isLoading.value) {
+        init();
+      }
+    });
+
+    const isOwner = computed(
+      () =>
+        project.value &&
+        userAddress.value === project.value.createdByWalletAddress
+    );
 
     const baseURI = ref("");
     const isSettingBaseURI = ref(false);
@@ -380,9 +392,9 @@ export default {
       }
 
       // Abort if project not loaded
-      if (!project.value) {
+      if (!project.value || !isOwner.value) {
         isLoading.value = false;
-        return notifyError("loadingProject");
+        return project.value || notifyError("loadingProject");
       }
 
       baseURI.value = project.value.baseURI;
@@ -494,6 +506,7 @@ export default {
       courtesyMint,
       isPending,
       isMintingCourtesy,
+      isOwner,
       isPaused,
       isPausing,
       togglePause,

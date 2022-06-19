@@ -18,7 +18,12 @@
 
     <q-page-container>
       <router-view v-if="isInitialized && !showLogIn" />
-      <LogInDialog :model-value="showLogIn" />
+      <LogInDialog
+        :model-value="showLogIn"
+        :subtitle="
+          $route.meta.requiresAdmin && isLoggedIn ? $t('error.notAdmin') : ''
+        "
+      />
     </q-page-container>
 
     <q-footer>
@@ -153,7 +158,11 @@ export default defineComponent({
     const isLoggedIn = computed(() => Boolean(store.state.web3.user));
 
     const showLogIn = computed(() =>
-      Boolean(router.currentRoute.value.meta.requiresWeb3 && !isLoggedIn.value)
+      Boolean(
+        (router.currentRoute.value.meta.requiresWeb3 && !isLoggedIn.value) ||
+          (router.currentRoute.value.meta.requiresAdmin &&
+            !store.state.web3.isAdmin)
+      )
     );
 
     router.beforeEach(async (to) => {
@@ -255,6 +264,7 @@ export default defineComponent({
       discord,
       twitter,
       isInitialized,
+      isLoggedIn,
       showLogIn,
       nav,
     };

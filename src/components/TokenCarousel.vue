@@ -78,7 +78,6 @@ export default {
       () => props.tokenIds,
       (ids) => {
         currentToken.value = ids && ids.length ? ids[0] : 0;
-        console.log(ids, (currentToken.value = ids && ids.length ? ids[0] : 0));
       }
     );
     currentToken.value = props.tokenIds ? props.tokenIds[0] || 0 : 0;
