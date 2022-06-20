@@ -37,7 +37,7 @@
       v-show="model.length < limit"
       @click="add()"
       class="non-selectable"
-      :disabled="disable"
+      :class="{ disabled: disable }"
       :clickable="!disable"
       v-ripple="!disable"
     >
