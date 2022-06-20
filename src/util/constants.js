@@ -13,6 +13,7 @@ export const TX_URL = "https://rinkeby.etherscan.io/tx/";
 export const IPFS_GATEWAY = "https://dweb.link/ipfs/";
 
 export const ETH_BUFFER = 0.01;
+export const MAX_FILE_BYTES = 3 * 1024 * 1024;
 
 export const CHANGEDAO_WALLET = "0xee911a1e8e25997a152e337f45648f9e070fc509";
 export const ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";

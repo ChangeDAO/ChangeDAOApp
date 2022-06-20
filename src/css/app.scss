@@ -11,6 +11,23 @@ p {
   line-height: 24px;
 }
 
+.project-cover {
+  background-color: $img-bg;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  &.no-image {
+    background-image: url(~assets/ChangeDAO-sample-cover.png);
+  }
+}
+
+.square:after,
+.project-cover:not(.q-img):after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
 .text-h1 {
   font-weight: bold;
   font-size: 92px;
@@ -107,7 +124,15 @@ p {
   position: sticky;
 
   &.header-top {
-    top: $header-height + 16px;
+    @media (max-width: $breakpoint-xs-max) {
+      top: $header-height + 8px;
+    }
+    @media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-md-max) {
+      top: $header-height + 16px;
+    }
+    @media (min-width: $breakpoint-lg-min) {
+      top: $header-height + 24px;
+    }
   }
 
   .top {

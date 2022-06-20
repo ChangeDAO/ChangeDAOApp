@@ -2,13 +2,14 @@
   <q-list v-if="data">
     <!-- Cover Image -->
     <q-item-label header>{{ $t("Project Image") }}</q-item-label>
-    <ImageInput v-model="data.coverImage" :max-file-size="5242880" square />
+    <ImageInput v-model="data.coverImage" :disable="disable" square />
 
     <!-- Name -->
     <q-input
       v-model="data._projectName"
       :label="$t('Project Name')"
       :rules="[Boolean]"
+      :disable="disable"
       item-aligned
     />
 
@@ -17,6 +18,7 @@
       v-model="data.description"
       :label="$t('Description')"
       :rules="[Boolean]"
+      :disable="disable"
       item-aligned
       autogrow
     />
@@ -26,6 +28,7 @@
       v-model="data._movementName"
       :label="$t('Movement')"
       :rules="[Boolean]"
+      :disable="disable"
       item-aligned
     />
 
@@ -35,6 +38,7 @@
       :label="$t('Area of Change')"
       :options="areasOfChange"
       :rules="[Boolean]"
+      :disable="disable"
       emit-value
       :display-value="
         data.areaOfChange ? $t('areasOfChange.' + data.areaOfChange) : ''
@@ -47,6 +51,7 @@
       v-model="data._baseURI"
       :label="$t('Base URI')"
       :rules="[Boolean]"
+      :disable="disable"
       item-aligned
     />
 
@@ -57,6 +62,7 @@
       :addresses="data._creators"
       :label="$t('Wallet Address')"
       :limit="maxPayees"
+      :disable="disable"
     >
       <template v-slot:before>
         <q-item-label class="q-pb-xs" header>
@@ -74,6 +80,7 @@
       :payees="data._fundingPayees"
       :shares="data._fundingShares"
       :total-shares="fundingShares"
+      :disable="disable"
     >
       <template v-slot:before>
         <q-item-label class="q-pb-xs" header>
@@ -102,6 +109,7 @@
       :payees="data._royaltiesPayees"
       :shares="data._royaltiesShares"
       :total-shares="royaltiesShares"
+      :disable="disable"
     >
       <template v-slot:before>
         <q-item-label class="q-pb-xs" header>
@@ -146,7 +154,11 @@ export default {
 
   components: { AddrInputs, ImageInput, PaymentSplitInput },
 
-  props: ["modelValue"],
+  props: {
+    modelValue: Object,
+    disable: Boolean,
+  },
+
   setup(props, { emit }) {
     const { t } = useI18n({ useScope: "global" });
     const store = useStore();
@@ -203,6 +215,9 @@ export default {
     });
 
     const reset = (clear = false, complete = false) => {
+      if (props.disable) {
+        return false;
+      }
       if (complete) {
         return LocalStorage.remove(LOCALSTORAGE_KEY1);
       } else if (clear) {

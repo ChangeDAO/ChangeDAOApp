@@ -1,30 +1,54 @@
 <template>
-  <q-page v-if="!isPending" class="page-project-admin" padding>
+  <q-page
+    v-if="!isPending"
+    class="page-project-admin"
+    :class="{ doubleColumn }"
+    padding
+  >
     <LogInDialog
       v-if="project && !isOwner"
       icon="lock"
       :subtitle="$t('error.notAdmin')"
     />
-    <div v-else class="q-layout-padding page-col col">
-      <!-- Title -->
-      <div class="text-h4 q-ma-md">
-        {{ $t("Project Administration") }}
-      </div>
-      <div class="text-h5 q-ma-md">
-        <template v-if="project">
-          <router-link :to="{ name: 'project-view' }">
-            {{ project.name }}
-          </router-link>
-        </template>
-        <q-skeleton v-else type="text" width="15em" />
-        <p v-if="!isPending" class="text-caption">
-          {{ $tc("n Mints Remaining", mintable - minted) }}
-        </p>
+    <div
+      v-else-if="project"
+      class="row"
+      :class="{ 'q-col-gutter-xl': doubleColumn }"
+    >
+      <!-- Project Info -->
+      <div class="page-col col">
+        <div class="q-mb-md">
+          <q-img
+            :src="project.coverImageUrl"
+            ratio="1"
+            class="project-cover"
+            :class="{ 'no-image': !project.coverImageUrl }"
+          />
+        </div>
+        <ProjectInfo :project="project" />
       </div>
 
-      <q-list v-if="!isPending">
-        <!-- Base URI -->
-        <!-- <q-input v-model="baseURI" label="Base URI" item-aligned>
+      <!-- Admin Actions -->
+      <div class="page-col col">
+        <!-- Title -->
+        <div class="text-h4 q-my-md">
+          {{ $t("Project Administration") }}
+        </div>
+        <div class="text-h6 q-my-md">
+          <template v-if="project">
+            <router-link :to="{ name: 'project-view' }">
+              {{ $t("View Project Page") }}
+            </router-link>
+          </template>
+          <q-skeleton v-else type="text" width="15em" />
+          <p v-if="!isPending" class="text-caption">
+            {{ $tc("n Mints Remaining", mintable - minted) }}
+          </p>
+        </div>
+
+        <q-list v-if="!isPending" bordered>
+          <!-- Base URI -->
+          <!-- <q-input v-model="baseURI" label="Base URI" item-aligned>
           <template v-slot:after>
             <q-btn
               @click="setBaseURI"
@@ -35,8 +59,8 @@
           </template>
         </q-input> -->
 
-        <!-- Rainbow Period -->
-        <!-- <q-input
+          <!-- Rainbow Period -->
+          <!-- <q-input
           type="number"
           v-model="rainbowDuration"
           :label="'Rainbow Period Duration (hours)'"
@@ -61,95 +85,97 @@
           </template>
         </q-input> -->
 
-        <!-- Zero Mint -->
-        <q-item-label header>Zero Mint</q-item-label>
-        <TokenCard
-          v-if="hasZeroMinted"
-          :baseURI="project.baseURI"
-          :token="0"
-          :name="0"
-        />
-        <AddrInput
-          v-else
-          v-model="zeroMintAddress"
-          label="Recipient Address"
-          item-aligned
-        >
-          <template v-slot:after>
-            <q-btn
-              @click="zeroMint"
-              :label="$t('Mint')"
-              color="primary"
-              :loading="isMintingZero"
-              :disable="!isAddress(zeroMintAddress)"
-            />
-          </template>
-        </AddrInput>
+          <!-- Zero Mint -->
+          <q-item-label header>Zero Mint</q-item-label>
+          <TokenCard
+            v-if="hasZeroMinted"
+            :baseURI="project.baseURI"
+            :token="0"
+            :name="0"
+          />
+          <AddrInput
+            v-else
+            v-model="zeroMintAddress"
+            label="Recipient Address"
+            item-aligned
+          >
+            <template v-slot:after>
+              <q-btn
+                @click="zeroMint"
+                :label="$t('Mint')"
+                color="primary"
+                :loading="isMintingZero"
+                :disable="!isAddress(zeroMintAddress)"
+              />
+            </template>
+          </AddrInput>
 
-        <template v-if="mintable > minted">
-          <!-- Courtesy Mint -->
-          <template v-if="isRainbowPeriod">
-            <q-item-label header>
-              {{ $t("Courtesy Mint") }}
-              <div class="text-caption">
-                <RelativeTime
-                  before="Rainbow period ends"
-                  :value="rainbowExpiration"
-                  text-only
-                />
-              </div>
-            </q-item-label>
+          <template v-if="mintable > minted">
+            <!-- Courtesy Mint -->
+            <template v-if="isRainbowPeriod">
+              <q-item-label header>
+                {{ $t("Courtesy Mint") }}
+                <div class="text-caption">
+                  <RelativeTime
+                    before="Rainbow period ends"
+                    :value="rainbowExpiration"
+                    text-only
+                  />
+                </div>
+              </q-item-label>
 
-            <q-item>
-              <q-item-section>
-                <AddrInput
-                  v-model="courtesyMintAddress"
-                  label="Recipient Address"
-                  hide-bottom-space
-                />
-              </q-item-section>
-              <q-item-section side>
-                <q-item-label>
-                  <q-input
-                    v-model="courtesyMintAmount"
-                    :label="'Qty'"
-                    :rules="[Boolean]"
-                    type="number"
-                    :min="1"
-                    :max="Math.min(20, mintable - minted)"
+              <q-item>
+                <q-item-section>
+                  <AddrInput
+                    v-model="courtesyMintAddress"
+                    label="Recipient Address"
                     hide-bottom-space
                   />
+                </q-item-section>
+                <q-item-section side>
+                  <q-item-label>
+                    <q-input
+                      v-model="courtesyMintAmount"
+                      :label="'Qty'"
+                      :rules="[Boolean]"
+                      type="number"
+                      :min="1"
+                      :max="Math.min(20, mintable - minted)"
+                      hide-bottom-space
+                    />
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-btn
+                    @click="courtesyMint"
+                    :label="$t('Mint')"
+                    color="primary"
+                    :disable="!isAddress(courtesyMintAddress)"
+                    :loading="isMintingCourtesy"
+                  />
+                </q-item-section>
+              </q-item>
+            </template>
+
+            <!-- Pause/Unpause -->
+            <q-item>
+              <q-item-section>
+                <q-item-label header class="q-pl-none">
+                  Pause/Unpause Minting
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
                 <q-btn
-                  @click="courtesyMint"
-                  :label="$t('Mint')"
+                  @click="togglePause"
+                  :label="isPaused ? 'Unpause' : 'Pause'"
+                  :loading="isPausing"
                   color="primary"
-                  :loading="isMintingCourtesy"
                 />
               </q-item-section>
             </q-item>
           </template>
-
-          <!-- Pause/Unpause -->
-          <q-item>
-            <q-item-section>
-              <q-item-label header class="q-pl-none">
-                Pause/Unpause Minting
-              </q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-btn
-                @click="togglePause"
-                :label="isPaused ? 'Unpause' : 'Pause'"
-                :loading="isPausing"
-                color="primary"
-              />
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-list>
+        </q-list>
+      </div>
     </div>
   </q-page>
   <q-page class="flex flex-center text-center pre-line" v-else>
@@ -163,7 +189,7 @@
 <script>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { Loading } from "quasar";
+import { Loading, useQuasar } from "quasar";
 
 import { TX_WAIT } from "../util/constants";
 import {
@@ -174,6 +200,7 @@ import {
 } from "../util/notify";
 import LogInDialog from "../components/LogInDialog";
 import AddrInput from "../components/AddrInput";
+import ProjectInfo from "../components/ProjectInfo";
 import RelativeTime from "../components/RelativeTime";
 import TokenCard from "../components/TokenCard";
 
@@ -184,12 +211,15 @@ import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.jso
 export default {
   name: "PageProjectAdmin",
 
-  components: { LogInDialog, AddrInput, RelativeTime, TokenCard },
+  components: { LogInDialog, AddrInput, ProjectInfo, RelativeTime, TokenCard },
 
   props: ["projectID"],
 
   setup(props) {
     const store = useStore();
+    const $q = useQuasar();
+
+    const doubleColumn = computed(() => $q.screen.width > 584);
 
     const ethers = Moralis.web3Library;
 
@@ -483,6 +513,7 @@ export default {
     });
 
     return {
+      doubleColumn,
       project,
       isLoading,
       userAddress,

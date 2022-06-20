@@ -10,6 +10,7 @@
               v-model="model[i]"
               :rules="[isValid]"
               :autofocus="!item"
+              :disable="disable"
               hide-bottom-space
               v-bind="$attrs"
             >
@@ -21,7 +22,13 @@
           </q-item-label>
         </q-item-section>
         <q-item-section side>
-          <q-btn @click="remove(i)" icon="delete" round flat />
+          <q-btn
+            @click="remove(i)"
+            icon="delete"
+            :disable="disable"
+            round
+            flat
+          />
         </q-item-section>
       </q-item>
     </SmoothReflow>
@@ -30,8 +37,9 @@
       v-show="model.length < limit"
       @click="add()"
       class="non-selectable"
-      clickable
-      v-ripple
+      :disabled="disable"
+      :clickable="!disable"
+      v-ripple="!disable"
     >
       <q-item-section side>
         <q-icon name="add" />
@@ -57,10 +65,11 @@ export default {
   components: { AddrAvatar, SmoothReflow },
   props: {
     addresses: Array,
+    disable: Boolean,
     limit: {
       type: Number,
-      default: Infinity
-    }
+      default: Infinity,
+    },
   },
   setup(props, { emit }) {
     const model = computed({
@@ -69,22 +78,22 @@ export default {
       },
       set(value) {
         emit("update:addresses", value);
-      }
+      },
     });
 
     const add = (addr = "") => {
-      if (model.value.length < props.limit) {
+      if (!props.disable && model.value.length < props.limit) {
+        model.value.push(addr);
       }
-      model.value.push(addr);
     };
 
-    const remove = index => {
+    const remove = (index) => {
       model.value.splice(index, 1);
     };
 
-    const isValid = addr => Moralis.web3Library.utils.isAddress(addr);
+    const isValid = (addr) => Moralis.web3Library.utils.isAddress(addr);
 
     return { model, add, remove, isValid };
-  }
+  },
 };
 </script>

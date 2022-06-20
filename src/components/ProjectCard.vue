@@ -1,7 +1,10 @@
 <template>
   <q-img
-    src="~assets/ChangeDAO-sample-cover.png"
-    class="shadow-4"
+    :src="imageURL"
+    class="project-cover non-selectable shadow-4"
+    :class="{ 'no-image': !imageURL }"
+    fit="cover"
+    :ratio="1"
     v-bind="$attrs"
   >
     <div class="absolute-bottom">
@@ -22,7 +25,7 @@
           <div class="text-caption text-uppercase q-mr-xs ellipsis">
             {{ project.movement.name }}
           </div>
-          <div class="text-caption text-grey-6 text-right">
+          <div class="text-caption text-right">
             {{
               $t("n of m minted", {
                 n: $n(project.numMintsBought || 0, "n8"),
@@ -51,6 +54,12 @@ export default {
   props: {
     project: Object,
     minimal: Boolean,
+  },
+
+  computed: {
+    imageURL() {
+      return this.project.coverImageUrl;
+    },
   },
 };
 </script>

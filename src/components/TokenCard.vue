@@ -14,15 +14,9 @@
 
 <style lang="scss">
 .square {
-  background-color: $grey-9;
+  background-color: $img-bg;
   background-size: contain;
   background-repeat: no-repeat;
-
-  &:after {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-  }
 }
 </style>
 

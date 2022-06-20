@@ -24,7 +24,11 @@
           </template>
 
           <!-- Image -->
-          <div class="square" :style="{ backgroundImage }" />
+          <div
+            class="project-cover"
+            :class="{ 'no-image': !backgroundImage }"
+            :style="{ backgroundImage }"
+          />
         </div>
       </div>
 
@@ -162,22 +166,6 @@
     />
   </q-page>
 </template>
-
-<style lang="scss">
-.page-project-mint {
-  .square {
-    background-color: $grey-9;
-    background-image: url(~assets/ChangeDAO-sample-cover.png);
-    background-size: contain;
-
-    &:after {
-      content: "";
-      display: block;
-      padding-bottom: 100%;
-    }
-  }
-}
-</style>
 
 <script>
 import {

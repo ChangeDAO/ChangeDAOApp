@@ -1,4 +1,6 @@
-import { ETH_BUFFER } from "../../util/constants";
+import { ETH_BUFFER, MAX_FILE_BYTES } from "../../util/constants";
+import { format } from "quasar";
+const { humanStorageSize } = format;
 
 export default {
   "About Us": "About Us",
@@ -123,6 +125,7 @@ export default {
   "via [PaymentMethods]": "via DAI / USDC / ETH",
   View: "View",
   "View on Etherscan": "View on Etherscan",
+  "View Project Page": "View Project Page",
   "Wallet Address": "Wallet Address",
   "Website URL": "Website URL",
   YouTube: "YouTube",
@@ -176,6 +179,9 @@ export default {
   error: {
     "execution reverted: Invalid Merkle proof":
       "Sorry, your wallet address is not on the rainbow list",
+    fileTooBig: `Sorry, the file size must not exceed ${humanStorageSize(
+      MAX_FILE_BYTES
+    )}`,
     loadingMint: "There was a problem getting the mint information",
     loadingProject: "There was a problem getting the project information",
     notAdmin: "Your wallet address is not an admin.",

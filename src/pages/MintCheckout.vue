@@ -5,6 +5,7 @@
     :max-width="$q.screen.sizes.md"
     :persistent="isPurchasing"
     no-backdrop-dismiss
+    class="non-selectable"
   >
     <template v-slot:header>
       <DialogHeader :title="$t('Checkout')" />
@@ -18,7 +19,11 @@
         <div class="info-column page-col col q-col-3">
           <div class="sticky header-top">
             <!-- Image -->
-            <div class="square q-mb-lg" :style="{ backgroundImage }" />
+            <div
+              class="project-cover q-mb-lg"
+              :class="{ 'no-image': !backgroundImage }"
+              :style="{ backgroundImage }"
+            />
 
             <ProjectInfo :project="project" minimal />
           </div>
@@ -168,15 +173,9 @@
   }
 
   .square {
-    background-color: $grey-9;
+    background-color: $img-bg;
     background-image: url(~assets/ChangeDAO-sample-cover.png);
     background-size: contain;
-
-    &:after {
-      content: "";
-      display: block;
-      padding-bottom: 100%;
-    }
   }
 }
 </style>
@@ -231,8 +230,8 @@ export default {
     const doubleColumn = computed(() => $q.screen.width > 584);
     const project = computed(() => store.state.projects[props.projectID]);
     const backgroundImage = computed(() => {
-      return project.value && project.value.img
-        ? `url(${project.value.img})`
+      return project.value && project.value.coverImageUrl
+        ? `url(${project.value.coverImageUrl})`
         : null;
     });
 

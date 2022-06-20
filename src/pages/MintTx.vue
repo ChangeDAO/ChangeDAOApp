@@ -8,10 +8,9 @@
       class="row"
       :class="{ 'q-col-gutter-xl': doubleColumn }"
     >
-      <!-- Info column -->
+      <!-- Token Images -->
       <div class="image-column page-col col q-col-3">
         <div>
-          <!-- Images -->
           <TokenCarousel
             class="full-width full-height q-mb-lg"
             :baseURI="project.baseURI"

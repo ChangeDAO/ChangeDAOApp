@@ -12,6 +12,7 @@
               :label="$t('Wallet Address')"
               :rules="[isValid]"
               :autofocus="!payee"
+              :disable="disable"
               hide-bottom-space
               v-bind="$attrs"
             >
@@ -29,6 +30,7 @@
               :min="1"
               :max="max / 100"
               :step="0.01"
+              :disable="disable"
               suffix="%"
             />
           </q-item-label>
@@ -39,6 +41,7 @@
               v-model="sharesModel[i]"
               :min="1"
               :max="max"
+              :disable="disable"
               @change="balanceShares(i)"
             />
           </q-item-label>
@@ -46,7 +49,13 @@
 
         <!-- Delete -->
         <q-item-section side>
-          <q-btn @click="remove(i)" icon="delete" round flat />
+          <q-btn
+            @click="remove(i)"
+            icon="delete"
+            :disable="disable"
+            round
+            flat
+          />
         </q-item-section>
       </q-item>
     </SmoothReflow>
@@ -55,8 +64,9 @@
       v-show="payeesModel.length < limit"
       @click="add()"
       class="non-selectable"
-      clickable
-      v-ripple
+      :disabled="disable"
+      :clickable="!disable"
+      v-ripple="!disable"
     >
       <q-item-section side>
         <q-icon name="add" />
@@ -83,14 +93,15 @@ export default {
   props: {
     payees: Array,
     shares: Array,
+    disable: Boolean,
     limit: {
       type: Number,
-      default: Infinity
+      default: Infinity,
     },
     totalShares: {
       type: Number,
-      default: 1e4
-    }
+      default: 1e4,
+    },
   },
   setup(props, { emit }) {
     const payeesModel = computed({
@@ -99,7 +110,7 @@ export default {
       },
       set(value) {
         emit("update:payees", value);
-      }
+      },
     });
 
     const sharesModel = computed({
@@ -108,10 +119,10 @@ export default {
       },
       set(value) {
         emit("update:shares", value);
-      }
+      },
     });
 
-    const sharesPercent = computed(() => props.shares.map(s => s / 100));
+    const sharesPercent = computed(() => props.shares.map((s) => s / 100));
 
     const setPercent = (i, value) => {
       sharesModel.value[i] = 100 * value;
@@ -123,7 +134,7 @@ export default {
     );
 
     const add = (payee = "") => {
-      if (payeesModel.value.length >= props.limit) {
+      if (props.disable || payeesModel.value.length >= props.limit) {
         return;
       }
       sharesModel.value.push(
@@ -133,7 +144,7 @@ export default {
       balanceShares(sharesModel.value.length - 1);
     };
 
-    const remove = index => {
+    const remove = (index) => {
       sharesModel.value.splice(index, 1);
       payeesModel.value.splice(index, 1);
       balanceShares();
@@ -187,7 +198,7 @@ export default {
       }
     };
 
-    const isValid = addr => Moralis.web3Library.utils.isAddress(addr);
+    const isValid = (addr) => Moralis.web3Library.utils.isAddress(addr);
 
     return {
       payeesModel,
@@ -198,8 +209,8 @@ export default {
       add,
       remove,
       isValid,
-      balanceShares
+      balanceShares,
     };
-  }
+  },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <SmoothReflow class="image-input" :class="{ square }">
+  <SmoothReflow class="image-input">
     <div v-if="image">
       <q-img
         class="input-image"
@@ -8,7 +8,7 @@
         cover
         native-context-menu
       />
-      <q-menu auto-close touch-position>
+      <q-menu v-if="!disable" auto-close touch-position>
         <q-list>
           <q-item @click="image = null" clickable>
             <q-item-section avatar>
@@ -21,13 +21,10 @@
         </q-list>
       </q-menu>
     </div>
-    <q-btn
-      v-else
-      icon="image"
-      size="lg"
-      class="fit relative-position"
-      v-bind="$attrs"
-    >
+    <q-btn v-else class="fit relative-position" :disable="disable" padding="0">
+      <div class="fit flex flex-center" :class="{ square }">
+        <q-icon name="image" size="lg" />
+      </div>
       <q-file
         v-model="file"
         @input="fileSelected"
@@ -36,8 +33,9 @@
         class="overflow-hidden absolute fit"
         input-class="absolute fit"
         style="min-width: 3em"
+        :max-file-size="MAX_FILE_BYTES"
+        :disable="disable"
         borderless
-        v-bind="$attrs"
       />
     </q-btn>
   </SmoothReflow>
@@ -48,6 +46,9 @@ import { computed, ref } from "vue";
 
 import SmoothReflow from "./SmoothReflow";
 
+import { MAX_FILE_BYTES } from "../util/constants";
+import { notifyError } from "../util/notify";
+
 export default {
   name: "ImageInput",
 
@@ -55,6 +56,7 @@ export default {
 
   props: {
     modelValue: String,
+    disable: Boolean,
     square: Boolean,
   },
 
@@ -72,11 +74,15 @@ export default {
     const fileSelected = (event) => {
       let newFile = event.currentTarget.files[0];
       if (newFile) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          image.value = reader.result;
-        };
-        reader.readAsDataURL(newFile);
+        if (newFile.size > MAX_FILE_BYTES) {
+          notifyError("fileTooBig");
+        } else {
+          const reader = new FileReader();
+          reader.onload = () => {
+            image.value = reader.result;
+          };
+          reader.readAsDataURL(newFile);
+        }
         file.value = null;
       }
     };
@@ -85,6 +91,7 @@ export default {
       file,
       image,
       fileSelected,
+      MAX_FILE_BYTES,
     };
   },
 };
@@ -92,22 +99,11 @@ export default {
 
 <style lang="scss">
 .image-input {
-  background-color: $grey-9;
+  background-color: $img-bg;
 
   .input-image {
     display: block;
     margin: 0 auto;
-  }
-
-  &.square {
-    .q-btn {
-      padding: 0;
-    }
-    .q-btn__content:after {
-      content: "";
-      display: block;
-      padding-bottom: 100%;
-    }
   }
 }
 </style>

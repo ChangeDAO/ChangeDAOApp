@@ -2,7 +2,7 @@
   <q-page class="page-changemaker-signup">
     <div class="banner q-layout-padding"></div>
     <div class="q-layout-padding">
-      <div class="avatar"></div>
+      <div class="avatar square"></div>
       <div class="row q-my-xl">
         <q-list class="page-col col">
           <!-- Wallet Address -->
@@ -124,7 +124,7 @@
 <style lang="scss">
 .page-changemaker-signup {
   .banner {
-    background-color: $separator-dark-color;
+    background-color: $img-bg;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 50%;
@@ -132,16 +132,10 @@
   }
 
   .avatar {
-    background-color: $dark;
+    background-color: $grey-9;
     width: 350px;
     max-width: 100%;
     margin-top: -190px;
-
-    &:after {
-      content: "";
-      display: block;
-      padding-bottom: 100%;
-    }
   }
 }
 </style>

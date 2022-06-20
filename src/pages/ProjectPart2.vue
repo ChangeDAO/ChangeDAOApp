@@ -8,6 +8,7 @@
           :label="'Mint Price (USD)'"
           :rules="[(a) => a >= 0]"
           :min="0"
+          :disable="disable"
           prefix="$"
         />
       </q-item-section>
@@ -17,10 +18,11 @@
     <q-item>
       <q-item-section>
         <q-input
+          type="number"
           v-model.number="data._totalMints"
           :label="'Total Mints'"
           :rules="[Boolean]"
-          type="number"
+          :disable="disable"
           :min="1"
         />
       </q-item-section>
@@ -37,17 +39,23 @@
           :min="1"
           :max="Math.min(20, data._totalMints)"
           :hint="$tc('hint.max', Math.min(20, data._totalMints || 20))"
+          :disable="disable"
         />
       </q-item-section>
     </q-item>
 
     <!-- Use Rainbow List? -->
-    <q-item tag="label" clickable v-ripple>
+    <q-item
+      tag="label"
+      :disable="disable"
+      :clickable="!disable"
+      v-ripple="!disable"
+    >
       <q-item-section>
         <q-item-label>Use Rainbow List?</q-item-label>
       </q-item-section>
       <q-item-section side>
-        <q-toggle v-model="data.hasRainbow" />
+        <q-toggle v-model="data.hasRainbow" :disable="disable" />
       </q-item-section>
     </q-item>
 
@@ -64,6 +72,7 @@
               :min="1"
               :max="Math.min(20, data._totalMints)"
               :hint="$tc('hint.max', Math.min(20, data._totalMints || 20))"
+              :disable="disable"
             />
           </q-item-section>
         </q-item>
@@ -77,6 +86,7 @@
               :label="'Rainbow Period Duration (hours)'"
               :rules="[(a) => a >= 0]"
               :min="0"
+              :disable="disable"
             />
           </q-item-section>
         </q-item>
@@ -90,6 +100,7 @@
               :label="'Rainbow List Addresses'"
               :rules="[Boolean, () => rainbowAddrValid]"
               :hint="$t('hint.rainbowAddresses')"
+              :disable="disable"
             />
           </q-item-section>
         </q-item>
@@ -104,6 +115,7 @@
               :label="'Courtesy Mint Duration (hours)'"
               :rules="[(a) => a >= 0]"
               :min="0"
+              :disable="disable"
             />
           </q-item-section>
         </q-item>
@@ -128,7 +140,11 @@ export default {
 
   components: { SmoothReflow },
 
-  props: ["modelValue"],
+  props: {
+    modelValue: Object,
+    disable: Boolean,
+  },
+
   setup(props, { emit }) {
     const store = useStore();
 
@@ -180,6 +196,9 @@ export default {
     const defaultModel = ref(cloneDeep(REQUEST2));
 
     const reset = (clear = false, complete = false) => {
+      if (props.disable) {
+        return false;
+      }
       let newData;
       if (complete) {
         return LocalStorage.remove(LOCALSTORAGE_KEY2);

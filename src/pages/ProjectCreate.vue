@@ -14,10 +14,10 @@
         animated
       >
         <q-step :name="1" :title="$t('project.step1')" :done="isPart1Complete">
-          <ProjectPart1 ref="part1" v-model="data1" />
+          <ProjectPart1 ref="part1" v-model="data1" :disable="isSubmitting" />
         </q-step>
         <q-step :name="2" :title="$t('project.step2')">
-          <ProjectPart2 ref="part2" v-model="data2" />
+          <ProjectPart2 ref="part2" v-model="data2" :disable="isSubmitting" />
         </q-step>
       </q-stepper>
 
@@ -30,6 +30,7 @@
                 @click="reset(true)"
                 :label="$t('Reset')"
                 color="secondary"
+                :disable="isSubmitting"
               />
 
               <!-- Submit -->
