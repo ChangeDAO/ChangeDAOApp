@@ -14,7 +14,7 @@
     "deploy": "firebase deploy --only hosting",
     "deploy:dev": "firebase deploy --only hosting:changedao1",
     "deploy:staging": "firebase deploy --only hosting:changedao-staging",
-    "deploy:live": "firebase deploy --only hosting:changedao"
+    "deploy:live": "firebase deploy --only hosting:changedao-live"
   },
   "dependencies": {
     "@metamask/jazzicon": "^2.0.0",
