@@ -136,6 +136,7 @@ module.exports = configure(function (ctx) {
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
+        maximumFileSizeToCacheInBytes: 7340032,
       },
 
       // for the custom service worker ONLY (/src-pwa/custom-service-worker.[js|ts])
