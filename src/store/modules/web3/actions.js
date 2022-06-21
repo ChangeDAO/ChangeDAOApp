@@ -7,7 +7,7 @@ const chain = process.env.chain;
 // Init
 export async function init({ commit, dispatch, state }) {
   Moralis.onChainChanged((chain) => {
-    commit("setChain", chain);
+    commit("setChain", parseInt(chain, 16));
     dispatch("getUserData");
   });
 
@@ -23,9 +23,10 @@ export async function init({ commit, dispatch, state }) {
   //   }
   // });
 
-  Moralis.onConnect((provider) => {
-    commit("setProvider", provider);
-  });
+  // Moralis.onConnect((provider) => {
+  //   console.log("provider", provider);
+  //   commit("setProvider", provider);
+  // });
 
   return dispatch("logIn");
 }
@@ -35,12 +36,14 @@ export async function enableWeb3({ state, commit, dispatch }) {
   commit("setInitializing", true);
   let result;
   try {
-    result = Moralis.enableWeb3({ provider: state.provider || "metamask" });
+    result = await Moralis.enableWeb3({
+      provider: state.provider || "metamask",
+    });
     commit("setInitialized", true);
   } catch (error) {
     console.warn(error);
     try {
-      result = Moralis.enableWeb3({
+      result = await Moralis.enableWeb3({
         provider: state.provider || "walletconnect",
       });
       commit("setInitialized", true);
@@ -48,6 +51,7 @@ export async function enableWeb3({ state, commit, dispatch }) {
       console.warn(error);
     }
   }
+  commit("setChain", result.network.chainId);
   commit("setInitializing", false);
   await dispatch("getUserData");
   return result;

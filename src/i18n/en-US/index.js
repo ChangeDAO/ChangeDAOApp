@@ -182,6 +182,7 @@ export default {
     fileTooBig: `Sorry, the file size must not exceed ${humanStorageSize(
       MAX_FILE_BYTES
     )}`,
+    incorrectChain: "Please set your wallet to the {correctChain}",
     loadingMint: "There was a problem getting the mint information",
     loadingProject: "There was a problem getting the project information",
     notAdmin: "Your wallet address is not an admin.",
@@ -205,5 +206,15 @@ export default {
     min: "Minimum {count}",
     rainbowAddresses: "Separate addresses by commas or spaces/linebreaks",
     stablecoinApproval: "This is a two-transaction process",
+  },
+
+  networks: {
+    1: "Ethereum Mainnet",
+    2: "Deprecated Morden test network",
+    3: "Ropsten test network",
+    4: "Rinkeby test network",
+    42: "Kovan test network",
+    4447: "Truffle Develop Network",
+    5777: "Ganache Blockchain",
   },
 };

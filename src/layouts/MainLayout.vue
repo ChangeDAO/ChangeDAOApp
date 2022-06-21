@@ -14,6 +14,16 @@
         </q-toolbar-title>
         <UserMenu />
       </q-toolbar>
+      <SmoothReflow>
+        <q-banner
+          v-if="incorrectChain"
+          class="bg-negative text-white text-center"
+        >
+          <span class="text-subtitle1 text-bold">
+            {{ $t("error.incorrectChain", { correctChain }) }}
+          </span>
+        </q-banner>
+      </SmoothReflow>
     </q-header>
 
     <q-page-container>
@@ -135,11 +145,14 @@ import { URLS } from "../util/constants";
 
 import LogInDialog from "../components/LogInDialog";
 import UserMenu from "../components/UserMenu";
+import SmoothReflow from "../components/SmoothReflow";
+
+const CHAIN_ID = parseInt(process.env.chainID, 10);
 
 export default defineComponent({
   name: "MainLayout",
 
-  components: { LogInDialog, UserMenu },
+  components: { LogInDialog, UserMenu, SmoothReflow },
 
   setup() {
     const router = useRouter();
@@ -164,6 +177,10 @@ export default defineComponent({
             !store.state.web3.isAdmin)
       )
     );
+
+    const incorrectChain = computed(() => store.state.web3.chain !== CHAIN_ID);
+
+    const correctChain = computed(() => t("networks." + CHAIN_ID));
 
     router.beforeEach(async (to) => {
       if (
@@ -265,6 +282,8 @@ export default defineComponent({
       twitter,
       isInitialized,
       isLoggedIn,
+      incorrectChain,
+      correctChain,
       showLogIn,
       nav,
     };
