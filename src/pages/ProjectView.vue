@@ -187,7 +187,7 @@ import SecondarySplit from "../components/SecondarySplit";
 import RelativeTime from "../components/RelativeTime";
 
 import Moralis from "moralis";
-import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
+import SharedFunding from "../../contracts/deployments/mainnet/SharedFunding.json";
 
 export default defineComponent({
   name: "PageProjectView",

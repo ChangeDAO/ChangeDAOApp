@@ -139,7 +139,7 @@ import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
 import { LocalStorage } from "quasar";
 import { cloneDeep, debounce, isEqual } from "lodash";
-import FundingAllocations from "../../contracts/deployments/rinkeby/FundingAllocations.json";
+import FundingAllocations from "../../contracts/deployments/mainnet/FundingAllocations.json";
 import Moralis from "moralis";
 
 import { AREAS_OF_CHANGE } from "../util/constants";

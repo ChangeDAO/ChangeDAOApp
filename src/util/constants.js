@@ -9,16 +9,16 @@ export const URLS = {
 };
 
 export const TX_WAIT = 1;
-export const TX_URL = "https://rinkeby.etherscan.io/tx/";
+export const TX_URL = "https://etherscan.io/tx/";
 export const IPFS_GATEWAY = "https://dweb.link/ipfs/";
 
 export const ETH_BUFFER = 0.01;
 export const MAX_FILE_BYTES = 3 * 1024 * 1024;
 
-export const CHANGEDAO_WALLET = "0xee911a1e8e25997a152e337f45648f9e070fc509";
+export const CHANGEDAO_WALLET = "0x0ab87d39994b618dcb6c9011447bc9ca6ad2f797";
 export const ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
-export const DAI_ADDRESS = "0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea";
-export const USDC_ADDRESS = "0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b";
+export const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
+export const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
 
 export const AREAS_OF_CHANGE = [
   "education",

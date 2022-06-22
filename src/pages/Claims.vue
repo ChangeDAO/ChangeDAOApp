@@ -150,7 +150,7 @@ import AddrAvatar from "../components/AddrAvatar";
 import RelativeTime from "../components/RelativeTime";
 
 import Moralis from "moralis";
-import PaymentSplitter from "../../contracts/deployments/rinkeby/PaymentSplitter.json";
+import PaymentSplitter from "../../contracts/deployments/mainnet/PaymentSplitter.json";
 
 export default {
   name: "PageClaims",

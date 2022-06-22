@@ -232,7 +232,7 @@
 <script>
 import Moralis from "moralis";
 import { defineComponent, computed, ref } from "vue";
-import ChangeMakers from "../../contracts/deployments/rinkeby/ChangeMakers.json";
+import ChangeMakers from "../../contracts/deployments/mainnet/ChangeMakers.json";
 
 import { notifyError, notifySuccess } from "../util/notify";
 import { shortAddr } from "../util/formatting";

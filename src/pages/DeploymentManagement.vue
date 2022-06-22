@@ -26,9 +26,7 @@
               <q-item-section avatar>
                 <AddrAvatar :address="contracts.ChangeDaoNFT.address" />
               </q-item-section>
-              <q-item-section>
-                ChangeDaoNFT
-              </q-item-section>
+              <q-item-section> ChangeDaoNFT </q-item-section>
             </template>
 
             <!-- ChangeDaoNFT.changeDaoNFTFactory Address -->
@@ -134,9 +132,7 @@
               <q-item-section avatar>
                 <AddrAvatar :address="contracts.ChangeDaoNFTFactory.address" />
               </q-item-section>
-              <q-item-section>
-                ChangeDaoNFTFactory
-              </q-item-section>
+              <q-item-section> ChangeDaoNFTFactory </q-item-section>
             </template>
 
             <!-- ChangeDaoNFTFactory.changeDaoNFT Address -->
@@ -207,9 +203,7 @@
                   :address="contracts.PaymentSplitterFactory.address"
                 />
               </q-item-section>
-              <q-item-section>
-                PaymentSplitterFactory
-              </q-item-section>
+              <q-item-section> PaymentSplitterFactory </q-item-section>
             </template>
 
             <!-- PaymentSplitterFactory.fundingAllocations Address -->
@@ -325,9 +319,7 @@
               <q-item-section avatar>
                 <AddrAvatar :address="contracts.SharedFundingFactory.address" />
               </q-item-section>
-              <q-item-section>
-                SharedFundingFactory
-              </q-item-section>
+              <q-item-section> SharedFundingFactory </q-item-section>
             </template>
 
             <!-- SharedFundingFactory.sharedFunding Address -->
@@ -430,9 +422,7 @@
               <q-item-section avatar>
                 <AddrAvatar :address="contracts.FundingAllocations.address" />
               </q-item-section>
-              <q-item-section>
-                FundingAllocations
-              </q-item-section>
+              <q-item-section> FundingAllocations </q-item-section>
             </template>
 
             <!-- FundingAllocations.changeDaoFunding Value -->
@@ -516,9 +506,7 @@
               <q-item-section avatar>
                 <AddrAvatar :address="contracts.PaymentSplitter.address" />
               </q-item-section>
-              <q-item-section>
-                PaymentSplitter
-              </q-item-section>
+              <q-item-section> PaymentSplitter </q-item-section>
             </template>
 
             <q-item>
@@ -555,15 +543,15 @@ import { useQuasar } from "quasar";
 import { notifyError } from "../util/notify";
 import AddrAvatar from "../components/AddrAvatar";
 
-import ChangeDaoNFT from "../../contracts/deployments/rinkeby/ChangeDaoNFT.json";
-import ChangeDaoNFTFactory from "../../contracts/deployments/rinkeby/ChangeDaoNFTFactory.json";
-import ChangeMakers from "../../contracts/deployments/rinkeby/ChangeMakers.json";
-import Controller from "../../contracts/deployments/rinkeby/Controller.json";
-import FundingAllocations from "../../contracts/deployments/rinkeby/FundingAllocations.json";
-import PaymentSplitter from "../../contracts/deployments/rinkeby/PaymentSplitter.json";
-import PaymentSplitterFactory from "../../contracts/deployments/rinkeby/PaymentSplitterFactory.json";
-import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
-import SharedFundingFactory from "../../contracts/deployments/rinkeby/SharedFundingFactory.json";
+import ChangeDaoNFT from "../../contracts/deployments/mainnet/ChangeDaoNFT.json";
+import ChangeDaoNFTFactory from "../../contracts/deployments/mainnet/ChangeDaoNFTFactory.json";
+import ChangeMakers from "../../contracts/deployments/mainnet/ChangeMakers.json";
+import Controller from "../../contracts/deployments/mainnet/Controller.json";
+import FundingAllocations from "../../contracts/deployments/mainnet/FundingAllocations.json";
+import PaymentSplitter from "../../contracts/deployments/mainnet/PaymentSplitter.json";
+import PaymentSplitterFactory from "../../contracts/deployments/mainnet/PaymentSplitterFactory.json";
+import SharedFunding from "../../contracts/deployments/mainnet/SharedFunding.json";
+import SharedFundingFactory from "../../contracts/deployments/mainnet/SharedFundingFactory.json";
 
 export default defineComponent({
   name: "PageDeploymentManagement",
@@ -578,7 +566,7 @@ export default defineComponent({
         Promise.all([
           changeDaoNFT.factoryAddress.get(),
           changeDaoNFT.controllerAddress.get(),
-          changeDaoNFT.feeNumerator.get()
+          changeDaoNFT.feeNumerator.get(),
         ]),
       factoryAddress: {
         model: ref(""),
@@ -593,13 +581,12 @@ export default defineComponent({
         get: async () => {
           try {
             changeDaoNFT.factoryAddress.loading.value = true;
-            changeDaoNFT.factoryAddress.model.value = await Moralis.executeFunction(
-              {
+            changeDaoNFT.factoryAddress.model.value =
+              await Moralis.executeFunction({
                 contractAddress: ChangeDaoNFT.address,
                 abi: ChangeDaoNFT.abi,
-                functionName: "changeDaoNFTFactory"
-              }
-            );
+                functionName: "changeDaoNFTFactory",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -614,8 +601,8 @@ export default defineComponent({
               abi: ChangeDaoNFT.abi,
               functionName: "setChangeDaoNFTFactory",
               params: {
-                _changeDaoNFTFactory: ChangeDaoNFTFactory.address
-              }
+                _changeDaoNFTFactory: ChangeDaoNFTFactory.address,
+              },
             });
             const response = await request.wait();
             await changeDaoNFT.factoryAddress.get();
@@ -624,7 +611,7 @@ export default defineComponent({
           } finally {
             changeDaoNFT.factoryAddress.setting.value = false;
           }
-        }
+        },
       },
       controllerAddress: {
         model: ref(""),
@@ -638,13 +625,12 @@ export default defineComponent({
         get: async () => {
           try {
             changeDaoNFT.controllerAddress.loading.value = true;
-            changeDaoNFT.controllerAddress.model.value = await Moralis.executeFunction(
-              {
+            changeDaoNFT.controllerAddress.model.value =
+              await Moralis.executeFunction({
                 contractAddress: ChangeDaoNFT.address,
                 abi: ChangeDaoNFT.abi,
-                functionName: "controller"
-              }
-            );
+                functionName: "controller",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -659,8 +645,8 @@ export default defineComponent({
               abi: ChangeDaoNFT.abi,
               functionName: "setController",
               params: {
-                _controller: Controller.address
-              }
+                _controller: Controller.address,
+              },
             });
             const response = await request.wait();
             await changeDaoNFT.controllerAddress.get();
@@ -669,7 +655,7 @@ export default defineComponent({
           } finally {
             changeDaoNFT.controllerAddress.setting.value = false;
           }
-        }
+        },
       },
       feeNumerator: {
         model: ref(0),
@@ -678,13 +664,12 @@ export default defineComponent({
         get: async () => {
           try {
             changeDaoNFT.feeNumerator.loading.value = true;
-            changeDaoNFT.feeNumerator.model.value = await Moralis.executeFunction(
-              {
+            changeDaoNFT.feeNumerator.model.value =
+              await Moralis.executeFunction({
                 contractAddress: ChangeDaoNFT.address,
                 abi: ChangeDaoNFT.abi,
-                functionName: "feeNumerator"
-              }
-            );
+                functionName: "feeNumerator",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -701,8 +686,8 @@ export default defineComponent({
               params: {
                 _feeNumerator: Moralis.web3Library.BigNumber.from(
                   changeDaoNFT.feeNumerator.model.value
-                )
-              }
+                ),
+              },
             });
             const response = await request.wait();
             await changeDaoNFT.feeNumerator.get();
@@ -711,15 +696,15 @@ export default defineComponent({
           } finally {
             changeDaoNFT.feeNumerator.setting.value = false;
           }
-        }
-      }
+        },
+      },
     };
 
     const changeDaoNFTFactory = {
       get: () =>
         Promise.all([
           changeDaoNFTFactory.i12nAddress.get(),
-          changeDaoNFTFactory.controllerAddress.get()
+          changeDaoNFTFactory.controllerAddress.get(),
         ]),
       i12nAddress: {
         model: ref(""),
@@ -733,13 +718,12 @@ export default defineComponent({
         get: async () => {
           try {
             changeDaoNFTFactory.i12nAddress.loading.value = true;
-            changeDaoNFTFactory.i12nAddress.model.value = await Moralis.executeFunction(
-              {
+            changeDaoNFTFactory.i12nAddress.model.value =
+              await Moralis.executeFunction({
                 contractAddress: ChangeDaoNFTFactory.address,
                 abi: ChangeDaoNFTFactory.abi,
-                functionName: "changeDaoNFTImplementation"
-              }
-            );
+                functionName: "changeDaoNFTImplementation",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -754,8 +738,8 @@ export default defineComponent({
               abi: ChangeDaoNFTFactory.abi,
               functionName: "setChangeDaoNFTImplementation",
               params: {
-                _newCDNFTImplementation: ChangeDaoNFT.address
-              }
+                _newCDNFTImplementation: ChangeDaoNFT.address,
+              },
             });
             const response = await request.wait();
             await changeDaoNFTFactory.i12nAddress.get();
@@ -764,7 +748,7 @@ export default defineComponent({
           } finally {
             changeDaoNFTFactory.i12nAddress.setting.value = false;
           }
-        }
+        },
       },
       controllerAddress: {
         model: ref(""),
@@ -779,13 +763,12 @@ export default defineComponent({
         get: async () => {
           try {
             changeDaoNFTFactory.controllerAddress.loading.value = true;
-            changeDaoNFTFactory.controllerAddress.model.value = await Moralis.executeFunction(
-              {
+            changeDaoNFTFactory.controllerAddress.model.value =
+              await Moralis.executeFunction({
                 contractAddress: ChangeDaoNFTFactory.address,
                 abi: ChangeDaoNFTFactory.abi,
-                functionName: "controller"
-              }
-            );
+                functionName: "controller",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -800,8 +783,8 @@ export default defineComponent({
               abi: ChangeDaoNFTFactory.abi,
               functionName: "setController",
               params: {
-                _controller: Controller.address
-              }
+                _controller: Controller.address,
+              },
             });
             const response = await request.wait();
             await changeDaoNFTFactory.controllerAddress.get();
@@ -810,8 +793,8 @@ export default defineComponent({
           } finally {
             changeDaoNFTFactory.controllerAddress.setting.value = false;
           }
-        }
-      }
+        },
+      },
     };
 
     const paymentSplitterFactory = {
@@ -819,7 +802,7 @@ export default defineComponent({
         Promise.all([
           paymentSplitterFactory.fundingA9sAddress.get(),
           paymentSplitterFactory.paymentSplitterAddress.get(),
-          paymentSplitterFactory.controllerAddress.get()
+          paymentSplitterFactory.controllerAddress.get(),
         ]),
       fundingA9sAddress: {
         model: ref(""),
@@ -834,13 +817,12 @@ export default defineComponent({
         get: async () => {
           try {
             paymentSplitterFactory.fundingA9sAddress.loading.value = true;
-            paymentSplitterFactory.fundingA9sAddress.model.value = await Moralis.executeFunction(
-              {
+            paymentSplitterFactory.fundingA9sAddress.model.value =
+              await Moralis.executeFunction({
                 contractAddress: PaymentSplitterFactory.address,
                 abi: PaymentSplitterFactory.abi,
-                functionName: "allocations"
-              }
-            );
+                functionName: "allocations",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -855,8 +837,8 @@ export default defineComponent({
               abi: PaymentSplitterFactory.abi,
               functionName: "setFundingAllocations",
               params: {
-                _allocations: FundingAllocations.address
-              }
+                _allocations: FundingAllocations.address,
+              },
             });
             const response = await request.wait();
             await paymentSplitterFactory.fundingA9sAddress.get();
@@ -865,7 +847,7 @@ export default defineComponent({
           } finally {
             paymentSplitterFactory.fundingA9sAddress.setting.value = false;
           }
-        }
+        },
       },
       paymentSplitterAddress: {
         model: ref(""),
@@ -880,13 +862,12 @@ export default defineComponent({
         get: async () => {
           try {
             paymentSplitterFactory.paymentSplitterAddress.loading.value = true;
-            paymentSplitterFactory.paymentSplitterAddress.model.value = await Moralis.executeFunction(
-              {
+            paymentSplitterFactory.paymentSplitterAddress.model.value =
+              await Moralis.executeFunction({
                 contractAddress: PaymentSplitterFactory.address,
                 abi: PaymentSplitterFactory.abi,
-                functionName: "paymentSplitter"
-              }
-            );
+                functionName: "paymentSplitter",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -901,8 +882,8 @@ export default defineComponent({
               abi: PaymentSplitterFactory.abi,
               functionName: "setPaymentSplitterImplementation",
               params: {
-                _paymentSplitter: PaymentSplitter.address
-              }
+                _paymentSplitter: PaymentSplitter.address,
+              },
             });
             const response = await request.wait();
             await paymentSplitterFactory.paymentSplitterAddress.get();
@@ -911,7 +892,7 @@ export default defineComponent({
           } finally {
             paymentSplitterFactory.paymentSplitterAddress.setting.value = false;
           }
-        }
+        },
       },
       controllerAddress: {
         model: ref(""),
@@ -926,13 +907,12 @@ export default defineComponent({
         get: async () => {
           try {
             paymentSplitterFactory.controllerAddress.loading.value = true;
-            paymentSplitterFactory.controllerAddress.model.value = await Moralis.executeFunction(
-              {
+            paymentSplitterFactory.controllerAddress.model.value =
+              await Moralis.executeFunction({
                 contractAddress: PaymentSplitterFactory.address,
                 abi: PaymentSplitterFactory.abi,
-                functionName: "controller"
-              }
-            );
+                functionName: "controller",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -947,8 +927,8 @@ export default defineComponent({
               abi: PaymentSplitterFactory.abi,
               functionName: "setController",
               params: {
-                _controller: Controller.address
-              }
+                _controller: Controller.address,
+              },
             });
             const response = await request.wait();
             await paymentSplitterFactory.controllerAddress.get();
@@ -957,8 +937,8 @@ export default defineComponent({
           } finally {
             paymentSplitterFactory.controllerAddress.setting.value = false;
           }
-        }
-      }
+        },
+      },
     };
 
     const sharedFundingFactory = {
@@ -966,7 +946,7 @@ export default defineComponent({
         Promise.all([
           sharedFundingFactory.i12nAddress.get(),
           sharedFundingFactory.fundingA9sAddress.get(),
-          sharedFundingFactory.controllerAddress.get()
+          sharedFundingFactory.controllerAddress.get(),
         ]),
       i12nAddress: {
         model: ref(""),
@@ -980,13 +960,12 @@ export default defineComponent({
         get: async () => {
           try {
             sharedFundingFactory.i12nAddress.loading.value = true;
-            sharedFundingFactory.i12nAddress.model.value = await Moralis.executeFunction(
-              {
+            sharedFundingFactory.i12nAddress.model.value =
+              await Moralis.executeFunction({
                 contractAddress: SharedFundingFactory.address,
                 abi: SharedFundingFactory.abi,
-                functionName: "sharedFunding"
-              }
-            );
+                functionName: "sharedFunding",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -1001,8 +980,8 @@ export default defineComponent({
               abi: SharedFundingFactory.abi,
               functionName: "setSharedFundingImplementation",
               params: {
-                _sharedFunding: SharedFunding.address
-              }
+                _sharedFunding: SharedFunding.address,
+              },
             });
             const response = await request.wait();
             await sharedFundingFactory.i12nAddress.get();
@@ -1011,7 +990,7 @@ export default defineComponent({
           } finally {
             sharedFundingFactory.i12nAddress.setting.value = false;
           }
-        }
+        },
       },
       fundingA9sAddress: {
         model: ref(""),
@@ -1026,13 +1005,12 @@ export default defineComponent({
         get: async () => {
           try {
             sharedFundingFactory.fundingA9sAddress.loading.value = true;
-            sharedFundingFactory.fundingA9sAddress.model.value = await Moralis.executeFunction(
-              {
+            sharedFundingFactory.fundingA9sAddress.model.value =
+              await Moralis.executeFunction({
                 contractAddress: SharedFundingFactory.address,
                 abi: SharedFundingFactory.abi,
-                functionName: "allocations"
-              }
-            );
+                functionName: "allocations",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -1047,8 +1025,8 @@ export default defineComponent({
               abi: SharedFundingFactory.abi,
               functionName: "setFundingAllocations",
               params: {
-                _allocations: FundingAllocations.address
-              }
+                _allocations: FundingAllocations.address,
+              },
             });
             const response = await request.wait();
             await sharedFundingFactory.fundingA9sAddress.get();
@@ -1057,7 +1035,7 @@ export default defineComponent({
           } finally {
             sharedFundingFactory.fundingA9sAddress.setting.value = false;
           }
-        }
+        },
       },
       controllerAddress: {
         model: ref(""),
@@ -1072,13 +1050,12 @@ export default defineComponent({
         get: async () => {
           try {
             sharedFundingFactory.controllerAddress.loading.value = true;
-            sharedFundingFactory.controllerAddress.model.value = await Moralis.executeFunction(
-              {
+            sharedFundingFactory.controllerAddress.model.value =
+              await Moralis.executeFunction({
                 contractAddress: SharedFundingFactory.address,
                 abi: SharedFundingFactory.abi,
-                functionName: "controller"
-              }
-            );
+                functionName: "controller",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -1093,8 +1070,8 @@ export default defineComponent({
               abi: SharedFundingFactory.abi,
               functionName: "setController",
               params: {
-                _controller: Controller.address
-              }
+                _controller: Controller.address,
+              },
             });
             const response = await request.wait();
             await sharedFundingFactory.controllerAddress.get();
@@ -1103,8 +1080,8 @@ export default defineComponent({
           } finally {
             sharedFundingFactory.controllerAddress.setting.value = false;
           }
-        }
-      }
+        },
+      },
     };
 
     const fundingA9s = {
@@ -1112,7 +1089,7 @@ export default defineComponent({
         Promise.all([
           fundingA9s.changeDaoRoyalties.get(),
           fundingA9s.changeDaoFunding.get(),
-          fundingA9s.changeDaoWallet.get()
+          fundingA9s.changeDaoWallet.get(),
         ]),
       changeDaoFunding: {
         model: ref(0),
@@ -1121,13 +1098,12 @@ export default defineComponent({
         get: async () => {
           try {
             fundingA9s.changeDaoFunding.loading.value = true;
-            fundingA9s.changeDaoFunding.model.value = await Moralis.executeFunction(
-              {
+            fundingA9s.changeDaoFunding.model.value =
+              await Moralis.executeFunction({
                 contractAddress: FundingAllocations.address,
                 abi: FundingAllocations.abi,
-                functionName: "changeDaoFunding"
-              }
-            );
+                functionName: "changeDaoFunding",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -1144,8 +1120,8 @@ export default defineComponent({
               params: {
                 _fundingShares: Moralis.web3Library.BigNumber.from(
                   fundingA9s.changeDaoFunding.model.value
-                )
-              }
+                ),
+              },
             });
             const response = await request.wait();
             await fundingA9s.changeDaoFunding.get();
@@ -1154,7 +1130,7 @@ export default defineComponent({
           } finally {
             fundingA9s.changeDaoFunding.setting.value = false;
           }
-        }
+        },
       },
       changeDaoRoyalties: {
         model: ref(0),
@@ -1163,13 +1139,12 @@ export default defineComponent({
         get: async () => {
           try {
             fundingA9s.changeDaoRoyalties.loading.value = true;
-            fundingA9s.changeDaoRoyalties.model.value = await Moralis.executeFunction(
-              {
+            fundingA9s.changeDaoRoyalties.model.value =
+              await Moralis.executeFunction({
                 contractAddress: FundingAllocations.address,
                 abi: FundingAllocations.abi,
-                functionName: "changeDaoRoyalties"
-              }
-            );
+                functionName: "changeDaoRoyalties",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -1186,8 +1161,8 @@ export default defineComponent({
               params: {
                 _royaltiesShares: Moralis.web3Library.BigNumber.from(
                   fundingA9s.changeDaoRoyalties.model.value
-                )
-              }
+                ),
+              },
             });
             const response = await request.wait();
             await fundingA9s.changeDaoRoyalties.get();
@@ -1196,7 +1171,7 @@ export default defineComponent({
           } finally {
             fundingA9s.changeDaoRoyalties.setting.value = false;
           }
-        }
+        },
       },
       changeDaoWallet: {
         model: ref(""),
@@ -1205,13 +1180,12 @@ export default defineComponent({
         get: async () => {
           try {
             fundingA9s.changeDaoWallet.loading.value = true;
-            fundingA9s.changeDaoWallet.model.value = await Moralis.executeFunction(
-              {
+            fundingA9s.changeDaoWallet.model.value =
+              await Moralis.executeFunction({
                 contractAddress: FundingAllocations.address,
                 abi: FundingAllocations.abi,
-                functionName: "changeDaoWallet"
-              }
-            );
+                functionName: "changeDaoWallet",
+              });
           } catch (error) {
             notifyError(error.error || error);
           } finally {
@@ -1226,8 +1200,8 @@ export default defineComponent({
               abi: FundingAllocations.abi,
               functionName: "setChangeDaoWallet",
               params: {
-                _changeDaoWallet: fundingA9s.changeDaoWallet.model.value
-              }
+                _changeDaoWallet: fundingA9s.changeDaoWallet.model.value,
+              },
             });
             const response = await request.wait();
             await fundingA9s.changeDaoWallet.get();
@@ -1236,8 +1210,8 @@ export default defineComponent({
           } finally {
             fundingA9s.changeDaoWallet.setting.value = false;
           }
-        }
-      }
+        },
+      },
     };
 
     const paymentSplitter = {
@@ -1249,7 +1223,7 @@ export default defineComponent({
           const request = await Moralis.executeFunction({
             contractAddress: PaymentSplitter.address,
             abi: PaymentSplitter.abi,
-            functionName: "ownerReleaseAll"
+            functionName: "ownerReleaseAll",
           });
           const response = await request.wait();
         } catch (error) {
@@ -1257,13 +1231,13 @@ export default defineComponent({
         } finally {
           paymentSplitter.releasing.value = false;
         }
-      }
+      },
     };
 
     // Validation rules
-    const isValidAddress = address =>
+    const isValidAddress = (address) =>
       Moralis.web3Library.utils.isAddress(address);
-    const isValidShare = share => share >= 0 && share <= 1e4;
+    const isValidShare = (share) => share >= 0 && share <= 1e4;
 
     return {
       isValidAddress,
@@ -1277,16 +1251,16 @@ export default defineComponent({
         PaymentSplitter,
         PaymentSplitterFactory,
         SharedFunding,
-        SharedFundingFactory
+        SharedFundingFactory,
       },
       changeDaoNFT,
       changeDaoNFTFactory,
       paymentSplitterFactory,
       sharedFundingFactory,
       fundingA9s,
-      paymentSplitter
+      paymentSplitter,
     };
-  }
+  },
 });
 </script>
 

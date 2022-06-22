@@ -197,7 +197,7 @@ import { createLeafRainbow, createMerkleProofRainbow } from "../util/merkle";
 import { notifyError, notifySuccess, notifyTx } from "../util/notify";
 
 import Moralis from "moralis";
-import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
+import SharedFunding from "../../contracts/deployments/mainnet/SharedFunding.json";
 
 import {
   ETH_ADDRESS,

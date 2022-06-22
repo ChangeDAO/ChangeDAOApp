@@ -205,8 +205,8 @@ import RelativeTime from "../components/RelativeTime";
 import TokenCard from "../components/TokenCard";
 
 import Moralis from "moralis";
-import ChangeDaoNFT from "../../contracts/deployments/rinkeby/ChangeDaoNFT.json";
-import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.json";
+import ChangeDaoNFT from "../../contracts/deployments/mainnet/ChangeDaoNFT.json";
+import SharedFunding from "../../contracts/deployments/mainnet/SharedFunding.json";
 
 export default {
   name: "PageProjectAdmin",
