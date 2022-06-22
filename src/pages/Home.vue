@@ -10,9 +10,9 @@
         />
       </q-card-section>
       <q-card-section class="col-12 col-sm-6">
-        <p class="text-h2">CHANGEMAKER NAME</p>
-        <p class="text-h4">Title of the drop</p>
-        <p class="text-caption">MOVEMENT NAME</p>
+        <p class="text-h2">ChangeDAO</p>
+        <p class="text-h4">Share Your Light</p>
+        <p class="text-caption">Global Demonstration</p>
         <div class="q-pt-md">
           <q-btn
             label="Discover"
