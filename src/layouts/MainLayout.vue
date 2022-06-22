@@ -16,7 +16,7 @@
       </q-toolbar>
       <SmoothReflow>
         <q-banner
-          v-if="incorrectChain"
+          v-if="isLoggedIn && incorrectChain"
           class="bg-negative text-white text-center"
         >
           <span class="text-subtitle1 text-bold">
