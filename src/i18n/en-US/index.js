@@ -25,9 +25,7 @@ export default {
   Copyright: "© Copyright 2022 ChangeDAO LLC. All rights reserved.",
   "Cost per Mint": "Cost per Mint",
   Created: "Created",
-  "Creating Change": "Creating Change",
   Creator: "Creator | Creators",
-  "Creating Change By": "Creating Change By...",
   "Courtesy Mint": "Courtesy Mint",
   Currency: "Currency",
   Custom: "Custom",
@@ -95,6 +93,7 @@ export default {
   "Rainbow period ends": "The rainbow period ends",
   "Ready to support?": "Ready to support this project?",
   Reapprove: "Reapprove",
+  Reconnect: "Reconnect",
   Reset: "Reset",
   Revoke: "Revoke",
   "Royalties Split": "Royalties Split",
@@ -189,6 +188,7 @@ export default {
   },
 
   success: {
+    Copied: "Copied!",
     Success: "Success!",
     Subscribed: "You're subscribed!",
     TxComplete: "Transaction complete!",
@@ -201,6 +201,8 @@ export default {
   },
 
   hint: {
+    emailForContactOnly:
+      "This will not be shared publicly, it's just for us to follow-up with you about your application",
     ethBuffer: `We use a ${ETH_BUFFER} ETH buffer which will be refunded on completion`,
     max: "Maximum {count}",
     min: "Minimum {count}",

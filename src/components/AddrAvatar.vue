@@ -1,15 +1,23 @@
 <template>
-  <q-avatar size="sm" v-bind="$attrs">
+  <q-avatar @click.stop.prevent="copy" size="sm" v-bind="$attrs">
     <div v-html="avatar" />
-    <slot>
-      <Tooltip>{{ tooltip || address }}</Tooltip>
-    </slot>
+    <Tooltip class="overflow-hidden">
+      <slot>
+        <div class="text-no-wrap">
+          <q-icon name="copy" left />
+          {{ tooltip || shortAddr(address) }}
+        </div>
+      </slot>
+    </Tooltip>
   </q-avatar>
 </template>
 
 <script>
 import jazzicon from "@metamask/jazzicon";
 import Tooltip from "./Tooltip";
+import { shortAddr } from "src/util/formatting";
+import { notifyCopied, notifyError } from "src/util/notify";
+import { copyToClipboard } from "quasar";
 
 export default {
   name: "AddrAvatar",
@@ -25,6 +33,15 @@ export default {
       const avatar = jazzicon(24, seed);
       return avatar.innerHTML;
     },
+  },
+
+  methods: {
+    copy() {
+      copyToClipboard(this.address)
+        .then(() => notifyCopied(this.address))
+        .catch(notifyError);
+    },
+    shortAddr,
   },
 };
 </script>

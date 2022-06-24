@@ -8,6 +8,13 @@ export const URLS = {
   NEWSLETTER_FORM: "https://getform.io/f/664280cb-7478-486f-8945-4cc9d819e88a",
 };
 
+export const SOCIAL_URLS = {
+  TWITTER: "https://t.me/",
+  DISCORD: "https://discord.gg/",
+  INSTAGRAM: "https://www.instagram.com/",
+  YOUTUBE: "https://youtube.com/channel/",
+};
+
 export const TX_WAIT = 1;
 export const TX_URL = "https://etherscan.io/tx/";
 export const IPFS_GATEWAY = "https://dweb.link/ipfs/";

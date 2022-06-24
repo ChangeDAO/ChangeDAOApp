@@ -6,7 +6,12 @@
         <div class="text-h4">{{ $t("Claims") }}</div>
 
         <!-- Toggle all -->
-        <q-toggle v-model="showAll" :label="$t('Show All')" color="accent" />
+        <q-toggle
+          v-model="showAll"
+          :label="$t('Show All')"
+          color="accent"
+          left-label
+        />
       </div>
 
       <div class="projects row q-gutter-xl justify-center q-py-xl">
@@ -16,24 +21,18 @@
           v-for="project in projects"
           :key="project.id"
           :project="project"
+          @click="
+            $router.push({
+              name: 'project-view',
+              params: { projectID: project.id },
+            })
+          "
         >
-          <div class="non-selectable">
+          <div @click.stop class="non-selectable">
             <!-- Project Info -->
             <q-item class="q-pa-none">
               <q-item-section side>
-                <q-btn
-                  @click="
-                    $router.push({
-                      name: 'project-view',
-                      params: { projectID: project.id },
-                    })
-                  "
-                  dense
-                  round
-                  flat
-                >
-                  <AddrAvatar :address="project.ethAddress" />
-                </q-btn>
+                <AddrAvatar :address="project.ethAddress" />
               </q-item-section>
               <q-item-section>
                 <q-item-label>
@@ -74,63 +73,65 @@
                   {{ $n(project.total.usdc, "USD") }}
                 </q-item-label>
               </q-item-section>
+              <q-item-section side>
+                <q-icon name="arrow_drop_down" />
+              </q-item-section>
             </q-item>
+            <q-menu>
+              <q-list>
+                <q-item
+                  v-for="ps in project.paymentSplitters"
+                  :key="ps.id"
+                  @click="claim(ps)"
+                  :clickable="hasBalance(ps)"
+                  v-ripple="hasBalance(ps)"
+                  class="non-selectable"
+                  :class="{ disabled: !hasBalance(ps) }"
+                >
+                  <q-item-section side>
+                    <AddrAvatar :address="ps.ethAddress">
+                      {{ $t("psTypes." + ps.type) }}<br />
+                      {{ shortAddr(ps.ethAddress) }}
+                    </AddrAvatar>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label caption>ETH</q-item-label>
+                    <q-item-label
+                      class="ellipsis"
+                      :class="{ 'text-positive': ps.balances.eth > 0 }"
+                      caption
+                    >
+                      {{ $n(ps.balances.eth, "n6") }}
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label caption>DAI</q-item-label>
+                    <q-item-label
+                      class="ellipsis"
+                      :class="{ 'text-positive': ps.balances.dai > 0 }"
+                      caption
+                    >
+                      {{ $n(ps.balances.dai, "USD") }}
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label caption>USDC</q-item-label>
+                    <q-item-label
+                      class="ellipsis"
+                      :class="{ 'text-positive': ps.balances.usdc > 0 }"
+                      caption
+                    >
+                      {{ $n(ps.balances.usdc, "USD") }}
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section v-if="hasBalance(ps)" side>
+                    <q-spinner v-if="isClaiming[ps.id]" size="1.7em" />
+                    <q-icon v-else name="claims" />
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
           </div>
-
-          <template v-slot:menu>
-            <q-list>
-              <q-item
-                v-for="ps in project.paymentSplitters"
-                :key="ps.id"
-                @click="claim(ps)"
-                :clickable="hasBalance(ps)"
-                v-ripple="hasBalance(ps)"
-                class="non-selectable"
-                :class="{ disabled: !hasBalance(ps) }"
-              >
-                <q-item-section side>
-                  <AddrAvatar
-                    :address="ps.ethAddress"
-                    :tooltip="$t('psTypes.' + ps.type)"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label caption>ETH</q-item-label>
-                  <q-item-label
-                    class="ellipsis"
-                    :class="{ 'text-positive': ps.balances.eth > 0 }"
-                    caption
-                  >
-                    {{ $n(ps.balances.eth, "n6") }}
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label caption>DAI</q-item-label>
-                  <q-item-label
-                    class="ellipsis"
-                    :class="{ 'text-positive': ps.balances.dai > 0 }"
-                    caption
-                  >
-                    {{ $n(ps.balances.dai, "USD") }}
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label caption>USDC</q-item-label>
-                  <q-item-label
-                    class="ellipsis"
-                    :class="{ 'text-positive': ps.balances.usdc > 0 }"
-                    caption
-                  >
-                    {{ $n(ps.balances.usdc, "USD") }}
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section v-if="hasBalance(ps)" side>
-                  <q-spinner v-if="isClaiming[ps.id]" size="1.7em" />
-                  <q-icon v-else name="claims" />
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </template>
         </ProjectCard>
       </div>
     </div>

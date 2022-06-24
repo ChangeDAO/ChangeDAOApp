@@ -1,5 +1,5 @@
 <template>
-  <q-page v-if="project" class="page-project-mint" padding>
+  <q-page v-if="project" class="page-project-mint non-selectable" padding>
     <div class="row q-col-gutter-xl reverse">
       <!-- Project Image -->
 
@@ -33,7 +33,7 @@
       </div>
 
       <div class="page-col col q-col-6">
-        <ProjectInfo :project="project" editable />
+        <ProjectInfo :project="project" />
 
         <q-separator class="q-my-lg" />
 
@@ -42,13 +42,7 @@
         <p class="text-subtitle">
           {{ $t("Artwork Description") }}
         </p>
-        <p class="pre-line">{{ project.description }}</p>
-        <br />
-
-        <p class="text-subtitle">
-          {{ $t("Creating Change") }}
-        </p>
-        <p class="pre-line">{{ project.changemaker.creatingChangeBy }}</p>
+        <p class="pre-line text-selectable">{{ project.description }}</p>
 
         <q-separator class="q-my-lg" />
 
@@ -141,6 +135,10 @@
       <!-- Project Split -->
       <div class="page-col col q-col-6">
         <p class="text-subtitle">
+          <AddrAvatar
+            :address="project.fundingPaymentSplitters[0].ethAddress"
+            class="q-mr-md"
+          />
           {{ $t("Project Split") }}
         </p>
         <p>{{ $t("Primary Split Caption") }}</p>
@@ -150,12 +148,24 @@
       <!-- Secondary Split -->
       <div class="page-col col q-col-6">
         <p class="text-subtitle">
+          <AddrAvatar
+            :address="project.royaltiesPaymentSplitters[0].ethAddress"
+            class="q-mr-md"
+          />
           {{ $t("Secondary Split") }}
         </p>
         <p>{{ $t("Secondary Split Caption") }}</p>
         <SecondarySplit :project="project" />
       </div>
     </div>
+
+    <q-page-sticky
+      v-if="project.createdByWalletAddress === userAddress"
+      position="bottom-right"
+      :offset="[18, 18]"
+    >
+      <q-btn :to="{ name: 'project-admin' }" color="primary" icon="edit" fab />
+    </q-page-sticky>
 
     <router-view
       v-if="userAddress && project.numMintsBought < project.numMints"
@@ -181,6 +191,7 @@ import { Loading, useQuasar } from "quasar";
 
 import { notifyError } from "../util/notify";
 import LogIn from "../components/LogIn";
+import AddrAvatar from "../components/AddrAvatar";
 import ProjectInfo from "../components/ProjectInfo";
 import ProjectSplit from "../components/ProjectSplit";
 import SecondarySplit from "../components/SecondarySplit";
@@ -196,6 +207,7 @@ export default defineComponent({
 
   components: {
     LogIn,
+    AddrAvatar,
     ProjectInfo,
     ProjectSplit,
     SecondarySplit,
