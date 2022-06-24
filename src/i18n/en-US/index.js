@@ -95,6 +95,7 @@ export default {
   "Rainbow period ends": "The rainbow period ends",
   "Ready to support?": "Ready to support this project?",
   Reapprove: "Reapprove",
+  Reconnect: "Reconnect",
   Reset: "Reset",
   Revoke: "Revoke",
   "Royalties Split": "Royalties Split",

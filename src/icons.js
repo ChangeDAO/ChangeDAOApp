@@ -4,6 +4,7 @@ export default {
   arrow_drop_down: "mdi-menu-down",
   arrow_left: "mdi-chevron-left",
   arrow_right: "mdi-chevron-right",
+  changemaker: "mdi-account-circle",
   check: "mdi-check-circle",
   claims: "mdi-account-cash",
   close: "mdi-close",
