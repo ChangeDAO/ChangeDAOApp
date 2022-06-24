@@ -11,6 +11,10 @@ export default {
   mutations: {
     setProject(state, { project, id }) {
       state[id] = deepFreeze(project);
+      this.commit("setChangemaker", {
+        id: project.createdByWalletAddress,
+        changemaker: project.changemaker,
+      });
     },
   },
 

@@ -1,17 +1,17 @@
 <template>
   <div>
     <!-- Project Name -->
-    <p class="text-h3">
+    <p class="text-h3 text-selectable">
       {{ project.name }}
-      <q-btn
-        v-if="editable && project.createdByWalletAddress === userAddress"
-        :to="{ name: 'project-admin' }"
-        color="primary"
-        icon="admin"
-        round
-        flat
-      />
+
       <br />
+
+      <!-- Address -->
+      <span class="text-caption">
+        <AddrAvatar :address="project.ethAddress" class="q-mr-sm" />{{
+          shortAddr(project.ethAddress)
+        }} </span
+      ><br />
 
       <!-- Changemaker Name -->
       <span class="text-accent text-h4">
@@ -34,7 +34,7 @@
       <!-- Movement -->
       <span>{{ $t("Movement") }}</span>
       <br />
-      <span class="text-accent">
+      <span class="text-accent text-selectable">
         {{ project.movement.name }}
       </span>
 
@@ -75,19 +75,20 @@
 
 <script>
 import AddrAvatar from "./AddrAvatar.vue";
+import { shortAddr } from "../util/formatting";
 
 export default {
   name: "ProjectInfo",
+  components: { AddrAvatar },
   props: {
     project: Object,
     minimal: Boolean,
-    editable: Boolean,
   },
   computed: {
     userAddress() {
       return this.$store.state.web3.userAddress;
     },
   },
-  components: { AddrAvatar },
+  methods: { shortAddr },
 };
 </script>

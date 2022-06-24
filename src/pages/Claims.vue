@@ -6,7 +6,12 @@
         <div class="text-h4">{{ $t("Claims") }}</div>
 
         <!-- Toggle all -->
-        <q-toggle v-model="showAll" :label="$t('Show All')" color="accent" />
+        <q-toggle
+          v-model="showAll"
+          :label="$t('Show All')"
+          color="accent"
+          left-label
+        />
       </div>
 
       <div class="projects row q-gutter-xl justify-center q-py-xl">
@@ -86,7 +91,7 @@
                   <q-item-section side>
                     <AddrAvatar :address="ps.ethAddress">
                       {{ $t("psTypes." + ps.type) }}<br />
-                      {{ ps.ethAddress }}
+                      {{ shortAddr(ps.ethAddress) }}
                     </AddrAvatar>
                   </q-item-section>
                   <q-item-section>

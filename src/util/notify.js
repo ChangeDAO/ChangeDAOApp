@@ -27,13 +27,13 @@ export const notifyTx = (hash) => {
   });
 };
 
-export const notifyCopied = () => {
+export const notifyCopied = (text) => {
   return Notify.create({
-    message: formatSuccess("Copied"),
+    message: formatSuccess("Copied" + " " + text),
     icon: "copy",
     position: "bottom",
     multiLine: false,
-    timeout: 300,
+    timeout: 1e3,
   });
 };
 

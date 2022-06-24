@@ -1,9 +1,12 @@
 <template>
   <q-avatar @click.stop.prevent="copy" size="sm" v-bind="$attrs">
     <div v-html="avatar" />
-    <Tooltip>
+    <Tooltip class="overflow-hidden">
       <slot>
-        {{ tooltip || address }}
+        <div class="text-no-wrap">
+          <q-icon name="copy" left />
+          {{ tooltip || shortAddr(address) }}
+        </div>
       </slot>
     </Tooltip>
   </q-avatar>
@@ -12,6 +15,7 @@
 <script>
 import jazzicon from "@metamask/jazzicon";
 import Tooltip from "./Tooltip";
+import { shortAddr } from "src/util/formatting";
 import { notifyCopied, notifyError } from "src/util/notify";
 import { copyToClipboard } from "quasar";
 
@@ -33,8 +37,11 @@ export default {
 
   methods: {
     copy() {
-      copyToClipboard(this.address).then(notifyCopied).catch(notifyError);
+      copyToClipboard(this.address)
+        .then(() => notifyCopied(this.address))
+        .catch(notifyError);
     },
+    shortAddr,
   },
 };
 </script>
