@@ -4,9 +4,8 @@
     <div class="row reverse justify-center items-center landing">
       <q-card-section class="col-12 col-sm-6">
         <img
-          src="~assets/ChangeDAO-sample-cover.png"
+          src="https://uyoiyikhfnid.usemoralis.com:2053/server/files/WD5H5Q6OSZh069zAtZ58bx0qtD1Bc0Cg66aVa00D/783338aa382fb5c02770333f9cfc7e66_Global%20Demonstration_Share%20Your%20Light.png"
           style="width: 100%"
-          class="shadow-4"
         />
       </q-card-section>
       <q-card-section class="col-12 col-sm-6">
@@ -17,6 +16,10 @@
           <q-btn
             label="Discover"
             color="primary"
+            :to="{
+              name: 'project-view',
+              params: { projectID: 'GWPEs4kzppdo7VmAdaxKx8cU' },
+            }"
             :class="{ 'full-width': $q.screen.lt.sm }"
           />
         </div>
@@ -28,7 +31,15 @@
       <p class="text-h2 text-uppercase">Proof Of Change</p>
       <p class="text-h3">By ChangeDAO</p>
       <p class="q-mt-xl">
-        <q-btn label="Discover" color="primary" />
+        <q-btn
+          label="Discover"
+          color="primary"
+          @click="
+            openURL(
+              'https://medium.com/changedao/episode-1-one-story-at-a-time-chatting-with-david-all-founder-of-changedao-f211ae46ab7c'
+            )
+          "
+        />
       </p>
     </q-card-section>
 
@@ -389,6 +400,7 @@ export default {
       blog,
       podcast,
       events,
+      openURL,
     };
   },
 };
