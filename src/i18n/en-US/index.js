@@ -201,6 +201,8 @@ export default {
   },
 
   hint: {
+    emailForContactOnly:
+      "This will not be shared publicly, it's just for us to follow-up with you about your application",
     ethBuffer: `We use a ${ETH_BUFFER} ETH buffer which will be refunded on completion`,
     max: "Maximum {count}",
     min: "Minimum {count}",

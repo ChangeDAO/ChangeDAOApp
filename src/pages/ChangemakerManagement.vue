@@ -1,14 +1,14 @@
 <template>
   <q-page padding>
-    <div class="text-h4 q-mb-md">{{ $t("Changemaker Approval") }}</div>
+    <div class="text-h4 q-mb-md non-selectable">
+      {{ $t("Changemaker Approval") }}
+    </div>
     <q-linear-progress v-if="!changemakers.length" indeterminate />
     <q-list v-else separator bordered>
       <q-expansion-item v-for="cm in changemakers" :key="cm.walletAddress">
         <template v-slot:header>
           <q-item-section side>
-            <AddrAvatar :address="cm.walletAddress">
-              <Tooltip>{{ cm.walletAddress }}</Tooltip>
-            </AddrAvatar>
+            <AddrAvatar :address="cm.walletAddress" />
           </q-item-section>
           <q-item-section>
             <q-item-label>
@@ -24,7 +24,7 @@
           </q-item-section>
           <q-item-section side>
             <template v-if="!cm.isApproved">
-              <div v-if="$q.screen.gt.xs" class="row col">
+              <div v-if="$q.screen.gt.xs" class="row">
                 <q-btn
                   @click.stop="approve(cm)"
                   :label="$t(cm.isReviewed ? 'Reapprove' : 'Approve')"
@@ -45,7 +45,7 @@
                 <q-menu>
                   <q-list>
                     <q-item @click="approve(cm)" clickable v-ripple>
-                      <q-item-section avatar>
+                      <q-item-section side>
                         <q-spinner v-if="approving[cm.id]" />
                         <q-icon v-else name="success" color="positive" />
                       </q-item-section>
@@ -61,7 +61,7 @@
                       clickable
                       v-ripple
                     >
-                      <q-item-section avatar>
+                      <q-item-section side>
                         <q-spinner v-if="denying[cm.id]" />
                         <q-icon v-else name="close" color="negative" />
                       </q-item-section>
@@ -136,7 +136,7 @@
           <q-item>
             <q-item-section>
               <q-item-label caption>{{ $t("Short Bio") }}</q-item-label>
-              <q-item-label>
+              <q-item-label class="pre-line">
                 {{ cm.shortBio }}
               </q-item-label>
             </q-item-section>
@@ -146,81 +146,85 @@
           <q-item>
             <q-item-section>
               <q-item-label caption>{{ $t("Long Bio") }}</q-item-label>
-              <q-item-label>
+              <q-item-label class="pre-line">
                 {{ cm.longBio }}
               </q-item-label>
             </q-item-section>
           </q-item>
 
-          <!-- Creating Change By -->
+          <!-- Email Address -->
           <q-item>
+            <q-item-section side>
+              <q-icon name="email" />
+            </q-item-section>
             <q-item-section>
-              <q-item-label caption>{{
-                $t("Creating Change By")
-              }}</q-item-label>
+              <q-item-label caption>{{ $t("Email Address") }}</q-item-label>
               <q-item-label>
-                {{ cm.creatingChangeBy }}
+                {{ cm.email }}
               </q-item-label>
             </q-item-section>
           </q-item>
 
           <!-- Twitter -->
-          <q-item>
+          <q-item v-if="cm.social.twitter">
+            <q-item-section side>
+              <q-icon name="twitter" />
+            </q-item-section>
             <q-item-section>
               <q-item-label caption>{{ $t("Twitter") }}</q-item-label>
               <q-item-label>
-                {{ cm.social.twitter }}
+                {{ SOCIAL_URLS.TWITTER }}{{ cm.social.twitter }}
               </q-item-label>
             </q-item-section>
           </q-item>
 
           <!-- Discord -->
-          <q-item>
+          <q-item v-if="cm.social.discord">
+            <q-item-section side>
+              <q-icon name="discord" />
+            </q-item-section>
             <q-item-section>
               <q-item-label caption>{{ $t("Discord") }}</q-item-label>
               <q-item-label>
-                {{ cm.social.discord }}
+                {{ SOCIAL_URLS.DISCORD }}{{ cm.social.discord }}
               </q-item-label>
             </q-item-section>
           </q-item>
 
           <!-- Instagram -->
-          <q-item>
+          <q-item v-if="cm.social.instagram">
+            <q-item-section side>
+              <q-icon name="instagram" />
+            </q-item-section>
             <q-item-section>
               <q-item-label caption>{{ $t("Instagram") }}</q-item-label>
               <q-item-label>
-                {{ cm.social.instagram }}
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <!-- TikTok -->
-          <q-item>
-            <q-item-section>
-              <q-item-label caption>{{ $t("TikTok") }}</q-item-label>
-              <q-item-label>
-                {{ cm.social.tiktok }}
+                {{ SOCIAL_URLS.INSTAGRAM }}{{ cm.social.instagram }}
               </q-item-label>
             </q-item-section>
           </q-item>
 
           <!-- YouTube -->
-          <q-item>
+          <q-item v-if="cm.social.youtube">
+            <q-item-section side>
+              <q-icon name="youtube" />
+            </q-item-section>
             <q-item-section>
               <q-item-label caption>{{ $t("YouTube") }}</q-item-label>
               <q-item-label>
-                {{ cm.social.youtube }}
+                {{ SOCIAL_URLS.YOUTUBE }}{{ cm.social.youtube }}
               </q-item-label>
             </q-item-section>
           </q-item>
 
           <!-- Website URL -->
-          <q-item>
+          <q-item v-if="cm.social.website">
+            <q-item-section side>
+              <q-icon name="website" />
+            </q-item-section>
             <q-item-section>
               <q-item-label caption>{{ $t("Website URL") }}</q-item-label>
-              <q-item-label>
-                {{ cm.social.website }}
-              </q-item-label>
+              <q-item-label>https://{{ cm.social.website }}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -231,21 +235,21 @@
 
 <script>
 import Moralis from "moralis";
-import { defineComponent, computed, ref } from "vue";
+import { ref } from "vue";
 import ChangeMakers from "../../contracts/deployments/rinkeby/ChangeMakers.json";
 
+import { SOCIAL_URLS } from "../util/constants";
 import { notifyError, notifySuccess } from "../util/notify";
 import { shortAddr } from "../util/formatting";
 import AddrAvatar from "../components/AddrAvatar";
 import RelativeTime from "../components/RelativeTime";
-import Tooltip from "../components/Tooltip";
 
 import { TX_WAIT } from "../util/constants";
 
-export default defineComponent({
+export default {
   name: "PageChangemakerManagement",
 
-  components: { AddrAvatar, RelativeTime, Tooltip },
+  components: { AddrAvatar, RelativeTime },
 
   setup() {
     // Validation rules
@@ -283,7 +287,7 @@ export default defineComponent({
             _changeMaker: cm.walletAddress,
           },
         });
-        Moralis.Cloud.run("approveChangemaker", {
+        await Moralis.Cloud.run("approveChangemaker", {
           changemakerId: cm.id,
           transactionHash: tx.hash,
         });
@@ -299,7 +303,21 @@ export default defineComponent({
     };
 
     const denying = ref({});
-    const deny = async (cm) => {};
+    const deny = async (cm) => {
+      try {
+        denying.value[cm.id] = true;
+        await Moralis.Cloud.run("denyChangemaker", {
+          changemakerId: cm.id,
+        });
+        cm.isApproved = false;
+        cm.isReviewed = true;
+        notifySuccess("Success");
+      } catch (error) {
+        notifyError(error.error || error);
+      } finally {
+        denying.value[cm.id] = false;
+      }
+    };
 
     const revoking = ref({});
     const revoke = async (cm) => {
@@ -313,7 +331,7 @@ export default defineComponent({
             _changeMaker: cm.walletAddress,
           },
         });
-        Moralis.Cloud.run("revokeChangemaker", {
+        await Moralis.Cloud.run("revokeChangemaker", {
           changemakerId: cm.id,
           transactionHash: tx.hash,
         });
@@ -336,7 +354,8 @@ export default defineComponent({
       deny,
       revoking,
       revoke,
+      SOCIAL_URLS,
     };
   },
-});
+};
 </script>

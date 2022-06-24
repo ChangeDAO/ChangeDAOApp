@@ -58,7 +58,7 @@
                 {{ $t("Number of Mints") }}
               </div>
               <p class="text-caption">
-                {{ $tc("n Mints Remaining", $n(mintable - minted, "n8")) }}
+                {{ $tc("n Mints Remaining", mintable - minted) }}
               </p>
             </div>
             <q-input

@@ -14,7 +14,7 @@
               <q-item-label caption>
                 {{ $t("Wallet Address") }}
               </q-item-label>
-              <q-item-label>
+              <q-item-label class="non-selectable">
                 {{ shortAddr(address) }}
               </q-item-label>
             </q-item-section>
@@ -23,11 +23,21 @@
           <q-item>
             <q-item-section>
               <!-- First Name -->
-              <q-input v-model="data.firstName" :label="$t('First Name')" />
+              <q-input
+                v-model="data.firstName"
+                :label="$t('First Name')"
+                :rules="[required]"
+                hide-bottom-space
+              />
             </q-item-section>
             <q-item-section>
               <!-- Last Name -->
-              <q-input v-model="data.lastName" :label="$t('Last Name')" />
+              <q-input
+                v-model="data.lastName"
+                :label="$t('Last Name')"
+                :rules="[required]"
+                hide-bottom-space
+              />
             </q-item-section>
           </q-item>
 
@@ -35,6 +45,8 @@
           <q-input
             v-model="data.username"
             :label="$t('Username')"
+            :rules="[required]"
+            hide-bottom-space
             item-aligned
           />
 
@@ -42,6 +54,8 @@
           <q-input
             v-model="data.displayName"
             :label="$t('Display Name')"
+            :rules="[required]"
+            hide-bottom-space
             item-aligned
           />
 
@@ -61,11 +75,12 @@
             item-aligned
           />
 
-          <!-- Creating Change By -->
+          <!-- Email Address -->
           <q-input
-            v-model="data.creatingChangeBy"
-            :label="$t('Creating Change By')"
-            autogrow
+            v-model="data.email"
+            :label="$t('Email Address')"
+            :rules="[isEmailValid]"
+            :hint="$t('hint.emailForContactOnly')"
             item-aligned
           />
         </q-list>
@@ -73,30 +88,68 @@
         <!-- Second Column -->
         <q-list class="page-col col">
           <!-- Twitter -->
-          <q-input v-model="data.twitter" :label="$t('Twitter')" item-aligned />
+          <q-input
+            v-model="data.twitter"
+            :label="$t('Twitter')"
+            :prefix="SOCIAL_URLS.TWITTER"
+            placeholder="YourUsername"
+            item-aligned
+          >
+            <template v-slot:prepend>
+              <q-icon name="twitter" />
+            </template>
+          </q-input>
 
           <!-- Discord -->
-          <q-input v-model="data.discord" :label="$t('Discord')" item-aligned />
+          <q-input
+            v-model="data.discord"
+            :label="$t('Discord')"
+            :prefix="SOCIAL_URLS.DISCORD"
+            placeholder="InviteCode"
+            item-aligned
+          >
+            <template v-slot:prepend>
+              <q-icon name="discord" />
+            </template>
+          </q-input>
 
           <!-- Instagram -->
           <q-input
             v-model="data.instagram"
             :label="$t('Instagram')"
+            :prefix="SOCIAL_URLS.INSTAGRAM"
+            placeholder="YourUsername"
             item-aligned
-          />
-
-          <!-- TikTok -->
-          <q-input v-model="data.tiktok" :label="$t('TikTok')" item-aligned />
+          >
+            <template v-slot:prepend>
+              <q-icon name="instagram" />
+            </template>
+          </q-input>
 
           <!-- YouTube -->
-          <q-input v-model="data.youtube" :label="$t('YouTube')" item-aligned />
+          <q-input
+            v-model="data.youtube"
+            :label="$t('YouTube')"
+            :prefix="SOCIAL_URLS.YOUTUBE"
+            placeholder="YourChannel"
+            item-aligned
+          >
+            <template v-slot:prepend>
+              <q-icon name="youtube" />
+            </template>
+          </q-input>
 
           <!-- Website URL -->
           <q-input
             v-model="data.website"
             :label="$t('Website URL')"
+            prefix="https://"
             item-aligned
-          />
+          >
+            <template v-slot:prepend>
+              <q-icon name="website" />
+            </template>
+          </q-input>
         </q-list>
       </div>
 
@@ -147,8 +200,9 @@ import { LocalStorage } from "quasar";
 import { debounce, isEqual } from "lodash";
 import Moralis from "moralis";
 
+import { SOCIAL_URLS } from "../util/constants";
 import { notifyError, notifySuccess } from "../util/notify";
-import { shortAddr } from "../util/formatting";
+import { EMAIL_FORMAT, shortAddr } from "../util/formatting";
 import AddrAvatar from "../components/AddrAvatar";
 
 const LOCALSTORAGE_KEY = "changemakerSignup";
@@ -160,11 +214,10 @@ const REQUEST = {
   displayName: "",
   shortBio: "",
   longBio: "",
-  creatingChangeBy: "",
+  email: "",
   twitter: "",
   discord: "",
   instagram: "",
-  tiktok: "",
   youtube: "",
   website: "",
 };
@@ -181,13 +234,18 @@ export default {
 
     const data = ref(LocalStorage.getItem(LOCALSTORAGE_KEY) || { ...REQUEST });
 
+    const required = (a) => Boolean(a && a.trim());
+
+    const isEmailValid = (email) => EMAIL_FORMAT.test(email);
+
     const isValid = computed(
       () =>
         address.value &&
         data.value.firstName &&
         data.value.lastName &&
         data.value.username &&
-        data.value.displayName
+        data.value.displayName &&
+        isEmailValid(data.value.email)
     );
 
     watch(
@@ -210,8 +268,8 @@ export default {
       try {
         isSubmitting.value = true;
         await Moralis.Cloud.run("createChangemakerRequest", data.value);
-        LocalStorage.remove(LOCALSTORAGE_KEY);
         notifySuccess("Success");
+        clear();
       } catch (error) {
         notifyError(error.error || error);
       } finally {
@@ -229,8 +287,11 @@ export default {
       data,
       submit,
       clear,
+      required,
       isSubmitting,
+      isEmailValid,
       isValid,
+      SOCIAL_URLS,
     };
   },
 };
