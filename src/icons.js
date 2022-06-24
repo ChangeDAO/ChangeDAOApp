@@ -7,6 +7,7 @@ export default {
   check: "mdi-check-circle",
   claims: "mdi-account-cash",
   close: "mdi-close",
+  copy: "mdi-content-copy",
   delete: "mdi-delete",
   discord: "mdi-discord",
   disconnect: "mdi-wallet-outline",

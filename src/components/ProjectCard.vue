@@ -36,10 +36,6 @@
         </div>
       </slot>
     </div>
-
-    <q-menu v-if="$slots.menu">
-      <slot name="menu" />
-    </q-menu>
   </q-img>
 </template>
 

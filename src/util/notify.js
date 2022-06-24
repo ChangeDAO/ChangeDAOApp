@@ -22,8 +22,18 @@ export const notifyTx = (hash) => {
           openURL(TX_URL + hash);
         },
       },
-      { icon: "close", color: "grey-10" },
+      { icon: "close", color: "grey-10, dense: true" },
     ],
+  });
+};
+
+export const notifyCopied = () => {
+  return Notify.create({
+    message: formatSuccess("Copied"),
+    icon: "copy",
+    position: "bottom",
+    multiLine: false,
+    timeout: 300,
   });
 };
 
@@ -34,7 +44,7 @@ export const notifyError = (error) => {
     icon: "error",
     timeout: 0,
     position: "top-right",
-    actions: [{ icon: "close", color: "grey-1" }],
+    actions: [{ icon: "close", color: "grey-1", dense: true }],
   });
 };
 
@@ -45,7 +55,7 @@ export const notifySuccess = (success, timeout = 3e3) => {
     icon: "success",
     position: "top-right",
     multiLine: false,
-    actions: [{ icon: "close", color: "grey-1" }],
+    actions: [{ icon: "close", color: "grey-1", dense: true }],
     timeout,
   });
 };
@@ -58,7 +68,7 @@ export const notifyWarning = (warning) => {
     timeout: 0,
     position: "top-right",
     multiLine: false,
-    actions: [{ icon: "close", color: "grey-10" }],
+    actions: [{ icon: "close", color: "grey-10", dense: true }],
   });
 };
 
@@ -70,7 +80,7 @@ export const notifyHint = (hint) => {
     timeout: 0,
     position: "top-right",
     multiLine: false,
-    actions: [{ icon: "close", color: "grey-1" }],
+    actions: [{ icon: "close", color: "grey-1", dense: true }],
   });
 };
 

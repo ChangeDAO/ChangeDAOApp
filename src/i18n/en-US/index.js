@@ -189,6 +189,7 @@ export default {
   },
 
   success: {
+    Copied: "Copied!",
     Success: "Success!",
     Subscribed: "You're subscribed!",
     TxComplete: "Transaction complete!",
