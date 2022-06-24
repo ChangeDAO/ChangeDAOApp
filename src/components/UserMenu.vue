@@ -57,6 +57,38 @@
 
         <q-separator />
 
+        <template v-if="isAdmin">
+          <q-item
+            @click="$router.push({ name: 'admin-deploy' })"
+            clickable
+            v-ripple
+            v-close-popup
+          >
+            <q-item-section avatar>
+              <q-icon name="admin" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ $t("Deployed Contracts") }}</q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <q-item
+            @click="$router.push({ name: 'admin-approve' })"
+            clickable
+            v-ripple
+            v-close-popup
+          >
+            <q-item-section avatar>
+              <q-icon name="admin" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ $t("Changemaker Approval") }}</q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <q-separator />
+        </template>
+
         <!-- Reconnect -->
         <q-item clickable v-ripple>
           <q-item-section avatar>
@@ -89,38 +121,6 @@
             </q-list>
           </q-menu>
         </q-item>
-
-        <template v-if="isAdmin">
-          <q-item
-            @click="$router.push({ name: 'admin-deploy' })"
-            clickable
-            v-ripple
-            v-close-popup
-          >
-            <q-item-section avatar>
-              <q-icon name="admin" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ $t("Deployed Contracts") }}</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item
-            @click="$router.push({ name: 'admin-approve' })"
-            clickable
-            v-ripple
-            v-close-popup
-          >
-            <q-item-section avatar>
-              <q-icon name="admin" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ $t("Changemaker Approval") }}</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-separator />
-        </template>
 
         <!-- Log Out -->
         <q-item @click="logOut" clickable v-ripple v-close-popup>
