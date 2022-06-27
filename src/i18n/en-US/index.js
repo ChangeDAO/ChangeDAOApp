@@ -87,6 +87,7 @@ export default {
   "Project Image": "Project Image",
   "Project Name": "Project Name",
   "Project Split": "Project Split",
+  "Project Status": "Project Status",
   Purchase: "Purchase",
   "Rainbow Mint": "Rainbow Mint",
   "Rainbow period ended": "The rainbow period has ended.",
@@ -150,6 +151,13 @@ export default {
   project: {
     step1: "Step 1",
     step2: "Step 2",
+    status: {
+      rainbow: "🌈 Pre-Sale",
+      public: "▶ Live",
+      paused: "⏸ Paused",
+      complete: "✅ Complete",
+      terminated: "❌ Terminated",
+    },
   },
 
   psTypes: {
