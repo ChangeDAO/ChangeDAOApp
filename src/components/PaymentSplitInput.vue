@@ -25,6 +25,7 @@
             <q-input
               v-model.number="sharesPercent[i]"
               @update:modelValue="setPercent(i, $event)"
+              style="width: 5em"
               type="number"
               :label="$tc('Share')"
               :min="1"

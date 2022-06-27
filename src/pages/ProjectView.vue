@@ -39,53 +39,49 @@
 
         <!-- Qualitative Details -->
 
-        <p class="text-subtitle">
-          {{ $t("Artwork Description") }}
+        <p>
+          <span class="text-subtitle">{{ $t("Artwork Description") }}</span>
+          <br />
+          <span class="pre-line text-selectable">{{
+            project.description
+          }}</span>
         </p>
-        <p class="pre-line text-selectable">{{ project.description }}</p>
 
         <q-separator class="q-my-lg" />
 
         <!-- Quantitative Details -->
 
-        <div class="row">
-          <!-- Minted -->
-          <div class="col-6 q-mb-lg">
-            <p class="text-subtitle">
-              {{ $t("Total Minted") }}
-            </p>
-            <p>
-              {{
-                $t("n of m", {
-                  n: $n(minted || 0, "n8"),
-                  m: $n(project.numMints || 0, "n8"),
-                })
-              }}
-            </p>
-          </div>
+        <!-- Status -->
+        <p v-if="status">
+          <span class="text-subtitle">{{ $t("Project Status") }}</span>
+          <br />
+          {{ $t("project.status." + status) }}
+        </p>
 
-          <!-- Goal -->
-          <!-- <div class="col-6 q-mb-lg">
-            <p class="text-subtitle">
-              {{ $t("Fundraising Goal") }}
-            </p>
-            <p>{{ $n(project.goalUSD, "compactUSD") }} USD</p>
-          </div> -->
-        </div>
+        <!-- Minted -->
+        <p>
+          <span class="text-subtitle">{{ $t("Total Minted") }}</span>
+          <br />
+          {{
+            $t("n of m", {
+              n: $n(minted || 0, "n8"),
+              m: $n(project.numMints || 0, "n8"),
+            })
+          }}
+        </p>
 
         <!-- Price -->
-        <div class="q-mb-lg">
-          <p class="text-subtitle">
-            {{ $t("Price per Token") }}
-          </p>
-          <p v-if="project.mintPriceInUsd > 0">
+        <p>
+          <span class="text-subtitle">{{ $t("Price per Token") }}</span>
+          <br />
+          <template v-if="project.mintPriceInUsd > 0">
             {{ $n(project.mintPriceInUsd, "compactUSD") }} USD
             {{ $t("via [PaymentMethods]") }}
-          </p>
-          <p v-else>
+          </template>
+          <template v-else>
             {{ $t("Free") }}
-          </p>
-        </div>
+          </template>
+        </p>
 
         <template v-if="!isPaused && minted < project.numMints">
           <q-separator class="q-mb-lg" />
@@ -133,7 +129,7 @@
 
     <div class="row q-col-gutter-xl">
       <!-- Project Split -->
-      <div class="page-col col q-col-6">
+      <div v-if="project.mintPriceInUsd > 0" class="page-col col q-col-6">
         <p class="text-subtitle">
           <AddrAvatar
             :address="project.fundingPaymentSplitters[0].ethAddress"
@@ -146,7 +142,12 @@
       </div>
 
       <!-- Secondary Split -->
-      <div class="page-col col q-col-6">
+      <div
+        class="page-col col q-col-6"
+        :class="{
+          'text-center': $q.screen.gt.xs && project.mintPriceInUsd === 0,
+        }"
+      >
         <p class="text-subtitle">
           <AddrAvatar
             :address="project.royaltiesPaymentSplitters[0].ethAddress"
@@ -233,6 +234,18 @@ export default defineComponent({
     const ethers = Moralis.web3Library;
     let sharedFundingClone;
 
+    const status = computed(() => {
+      if (minted.value >= project.value.numMints) {
+        return "complete";
+      } else if (isPaused.value) {
+        return "paused";
+      } else if (isRainbowPeriod.value) {
+        return "rainbow";
+      } else if (project.value) {
+        return "public";
+      }
+      return "";
+    });
     const minted = ref(null);
     const mintedOn = ref(null);
     const isPaused = ref(null);
@@ -326,6 +339,7 @@ export default defineComponent({
       isRainbowPeriod,
       isOnRainbowList,
       isMintable,
+      status,
     };
   },
 });

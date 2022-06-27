@@ -72,13 +72,13 @@ export default defineComponent({
     // addresses.forEach((address) =>
     //   store.dispatch("getChangemaker", address).then((cm) => {
     //     if (cm) {
-    //       names[address] = `${splitData[address] / 100}% – ${cm.displayName}`;
+    //       names[address] = `${splitData[address] / 1000}% – ${cm.displayName}`;
     //     }
     //   })
     // );
 
     for (let id in names) {
-      names[id] = `${splitData[id] / 100}% – ${names[id]}`;
+      names[id] = `${splitData[id] / 1000}% – ${names[id]}`;
     }
 
     const options = {

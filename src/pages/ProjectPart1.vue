@@ -8,7 +8,7 @@
     <q-input
       v-model="data._projectName"
       :label="$t('Project Name')"
-      :rules="[Boolean]"
+      :rules="[required]"
       :disable="disable"
       item-aligned
     />
@@ -17,7 +17,7 @@
     <q-input
       v-model="data.description"
       :label="$t('Description')"
-      :rules="[Boolean]"
+      :rules="[required]"
       :disable="disable"
       item-aligned
       autogrow
@@ -27,7 +27,7 @@
     <q-input
       v-model="data._movementName"
       :label="$t('Movement')"
-      :rules="[Boolean]"
+      :rules="[required]"
       :disable="disable"
       item-aligned
     />
@@ -37,7 +37,7 @@
       v-model="data.areaOfChange"
       :label="$t('Area of Change')"
       :options="areasOfChange"
-      :rules="[Boolean]"
+      :rules="[required]"
       :disable="disable"
       emit-value
       :display-value="
@@ -50,7 +50,7 @@
     <q-input
       v-model="data._baseURI"
       :label="$t('Base URI')"
-      :rules="[Boolean]"
+      :rules="[required]"
       :disable="disable"
       item-aligned
     />
@@ -178,11 +178,14 @@ export default {
 
     const coverImage = ref(null);
 
+    const required = (a) => a.trim().length > 0;
+
     const isValid = computed(
       () =>
         address.value &&
-        data.value._projectName &&
-        data.value._movementName &&
+        required(data.value._projectName) &&
+        required(data.value._movementName) &&
+        required(data.value.description) &&
         data.value.areaOfChange &&
         data.value._creators.length &&
         data.value._royaltiesPayees.length &&
@@ -191,7 +194,7 @@ export default {
         data.value._royaltiesShares.length &&
         data.value._royaltiesShares.length ==
           data.value._royaltiesShares.length &&
-        data.value._baseURI
+        required(data.value._baseURI)
     );
 
     const areasOfChange = computed(() =>
@@ -278,6 +281,7 @@ export default {
       data,
       coverImage,
       reset,
+      required,
       isValid,
       areasOfChange,
       changeDaoFunding,
