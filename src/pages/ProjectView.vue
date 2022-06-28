@@ -83,7 +83,7 @@
           </template>
         </p>
 
-        <template v-if="!isPaused && minted < project.numMints">
+        <template v-if="!isLoading && !isPaused && minted < project.numMints">
           <q-separator class="q-mb-lg" />
 
           <!-- Mint -->
@@ -169,7 +169,7 @@
     </q-page-sticky>
 
     <router-view
-      v-if="userAddress && project.numMintsBought < project.numMints"
+      v-if="userAddress && isMintable"
       :projectID="projectID"
       :model-value="true"
       no-route-dismiss
@@ -185,6 +185,7 @@ import {
   computed,
   onMounted,
   onBeforeUnmount,
+  watch,
 } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
@@ -261,6 +262,7 @@ export default defineComponent({
 
     const isMintable = computed(
       () =>
+        !isLoading.value &&
         project.value &&
         !isPaused.value &&
         minted.value < project.value.numMints &&
@@ -272,11 +274,20 @@ export default defineComponent({
     };
 
     // Initialize
+    const isLoading = ref(true);
+    watch(isLoading, (isLoading) => {
+      if (isLoading) {
+        Loading.show();
+      } else {
+        Loading.hide();
+      }
+    });
+    Loading.show();
     onMounted(async () => {
       const provider = ethers.getDefaultProvider(process.env.chain);
       if (!project.value) {
         try {
-          Loading.show();
+          isLoading.value = true;
           await store.dispatch("getProject", props.projectID);
         } catch (error) {
           console.error(error);
@@ -320,7 +331,7 @@ export default defineComponent({
           isRainbowPeriod.value = false;
         }, rainbowExpiration.value - now);
       }
-      Loading.hide();
+      isLoading.value = false;
     });
 
     onBeforeUnmount(() => {
@@ -335,6 +346,7 @@ export default defineComponent({
       mint,
       minted,
       rainbowExpiration,
+      isLoading,
       isPaused,
       isRainbowPeriod,
       isOnRainbowList,
