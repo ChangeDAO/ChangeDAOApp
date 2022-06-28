@@ -1,6 +1,6 @@
 @import "./fonts/librefranklin";
 
-$header-height: 71px;
+$header-height: 63px;
 
 body {
   font-family: "Libre Franklin";
@@ -191,8 +191,8 @@ a:not(.q-btn):not(.q-item) {
 
 .dialog-header {
   height: $header-height;
-  padding-top: 12px;
-  padding-bottom: 11px;
+  padding-top: 9px;
+  padding-bottom: 9px;
 }
 
 body.desktop {

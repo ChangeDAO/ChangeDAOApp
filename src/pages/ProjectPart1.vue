@@ -52,6 +52,7 @@
       :label="$t('Base URI')"
       :rules="[required]"
       :disable="disable"
+      prefix="ipfs://"
       item-aligned
     />
 

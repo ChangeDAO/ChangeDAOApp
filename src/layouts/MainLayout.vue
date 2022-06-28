@@ -1,17 +1,18 @@
 <template>
   <q-layout view="hHh LpR fff">
     <q-header>
-      <q-toolbar class="q-pa-md">
+      <q-toolbar class="q-py-sm">
         <q-toolbar-title>
-          <router-link :to="{ name: 'home' }">
+          <q-btn :to="{ name: 'home' }" flat dense>
             <img
               class="block non-selectable"
               alt="ChangeDAO logo"
               src="~assets/ChangeDAO-white-horizontal-logo-asset-only.svg"
               style="width: 200px; max-width: 100%"
             />
-          </router-link>
+          </q-btn>
         </q-toolbar-title>
+
         <UserMenu />
       </q-toolbar>
       <SmoothReflow>
