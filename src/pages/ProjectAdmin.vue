@@ -47,68 +47,74 @@
         </div>
 
         <q-list v-if="!isPending" bordered>
+          <!-- Pause/Unpause -->
+          <q-item>
+            <q-item-section>
+              <q-item-label header class="q-pl-none">
+                Pause/Unpause Minting
+              </q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-btn
+                @click="togglePause"
+                :label="isPaused ? 'Unpause' : 'Pause'"
+                :loading="isPausing"
+                color="primary"
+              />
+            </q-item-section>
+          </q-item>
+
           <!-- Base URI -->
-          <!-- <q-input v-model="baseURI" label="Base URI" item-aligned>
-          <template v-slot:after>
-            <q-btn
-              @click="setBaseURI"
-              label="Set"
-              color="primary"
-              :loading="isSettingBaseURI"
-            />
-          </template>
-        </q-input> -->
-
-          <!-- Rainbow Period -->
           <!-- <q-input
-          type="number"
-          v-model="rainbowDuration"
-          :label="'Rainbow Period Duration (hours)'"
-          :rules="[(a) => a >= 0]"
-          :min="0"
-          item-aligned
-        >
-          <template v-slot:append v-if="isRainbowPeriod">
-            <RelativeTime :value="rainbowExpiration" />
-          </template>
-          <template v-slot:after>
-            <q-btn
-              @click="setRainbowDuration"
-              label="Set"
-              color="primary"
-              :disable="
-                (!rainbowDuration && rainbowDuration !== 0) ||
-                rainbowDuration < 0
-              "
-              :loading="isSettingRainbowDuration"
-            />
-          </template>
-        </q-input> -->
-
-          <!-- Zero Mint -->
-          <q-item-label header>Zero Mint</q-item-label>
-          <TokenCard
-            v-if="hasZeroMinted"
-            :baseURI="project.baseURI"
-            :token="0"
-            :name="0"
-          />
-          <AddrInput
-            v-else
-            v-model="zeroMintAddress"
-            label="Recipient Address"
+            v-model="baseURI"
+            label="Content Identifier"
+            prefix="ipfs://"
+            suffix="/"
+            :placeholder="project.baseURI"
+            :rules="[validCid]"
+            hide-bottom-space
             item-aligned
           >
             <template v-slot:after>
               <q-btn
-                @click="zeroMint"
-                :label="$t('Mint')"
+                @click="setBaseURI"
+                label="Set"
                 color="primary"
-                :loading="isMintingZero"
-                :disable="!isAddress(zeroMintAddress)"
+                :disable="
+                  !baseURI.trim().length ||
+                  !validCid(baseURI) ||
+                  baseURI === project.baseURI
+                "
+                :loading="isSettingBaseURI"
               />
             </template>
-          </AddrInput>
+          </q-input> -->
+
+          <!-- Rainbow Period -->
+          <!-- <q-input
+            type="number"
+            v-model="rainbowDuration"
+            :label="'Rainbow Period Duration (hours)'"
+            :rules="[(a) => a >= 0]"
+            :min="0"
+            item-aligned
+          >
+            <template v-slot:append v-if="isRainbowPeriod">
+              <RelativeTime :value="rainbowExpiration" />
+            </template>
+            <template v-slot:after>
+              <q-btn
+                @click="setRainbowDuration"
+                label="Set"
+                color="primary"
+                :disable="
+                  (!rainbowDuration && rainbowDuration !== 0) ||
+                  rainbowDuration < 0
+                "
+                :loading="isSettingRainbowDuration"
+              />
+            </template>
+          </q-input> -->
 
           <template v-if="mintable > minted">
             <!-- Courtesy Mint -->
@@ -156,29 +162,36 @@
                 </q-item-section>
               </q-item>
             </template>
-
-            <!-- Pause/Unpause -->
-            <q-item>
-              <q-item-section>
-                <q-item-label header class="q-pl-none">
-                  Pause/Unpause Minting
-                </q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-btn
-                  @click="togglePause"
-                  :label="isPaused ? 'Unpause' : 'Pause'"
-                  :loading="isPausing"
-                  color="primary"
-                />
-              </q-item-section>
-            </q-item>
           </template>
+
+          <!-- Zero Mint -->
+          <q-item-label header>Zero Mint</q-item-label>
+          <TokenCarousel
+            v-if="hasZeroMinted"
+            :baseURI="project.baseURI"
+            :tokenIds="['0']"
+          />
+          <AddrInput
+            v-else
+            v-model="zeroMintAddress"
+            label="Recipient Address"
+            item-aligned
+          >
+            <template v-slot:after>
+              <q-btn
+                @click="zeroMint"
+                :label="$t('Mint')"
+                color="primary"
+                :loading="isMintingZero"
+                :disable="!isAddress(zeroMintAddress)"
+              />
+            </template>
+          </AddrInput>
         </q-list>
       </div>
     </div>
   </q-page>
-  <q-page class="flex flex-center text-center pre-line" v-else>
+  <q-page class="flex flex-center text-center pre-line non-selectable" v-else>
     <q-inner-loading
       :showing="isPending"
       :label="$t('Project has pending changes')"
@@ -192,6 +205,7 @@ import { useStore } from "vuex";
 import { Loading, useQuasar } from "quasar";
 
 import { TX_WAIT } from "../util/constants";
+import { CID_FORMAT } from "../util/formatting";
 import {
   notifyError,
   notifySuccess,
@@ -202,7 +216,7 @@ import LogInDialog from "../components/LogInDialog";
 import AddrInput from "../components/AddrInput";
 import ProjectInfo from "../components/ProjectInfo";
 import RelativeTime from "../components/RelativeTime";
-import TokenCard from "../components/TokenCard";
+import TokenCarousel from "../components/TokenCarousel";
 
 import Moralis from "moralis";
 import ChangeDaoNFT from "../../contracts/deployments/rinkeby/ChangeDaoNFT.json";
@@ -211,7 +225,13 @@ import SharedFunding from "../../contracts/deployments/rinkeby/SharedFunding.jso
 export default {
   name: "PageProjectAdmin",
 
-  components: { LogInDialog, AddrInput, ProjectInfo, RelativeTime, TokenCard },
+  components: {
+    LogInDialog,
+    AddrInput,
+    ProjectInfo,
+    RelativeTime,
+    TokenCarousel,
+  },
 
   props: ["projectID"],
 
@@ -243,6 +263,7 @@ export default {
 
     const baseURI = ref("");
     const isSettingBaseURI = ref(false);
+    const validCid = (a) => CID_FORMAT.test(a);
     const setBaseURI = async () => {
       try {
         isSettingBaseURI.value = true;
@@ -250,7 +271,7 @@ export default {
           contractAddress: changeDaoNFTClone.address,
           abi: ChangeDaoNFT.abi,
           functionName: "setBaseURI",
-          params: { _newBaseURI: baseURI.value },
+          params: { _newBaseURI: `ipfs://${baseURI.value}/` },
         });
         let dismiss = notifyTx(tx.hash);
         const response = await tx.wait(TX_WAIT);
@@ -427,7 +448,6 @@ export default {
         return project.value || notifyError("loadingProject");
       }
 
-      baseURI.value = project.value.baseURI;
       mintedOn.value = project.value.deployTimeInMS;
       mintable.value = project.value.numMints;
 
@@ -518,6 +538,7 @@ export default {
       isLoading,
       userAddress,
       baseURI,
+      validCid,
       setBaseURI,
       isSettingBaseURI,
       rainbowDuration,

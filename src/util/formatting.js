@@ -1,24 +1,24 @@
 export const n8 = new Intl.NumberFormat("en-us", {
   style: "decimal",
   minimumFractionDigits: 0,
-  maximumFractionDigits: 8
+  maximumFractionDigits: 8,
 });
 export const n6 = new Intl.NumberFormat("en-us", {
   style: "decimal",
   minimumFractionDigits: 0,
-  maximumFractionDigits: 6
+  maximumFractionDigits: 6,
 });
 export const n4 = new Intl.NumberFormat("en-us", {
   style: "decimal",
   minimumFractionDigits: 0,
-  maximumFractionDigits: 4
+  maximumFractionDigits: 4,
 });
 
 export const c2 = new Intl.NumberFormat("en-us", {
   style: "currency",
   currency: "USD",
   minimumFractionDigits: 2,
-  maximumFractionDigits: 2
+  maximumFractionDigits: 2,
 });
 
 /**
@@ -51,4 +51,7 @@ export const tokenValue = (value, decimals) =>
 export const tokenValueTxt = (value, decimals, symbol) =>
   `${n4.format(tokenValue(value, decimals))} ${symbol}`;
 
-export const EMAIL_FORMAT = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+export const EMAIL_FORMAT =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+export const CID_FORMAT = /^[a-zA-Z0-9]*$/;

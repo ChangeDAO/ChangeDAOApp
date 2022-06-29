@@ -213,7 +213,7 @@ export default {
                   Moralis.LiveQuery.close();
                   subscription = null;
                 }
-                getMint();
+                setTimeout(getMint, 5e3);
               }
             },
           });
