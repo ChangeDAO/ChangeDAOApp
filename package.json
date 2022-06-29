@@ -30,7 +30,7 @@
     "lodash": "^4.17.21",
     "magic-sdk": "^8.1.1",
     "merkletreejs": "^0.2.31",
-    "moralis": "^1.8.0",
+    "moralis": "^1.8.1",
     "quasar": "^2.7.2",
     "raw-loader": "^4.0.2",
     "vue": "^3.0.0",
