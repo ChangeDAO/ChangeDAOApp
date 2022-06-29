@@ -5,7 +5,6 @@
       :swipeable="Boolean(navOptions.length)"
       transition-prev="slide-right"
       transition-next="slide-left"
-      height="auto"
       keep-alive
       animated
       :arrows="fullscreen"
@@ -21,17 +20,26 @@
           :baseURI="baseURI"
           :token="token"
           :name="token"
+          :show-info="showInfo"
         />
       </template>
-      <TokenCard v-if="!tokenIds || !tokenIds.length" :name="0" :key="0" />
+      <TokenCard v-if="!tokenIds || !tokenIds.length" :name="-1" :key="-1" />
 
       <template v-if="tokenIds && tokenIds.length" v-slot:control>
+        <q-carousel-control position="top-left" :offset="[12, 12]">
+          <q-btn
+            @click="showInfo = !showInfo"
+            icon="info"
+            color="white"
+            round
+            flat
+          />
+        </q-carousel-control>
         <q-carousel-control position="top-right" :offset="[12, 12]">
           <q-btn
             @click="fullscreen = !fullscreen"
             :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
             color="white"
-            dense
             round
             flat
           />
@@ -41,13 +49,20 @@
 
     <!-- Buttons -->
     <div v-if="navOptions.length" class="row justify-center">
-      <q-btn-toggle v-model="currentToken" :options="navOptions" />
+      <q-pagination
+        v-model="currentTokenIndex"
+        :max="navOptions.length"
+        :max-pages="8"
+        color="accent"
+        active-color="primary"
+        direction-links
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { computed, ref, watch } from "vue";
+import { computed, ref, toRef, watch } from "vue";
 
 import TokenCard from "./TokenCard.vue";
 
@@ -62,27 +77,34 @@ export default {
   },
 
   setup(props) {
-    const currentToken = ref(0);
+    const currentToken = ref(-1);
+    const currentTokenIndex = computed({
+      get() {
+        return props.tokenIds.indexOf(currentToken.value) + 1;
+      },
+      set(i) {
+        currentToken.value = props.tokenIds[i - 1];
+      },
+    });
     const fullscreen = ref(false);
-
-    const navOptions = computed(() =>
-      props.tokenIds
-        ? props.tokenIds.map((value) => ({
-            label: value,
-            value,
-          }))
-        : []
-    );
+    const showInfo = ref(true);
+    const navOptions = toRef(props, "tokenIds");
 
     watch(
       () => props.tokenIds,
       (ids) => {
-        currentToken.value = ids && ids.length ? ids[0] : 0;
+        currentToken.value = ids && ids.length ? ids[0] : -1;
       }
     );
-    currentToken.value = props.tokenIds ? props.tokenIds[0] || 0 : 0;
+    currentToken.value = props.tokenIds ? props.tokenIds[0] || -1 : -1;
 
-    return { currentToken, fullscreen, navOptions };
+    return {
+      currentToken,
+      currentTokenIndex,
+      fullscreen,
+      showInfo,
+      navOptions,
+    };
   },
 };
 </script>

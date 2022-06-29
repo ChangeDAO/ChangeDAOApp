@@ -12,10 +12,12 @@ p {
 }
 
 .project-cover {
-  background-color: $img-bg;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  &.bg {
+    background-color: $img-bg;
+  }
   &.no-image {
     background-image: url(~assets/ChangeDAO-sample-cover.png);
   }

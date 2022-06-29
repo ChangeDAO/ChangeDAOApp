@@ -37,7 +37,7 @@
       v-model="data.areaOfChange"
       :label="$t('Area of Change')"
       :options="areasOfChange"
-      :rules="[required]"
+      :rules="[Boolean]"
       :disable="disable"
       emit-value
       :display-value="
@@ -49,10 +49,13 @@
     <!-- Base URI -->
     <q-input
       v-model="data._baseURI"
-      :label="$t('Base URI')"
-      :rules="[required]"
+      :label="$t('Content Identifier')"
       :disable="disable"
       prefix="ipfs://"
+      suffix="/"
+      placeholder="bafybeig3cvnu57c5tvnz6wrdd72d6hcin3fhjaghznb3qdvnglhd53vvqe"
+      :rules="[validCid]"
+      hide-bottom-space
       item-aligned
     />
 
@@ -144,6 +147,7 @@ import FundingAllocations from "../../contracts/deployments/mainnet/FundingAlloc
 import Moralis from "moralis";
 
 import { AREAS_OF_CHANGE } from "../util/constants";
+import { CID_FORMAT } from "../util/formatting";
 import AddrInputs from "../components/AddrInputs";
 import ImageInput from "../components/ImageInput";
 import PaymentSplitInput from "../components/PaymentSplitInput";
@@ -181,6 +185,8 @@ export default {
 
     const required = (a) => a.trim().length > 0;
 
+    const validCid = (a) => required(a) && CID_FORMAT.test(a);
+
     const isValid = computed(
       () =>
         address.value &&
@@ -195,7 +201,7 @@ export default {
         data.value._royaltiesShares.length &&
         data.value._royaltiesShares.length ==
           data.value._royaltiesShares.length &&
-        required(data.value._baseURI)
+        validCid(data.value._baseURI)
     );
 
     const areasOfChange = computed(() =>
@@ -284,6 +290,7 @@ export default {
       reset,
       required,
       isValid,
+      validCid,
       areasOfChange,
       changeDaoFunding,
       changeDaoRoyalties,

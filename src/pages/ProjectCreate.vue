@@ -161,18 +161,25 @@ export default {
           // Part 1
 
           // Create Transaction
+          const _baseURI = `ipfs://${data1.value._baseURI}/`;
           const tx = await Moralis.executeFunction({
             contractAddress: Controller.address,
             abi: Controller.abi,
             functionName: "createNFTAndPSClones",
-            params: pickBy(data1.value, (value, key) => key.startsWith("_")),
+            params: {
+              ...pickBy(data1.value, (value, key) => key.startsWith("_")),
+              _baseURI,
+            },
           });
           let dismiss = notifyTx(tx.hash);
           data1.value.transactionHash = tx.hash;
 
           // Call Cloud Function
           data1.value.projectId = (
-            await Moralis.Cloud.run("createProjectPartOne", data1.value)
+            await Moralis.Cloud.run("createProjectPartOne", {
+              ...data1.value,
+              _baseURI,
+            })
           ).id;
 
           // Transaction Complete
