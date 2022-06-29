@@ -83,7 +83,7 @@ export default {
   "Processing Transaction": "Processing Transaction",
   "Project Administration": "Project Administration",
   "Project has pending changes":
-    "This project is still syncing.\nThis may take several minutes...",
+    "The project is still syncing,\nand this may take several minutes.\nPlease wait...",
   "Project Image": "Project Image",
   "Project Name": "Project Name",
   "Project Split": "Project Split",

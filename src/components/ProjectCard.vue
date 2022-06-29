@@ -1,7 +1,7 @@
 <template>
   <q-img
     :src="imageURL"
-    class="project-cover non-selectable shadow-4"
+    class="project-cover bg non-selectable shadow-4"
     :class="{ 'no-image': !imageURL }"
     fit="cover"
     :ratio="1"

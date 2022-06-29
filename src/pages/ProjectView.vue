@@ -5,23 +5,21 @@
 
       <div class="page-col col q-col-6">
         <div class="sticky header-top">
-          <template v-if="isMintable">
-            <!-- Connect Wallet -->
-            <LogIn
-              v-if="!userAddress"
-              class="full-width q-mb-lg"
-              :label="$t('Connect Wallet')"
-            />
+          <!-- Connect Wallet -->
+          <LogIn
+            v-if="!userAddress"
+            class="full-width q-mb-lg"
+            :label="$t('Connect Wallet')"
+          />
 
-            <!-- Mint NFT -->
-            <q-btn
-              v-else
-              @click="mint"
-              :label="$t('Mint NFT')"
-              class="full-width q-mb-lg"
-              color="primary"
-            />
-          </template>
+          <!-- Mint NFT -->
+          <q-btn
+            v-else-if="isMintable"
+            @click="mint"
+            :label="$t('Mint NFT')"
+            class="full-width q-mb-lg"
+            color="primary"
+          />
 
           <!-- Image -->
           <div

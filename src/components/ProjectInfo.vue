@@ -2,16 +2,10 @@
   <div>
     <!-- Project Name -->
     <p class="text-h3 text-selectable">
+      <AddrAvatar :address="project.ethAddress" class="q-mr-sm" />
       {{ project.name }}
 
       <br />
-
-      <!-- Address -->
-      <span class="text-caption">
-        <AddrAvatar :address="project.ethAddress" class="q-mr-sm" />{{
-          shortAddr(project.ethAddress)
-        }} </span
-      ><br />
 
       <!-- Changemaker Name -->
       <span class="text-accent text-h4">
