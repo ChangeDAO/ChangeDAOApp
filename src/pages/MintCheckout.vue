@@ -129,9 +129,11 @@
               color="primary"
               inline
             />
-            <p v-if="currencyHint" class="text-caption">
-              {{ $t(currencyHint) }}
-            </p>
+            <smooth-reflow>
+              <div v-if="currencyHint" class="text-caption">
+                {{ $t(currencyHint) }}
+              </div>
+            </smooth-reflow>
             <p
               v-if="disabledCurrencies.length"
               class="text-caption text-italic"
@@ -286,7 +288,9 @@ export default {
 
     const currencyHint = computed(() =>
       currency.value === ETH_ADDRESS
-        ? "hint.ethBuffer"
+        ? total.value
+          ? "hint.ethBuffer"
+          : ""
         : [DAI_ADDRESS, USDC_ADDRESS].includes(currency.value)
         ? "hint.stablecoinApproval"
         : ""
@@ -378,7 +382,9 @@ export default {
               ethers.utils.parseEther(total.value.toString())
             )
           )[0]
-            .add(ethers.utils.parseEther(ETH_BUFFER.toString()))
+            .add(
+              ethers.utils.parseEther((total.value ? ETH_BUFFER : 0).toString())
+            )
             .toString();
         }
 
