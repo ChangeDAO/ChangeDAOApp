@@ -6,6 +6,7 @@
       :key="id"
       @mouseover="chart.focus(id)"
       @mouseout="chart.revert()"
+      @click="copy(id)"
       clickable
       flat
     >
@@ -18,6 +19,8 @@
 <script>
 import c3 from "c3";
 import { defineComponent, ref, toRef, onMounted, onBeforeUnmount } from "vue";
+import { notifyCopied, notifyError } from "src/util/notify";
+import { copyToClipboard } from "quasar";
 
 export default defineComponent({
   name: "Chart",
@@ -25,11 +28,11 @@ export default defineComponent({
   props: {
     options: {
       required: true,
-      type: Object
+      type: Object,
     },
     chartClass: {
-      type: String
-    }
+      type: String,
+    },
   },
 
   setup(props, context) {
@@ -41,7 +44,7 @@ export default defineComponent({
     onMounted(() => {
       chart.value = c3.generate({
         ...options.value,
-        bindto: root.value
+        bindto: root.value,
       });
     });
 
@@ -51,17 +54,24 @@ export default defineComponent({
       }
     });
 
-    const dispatch = cb => {
+    const dispatch = (cb) => {
       if (cb && chart.value) {
         cb.call(null, chart.value);
       }
     };
 
+    const copy = (id) => {
+      copyToClipboard(id)
+        .then(() => notifyCopied(id))
+        .catch(notifyError);
+    };
+
     return {
       root,
       chart,
-      dispatch
+      dispatch,
+      copy,
     };
-  }
+  },
 });
 </script>
