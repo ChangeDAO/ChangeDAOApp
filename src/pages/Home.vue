@@ -353,7 +353,9 @@ export default {
           method: "POST",
           mode: "cors",
           cache: "no-cache",
-          body: JSON.stringify({}),
+          body: JSON.stringify({
+            email: email.value,
+          }),
         });
         email.value = "";
         notifySuccess("Subscribed");
