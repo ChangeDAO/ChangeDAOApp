@@ -10,7 +10,6 @@ export default {
   "All Projects": "All Projects",
   Approve: "Approve",
   "Area of Change": "Area of Change",
-  "Artwork Description": "Artwork Description",
   Blog: "Blog",
   Cancel: "Cancel",
   "Changemaker Approval": "Changemaker Approval",
