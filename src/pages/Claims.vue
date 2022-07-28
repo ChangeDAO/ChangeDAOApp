@@ -126,7 +126,9 @@
                   </q-item-section>
                   <q-item-section v-if="hasBalance(ps)" side>
                     <q-spinner v-if="isClaiming[ps.id]" size="1.7em" />
-                    <q-icon v-else name="claims" />
+                    <q-icon v-else name="claims">
+                      <Tooltip>{{ $t("Claim") }}</Tooltip>
+                    </q-icon>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -149,6 +151,7 @@ import { shortAddr } from "../util/formatting";
 import ProjectCard from "../components/ProjectCard";
 import AddrAvatar from "../components/AddrAvatar";
 import RelativeTime from "../components/RelativeTime";
+import Tooltip from "../components/Tooltip";
 
 import Moralis from "moralis";
 import PaymentSplitter from "../../contracts/deployments/mainnet/PaymentSplitter.json";
@@ -156,7 +159,7 @@ import PaymentSplitter from "../../contracts/deployments/mainnet/PaymentSplitter
 export default {
   name: "PageClaims",
 
-  components: { ProjectCard, AddrAvatar, RelativeTime },
+  components: { ProjectCard, AddrAvatar, RelativeTime, Tooltip },
 
   setup() {
     const store = useStore();

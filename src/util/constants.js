@@ -5,11 +5,12 @@ export const URLS = {
   PODCAST: "https://medium.com/changedao/podcast/home",
   BLOG: "https://medium.com/changedao",
   EVENTS: "https://medium.com/changedao/events/home",
-  NEWSLETTER_FORM: "https://getform.io/f/664280cb-7478-486f-8945-4cc9d819e88a",
+  NEWSLETTER_FORM: "https://getform.io/f/e1a0a0b1-96b6-4806-8f34-be5317a36827",
+  CONTACT: "mailto:operations@changedao.org",
 };
 
 export const SOCIAL_URLS = {
-  TWITTER: "https://t.me/",
+  TWITTER: "https://twitter.com/",
   DISCORD: "https://discord.gg/",
   INSTAGRAM: "https://www.instagram.com/",
   YOUTUBE: "https://youtube.com/channel/",

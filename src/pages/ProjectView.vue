@@ -38,7 +38,7 @@
         <!-- Qualitative Details -->
 
         <p>
-          <span class="text-subtitle">{{ $t("Artwork Description") }}</span>
+          <span class="text-subtitle">{{ $t("Description") }}</span>
           <br />
           <span class="pre-line text-selectable">{{
             project.description
