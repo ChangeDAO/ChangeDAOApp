@@ -20,6 +20,7 @@ export default {
   Connect: "Connect",
   "Connect to ChangeDAO": "Connect to ChangeDAO",
   "Connect Wallet": "Connect Wallet",
+  Contact: "Contact",
   "Content Identifier": "Content Identifier",
   Copyright: "© Copyright 2022 ChangeDAO LLC. All rights reserved.",
   "Cost per Mint": "Cost per Mint",

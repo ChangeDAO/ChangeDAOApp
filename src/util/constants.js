@@ -6,6 +6,7 @@ export const URLS = {
   BLOG: "https://medium.com/changedao",
   EVENTS: "https://medium.com/changedao/events/home",
   NEWSLETTER_FORM: "https://getform.io/f/e1a0a0b1-96b6-4806-8f34-be5317a36827",
+  CONTACT: "mailto:operations@changedao.org",
 };
 
 export const SOCIAL_URLS = {

@@ -118,7 +118,7 @@
               padding="sm"
             />
             <q-btn
-              @click="dialogEmail = true"
+              @click="contact"
               color="white"
               text-color="dark-accent"
               icon="email"
@@ -165,6 +165,9 @@ export default defineComponent({
     };
     const twitter = () => {
       openURL(URLS.TWITTER);
+    };
+    const contact = () => {
+      openURL(URLS.CONTACT);
     };
 
     const isInitialized = ref(false);
@@ -214,6 +217,11 @@ export default defineComponent({
       {
         label: "Events",
         href: URLS.EVENTS,
+        attrs: { target: "_blank" },
+      },
+      {
+        label: "Contact",
+        href: URLS.CONTACT,
         attrs: { target: "_blank" },
       },
       {
@@ -281,6 +289,7 @@ export default defineComponent({
     return {
       discord,
       twitter,
+      contact,
       isInitialized,
       isLoggedIn,
       incorrectChain,
