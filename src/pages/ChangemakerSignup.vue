@@ -76,13 +76,16 @@
           />
 
           <!-- Email Address -->
-          <q-input
-            v-model="data.email"
-            :label="$t('Email Address')"
-            :rules="[isEmailValid]"
-            :hint="$t('hint.emailForContactOnly')"
-            item-aligned
-          />
+          <q-item>
+            <q-item-section>
+              <q-input
+                v-model="data.email"
+                :label="$t('Email Address')"
+                :rules="[isEmailValid]"
+                :hint="$t('hint.emailForContactOnly')"
+              />
+            </q-item-section>
+          </q-item>
         </q-list>
 
         <!-- Second Column -->
@@ -269,7 +272,7 @@ export default {
         isSubmitting.value = true;
         await Moralis.Cloud.run("createChangemakerRequest", data.value);
         notifySuccess("Success");
-        clear();
+        // clear();
       } catch (error) {
         notifyError(error.error || error);
       } finally {
