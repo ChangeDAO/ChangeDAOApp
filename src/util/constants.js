@@ -5,7 +5,7 @@ export const URLS = {
   PODCAST: "https://medium.com/changedao/podcast/home",
   BLOG: "https://medium.com/changedao",
   EVENTS: "https://medium.com/changedao/events/home",
-  NEWSLETTER_FORM: "https://getform.io/f/e1a0a0b1-96b6-4806-8f34-be5317a36827",
+  NEWSLETTER_FORM: "https://changedao.us20.list-manage.com/subscribe/post",
   CONTACT: "mailto:operations@changedao.org",
 };
 
