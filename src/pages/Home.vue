@@ -360,17 +360,8 @@ export default {
     const submitEmail = async () => {
       try {
         isSubmitting.value = true;
-        await fetch(URLS.NEWSLETTER_FORM, {
-          method: "POST",
-          mode: "no-cors",
-          cache: "no-cache",
-          body: JSON.stringify({
-            u: "125909cc0015e913545e86295",
-            id: "a6e54844e4",
-            b_name: "",
-            b_email: email.value,
-            b_comment: "",
-          }),
+        await Moralis.Cloud.run("marketingNewsletter", {
+          email: email.value,
         });
         email.value = "";
         notifySuccess("Subscribed");
