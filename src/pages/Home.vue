@@ -362,10 +362,14 @@ export default {
         isSubmitting.value = true;
         await fetch(URLS.NEWSLETTER_FORM, {
           method: "POST",
-          mode: "cors",
+          mode: "no-cors",
           cache: "no-cache",
           body: JSON.stringify({
-            email: email.value,
+            u: "125909cc0015e913545e86295",
+            id: "a6e54844e4",
+            b_name: "",
+            b_email: email.value,
+            b_comment: "",
           }),
         });
         email.value = "";
